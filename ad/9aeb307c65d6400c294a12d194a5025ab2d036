@@ -1,0 +1,59 @@
+commands/retrospect.md
+  s_a614fa8e83d5d1::t_55de73745018d8 1-175
+CHANGELOG.md
+  s_a614fa8e83d5d1::t_28534ecc337297 13
+  s_a614fa8e83d5d1::t_56aaf35fed6fb4 36
+  s_a614fa8e83d5d1::t_be905b3cfd0520 1-12,14,16,18-20,26-30,32-35
+  s_a614fa8e83d5d1::t_64a6393b35d4e1 17
+  s_a614fa8e83d5d1::t_ab517a19f57abd 31
+  s_a614fa8e83d5d1::t_096da24536535b 37-46
+  s_a614fa8e83d5d1::t_448c3a5f7e5141 15
+  s_a614fa8e83d5d1::t_b345e682d362ee 21-25
+docs/superpowers/plans/2026-05-11-opsmill-speckit-extensions.md
+  s_a614fa8e83d5d1::t_c24795f0a4ef3d 5-16
+  s_a614fa8e83d5d1::t_448bd063e308dd 1-4,17-802
+commands/extract.md
+  s_a614fa8e83d5d1::t_11055e60f0bf27 1-254,256-340
+  s_a614fa8e83d5d1::t_6ae6da1629cae5 255
+README.md
+  s_a614fa8e83d5d1::t_0f730d446b0080 1-5,7-8,10-11,13-46,48-55,57-66,68-74,104-113,115-119
+  s_a614fa8e83d5d1::t_fc00d947a36193 6
+  s_a614fa8e83d5d1::t_f2b701df86aeab 56
+  s_a614fa8e83d5d1::t_a422b7014f5ad3 75-103
+  s_a614fa8e83d5d1::t_551e75e7cb9843 12
+  s_a614fa8e83d5d1::t_66acbcca585ea0 9
+  s_a614fa8e83d5d1::t_af272c545f0785 47
+  s_a614fa8e83d5d1::t_98eb80baeffe50 67
+  s_a614fa8e83d5d1::t_6b980ddd985d24 114
+extension.yml
+  s_a614fa8e83d5d1::t_0be1d71417ac1d 30-41
+  s_a614fa8e83d5d1::t_5bc31651944c97 20,23,26
+  s_a614fa8e83d5d1::t_53ed7224ee6326 1-19,21-22,24-25,27-29,42-47
+commands/summary.md
+  s_a614fa8e83d5d1::t_849576dde2aa5a 62
+  s_a614fa8e83d5d1::t_c6e2305908a52b 1-61,63-139
+docs/superpowers/specs/2026-05-11-opsmill-speckit-extensions-design.md
+  s_a614fa8e83d5d1::t_63bf4ffd15a208 194-197
+  s_a614fa8e83d5d1::t_4aa81b1ee608a5 273-291
+  s_a614fa8e83d5d1::t_574924200e4583 208-220
+  s_a614fa8e83d5d1::t_c193eb5c5bb718 1-2,4-14,45-47,55-57,64,71-72,74-100,102-103,105,109-110,115-120,122-125,127-133,135-137,140-141,151-160,165,176,178-180,183-184,187-188,192-193,221-223,228-232,237-241,252-254,268,272,292-293,297-298,302-304
+  s_a614fa8e83d5d1::t_922f363f088df6 3,15-44,48-54,58-63,65-70,73,101,104,106-108,111-114,121,126,134,142-150,161-164,177,181-182,185-186,189-191,198-207,224-227,233-236,242-251,255-267,269-271,294-296,299-301
+  s_a614fa8e83d5d1::t_f253f10b0d6c5a 166-175
+  s_a614fa8e83d5d1::t_2b62a0e159d147 138-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "ad9aeb307c65d6400c294a12d194a5025ab2d036",
+  "prompts": {},
+  "sessions": {
+    "s_a614fa8e83d5d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2db62cb-a428-4c19-a5d5-824e6405287d",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Benoit Kohler <bkohler@bearchitek.tailc018d.ts.net>"
+    }
+  }
+}
