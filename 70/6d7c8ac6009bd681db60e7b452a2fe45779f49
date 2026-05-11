@@ -1,0 +1,19 @@
+docs/superpowers/specs/2026-05-11-opsmill-speckit-extensions-design.md
+  s_a614fa8e83d5d1::t_922f363f088df6 3,15-44,48-54,58-63,65-70,73,101,104,106-108,111-114,121,126,134,140-148,159-162,164-165,167,171-172,175-176,179-181,188-202,206-209,215-218,224-233,237-249,251-253,257-259,262-264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "706d7c8ac6009bd681db60e7b452a2fe45779f49",
+  "prompts": {},
+  "sessions": {
+    "s_a614fa8e83d5d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2db62cb-a428-4c19-a5d5-824e6405287d",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Benoit Kohler <bkohler@bearchitek.tailc018d.ts.net>"
+    }
+  }
+}
