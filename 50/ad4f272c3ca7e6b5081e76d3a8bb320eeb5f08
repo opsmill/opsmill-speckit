@@ -1,0 +1,20 @@
+commands/summary.md
+  s_a614fa8e83d5d1::t_c6e2305908a52b 1-61,63-139
+  s_a614fa8e83d5d1::t_353642bb1650c5 62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "50ad4f272c3ca7e6b5081e76d3a8bb320eeb5f08",
+  "prompts": {},
+  "sessions": {
+    "s_a614fa8e83d5d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2db62cb-a428-4c19-a5d5-824e6405287d",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Benoit Kohler <bkohler@bearchitek.tailc018d.ts.net>"
+    }
+  }
+}
