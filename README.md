@@ -1,17 +1,25 @@
 # opsmill-speckit
 
-OpsMill house [spec-kit](https://github.com/github/spec-kit) extension. Ships
-three workflow commands under the `opsmill` namespace:
+OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
+independently installable artifacts:
 
-- `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
-  ADRs from completed spec directories into `dev/knowledge/`, `dev/guidelines/`,
-  `dev/adr/`.
-- `/speckit.opsmill.retrospect` — run a session retrospective that surfaces
-  context-management gaps and routes them to `fix-now`, `open-pr`,
-  `github-issue`, or `local-only` dispositions.
-- `/speckit.opsmill.summary` — produce a flow-level timeline of the current
-  Claude Code session next to `spec.md` / `plan.md` in the active feature
-  directory.
+1. **Extension `opsmill`** — three workflow commands under the `opsmill`
+   namespace:
+   - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
+     ADRs from completed spec directories into `dev/knowledge/`,
+     `dev/guidelines/`, `dev/adr/`.
+   - `/speckit.opsmill.retrospect` — run a session retrospective that surfaces
+     context-management gaps and routes them to `fix-now`, `open-pr`,
+     `github-issue`, or `local-only` dispositions.
+   - `/speckit.opsmill.summary` — produce a flow-level timeline of the current
+     Claude Code session next to `spec.md` / `plan.md` in the active feature
+     directory.
+
+2. **Preset [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)** —
+   overrides the native `/speckit.taskstoissues` command with a Jira-flavored
+   implementation that fans `tasks.md` out into Jira issues under a single
+   Epic (one issue per `## Phase N:` block) via the Atlassian MCP. Install
+   independently or alongside the extension.
 
 ## Requires
 
@@ -72,6 +80,21 @@ feature directory next to `spec.md` / `plan.md`.
 
 Supports `--since <commit|time>` to bound the summary window.
 
+### `/speckit.taskstoissues` (preset override)
+
+Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
+preset, not the extension. Install separately:
+
+```bash
+specify preset add taskstoissues-jira \
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
+  --subdir presets/taskstoissues-jira
+```
+
+See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
+for shared config (`jira.yml`), per-contributor overrides, and failure-mode
+details.
+
 ## Hooks (auto-fire during SDD)
 
 The extension registers two opt-in hooks at install time. Each prompts before
@@ -113,6 +136,15 @@ Command bodies in v1 are verbatim lifts from
 Two surgical line edits update self-references to the namespaced form
 (`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
 for the exact lines.
+
+The `taskstoissues-jira` preset (its command, `config/jira.yml`, and
+`templates/overrides/` scaffolding) is ported from the Infrahub preset
+introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208).
+Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`)
+and custom field IDs become placeholders driven by the shared
+`config/jira.yml`. Preset id renamed from `infrahub` to `taskstoissues-jira`
+so it reads as a portable Jira-flavored override of
+`speckit.taskstoissues` rather than a single-product preset.
 
 ## License
 
