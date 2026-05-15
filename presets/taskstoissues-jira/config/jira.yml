@@ -1,0 +1,13 @@
+---
+# Vendor defaults shipped with the taskstoissues-jira preset.
+# These are universal and rarely need to change.
+#
+# Consumer-specific values (cloud, default_project_key, custom_fields.*) live
+# in dev/jira.yml at the consumer repo root. The command merges this file
+# with dev/jira.yml at runtime; consumer values win per top-level key. See
+# templates/jira.example.yml for the consumer template.
+
+default_issue_type: Task
+
+labels_default:
+  - spec-kit
