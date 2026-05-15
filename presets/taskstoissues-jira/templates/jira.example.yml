@@ -1,17 +1,25 @@
 ---
-# Consumer-owned Jira configuration for the taskstoissues-jira preset.
+# Project-level Jira configuration for this repo.
 #
 # Copy this file to `dev/jira.yml` at your repo root, fill in real values,
-# and commit. The preset's vendor defaults (config/jira.yml) provide
-# `default_issue_type` and `labels_default`; everything below overrides or
-# extends them per top-level key at runtime.
+# and commit. It is the single source of truth for project-related Jira
+# parameters and may be read by any tool in the repo that needs them — the
+# taskstoissues-jira preset is one such consumer, but the file is not
+# preset-specific.
+#
+# Per-contributor values (assignee, team, extra labels) live separately —
+# for the taskstoissues-jira preset, under
+# .specify/presets/taskstoissues-jira/templates/overrides/<email-slug>.yml.
 
-# REQUIRED — Atlassian site hostname. Matched against
+# REQUIRED — Atlassian site URL. Matched against
 # getAccessibleAtlassianResources to resolve cloudId.
-cloud: your-tenant.atlassian.net
+cloud: https://opsmill.atlassian.net/
 
 # REQUIRED — Jira project key new issues are created in (e.g. IFC, INFP).
 default_project_key: PROJ
+
+# REQUIRED — issue type for created phase issues.
+default_issue_type: Task
 
 # REQUIRED — custom field IDs for your Jira instance. Retrieve with
 # mcp__claude_ai_Atlassian__getJiraIssueTypeMetaWithFields and paste below.
@@ -22,8 +30,7 @@ custom_fields:
   # sprint: customfield_XXXXX
   # story_points: customfield_XXXXX
 
-# Optional — uncomment to override vendor defaults shipped in the preset:
-# default_issue_type: Task
-# labels_default:
-#   - spec-kit
-#   - auto-generated
+# REQUIRED — labels applied to every created issue. Per-contributor extra
+# labels are merged from templates/overrides/<email-slug>.yml.
+labels_default:
+  - spec-kit

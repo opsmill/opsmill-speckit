@@ -20,27 +20,37 @@ specify preset add --dev ./presets/taskstoissues-jira
 
 After install, the preset's files live at `.specify/presets/taskstoissues-jira/` in the consumer repo, and `/speckit.taskstoissues` resolves to this preset's command body.
 
+## Configuration model
+
+Two tiers, no overlap between them:
+
+| File | Scope | Tracked? | Contains |
+|---|---|---|---|
+| `dev/jira.yml` (consumer repo root) | Project | Committed | All project-related parameters: `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `labels_default` |
+| `.specify/presets/taskstoissues-jira/templates/overrides/<email-slug>.yml` | Per-contributor | Gitignored | Personal values: `assignee.email`, `team.name`, extra `labels` |
+
+The preset itself ships no `config/` directory — every project parameter is consumer-owned. The preset only contributes the command body and the two templates (`jira.example.yml`, `overrides/example.yml`).
+
 ## One-time setup (per consumer repo)
 
-Consumer-specific Jira values live in **`dev/jira.yml`** at the repo root — not inside the preset's install dir — so `specify preset add taskstoissues-jira` updates never overwrite them.
-
-1. Copy the example template into place:
+1. Copy the project template into place:
 
    ```bash
    mkdir -p dev
    cp .specify/presets/taskstoissues-jira/templates/jira.example.yml dev/jira.yml
    ```
 
-2. Edit `dev/jira.yml`:
+2. Edit `dev/jira.yml` and fill in every REQUIRED field:
 
-   - `cloud` — your Atlassian site hostname (e.g. `acme.atlassian.net`). Matched against `getAccessibleAtlassianResources` to resolve `cloudId`.
-   - `default_project_key` — your repo's Jira project key (the shipped placeholder `PROJ` aborts on purpose).
+   - `cloud` — your Atlassian site URL (e.g. `https://opsmill.atlassian.net/`). Matched against `getAccessibleAtlassianResources` to resolve `cloudId`. The shipped example points at `https://opsmill.atlassian.net/`; replace if your tenant differs.
+   - `default_project_key` — your repo's Jira project key. The shipped placeholder `PROJ` aborts on purpose.
+   - `default_issue_type` — issue type for created phase issues (e.g. `Task`, `Story`).
    - `custom_fields.epic_link` + `custom_fields.team` — real custom field IDs for your Jira instance. Resolve with `mcp__claude_ai_Atlassian__getJiraIssueTypeMetaWithFields` and replace each `customfield_XXXXX` placeholder.
-   - Optionally override `default_issue_type` and `labels_default` (vendor defaults: `Task`, `[spec-kit]`).
+   - `labels_default` — labels stamped on every created issue (e.g. `[spec-kit]`).
 
 3. Commit `dev/jira.yml`. The whole repo shares it.
 
-The preset's own `config/jira.yml` (under `.specify/presets/taskstoissues-jira/`) ships only universal defaults (`default_issue_type`, `labels_default`) and is overwritten on every preset update — do not edit it.
+Re-running `specify preset add taskstoissues-jira` only touches `.specify/presets/taskstoissues-jira/`, so `dev/jira.yml` is never clobbered by preset updates.
 
 ## Per-contributor setup
 
@@ -56,4 +66,4 @@ The run stops at the first `createJiraIssue` / `createIssueLink` error and print
 
 ## Provenance
 
-Ported from the Infrahub preset introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208). Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`) and custom field IDs become placeholders driven by `config/jira.yml`.
+Ported from the Infrahub preset introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208). Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`) and custom field IDs become placeholders consumers fill in via `dev/jira.yml`.
