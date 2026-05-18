@@ -22,14 +22,9 @@ After install, the preset's files live at `.specify/presets/taskstoissues-jira/`
 
 ## Configuration model
 
-Two tiers, no overlap between them:
+One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Jira parameter the preset reads — `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `team.name` / `team.id`, `labels_default`. There is no per-contributor config: the assignee for every created issue is the user running the command, resolved from `git config user.email` via `lookupJiraAccountId`.
 
-| File | Scope | Tracked? | Contains |
-|---|---|---|---|
-| `dev/jira.yml` (consumer repo root) | Project | Committed | All project-related parameters: `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `labels_default` |
-| `.specify/presets/taskstoissues-jira/templates/overrides/<email-slug>.yml` | Per-contributor | Gitignored | Personal values: `assignee.email`, `team.name`, extra `labels` |
-
-The preset itself ships no `config/` directory — every project parameter is consumer-owned. The preset only contributes the command body and the two templates (`jira.example.yml`, `overrides/example.yml`).
+The preset itself ships no `config/` directory — every project parameter is consumer-owned. The preset only contributes the command body and the project template (`jira.example.yml`).
 
 ## One-time setup (per consumer repo)
 
@@ -46,15 +41,12 @@ The preset itself ships no `config/` directory — every project parameter is co
    - `default_project_key` — your repo's Jira project key. The shipped placeholder `PROJ` aborts on purpose.
    - `default_issue_type` — issue type for created phase issues (e.g. `Task`, `Story`).
    - `custom_fields.epic_link` + `custom_fields.team` — real custom field IDs for your Jira instance. Resolve with `mcp__claude_ai_Atlassian__getJiraIssueTypeMetaWithFields` and replace each `customfield_XXXXX` placeholder.
+   - `team.name` — the Atlassian Team for every created issue. Leave `team.id` empty on first run; the command resolves it from `name` and writes the UUID back.
    - `labels_default` — labels stamped on every created issue (e.g. `[spec-kit]`).
 
 3. Commit `dev/jira.yml`. The whole repo shares it.
 
 Re-running `specify preset add taskstoissues-jira` only touches `.specify/presets/taskstoissues-jira/`, so `dev/jira.yml` is never clobbered by preset updates.
-
-## Per-contributor setup
-
-Each contributor copies `.specify/presets/taskstoissues-jira/templates/overrides/example.yml` to `<your-email-slug>.yml` in the same directory (slug = `git config user.email` lowercased with every non-alphanumeric character replaced by `-`, e.g. `pol@opsmill.com` → `pol-opsmill-com.yml`) and fills in `assignee.email` plus `team.name`. Real override files are gitignored; only `example.yml` and the README are tracked.
 
 ## Epic resolution
 

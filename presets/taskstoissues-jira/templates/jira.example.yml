@@ -2,14 +2,13 @@
 # Project-level Jira configuration for this repo.
 #
 # Copy this file to `dev/jira.yml` at your repo root, fill in real values,
-# and commit. It is the single source of truth for project-related Jira
-# parameters and may be read by any tool in the repo that needs them — the
-# taskstoissues-jira preset is one such consumer, but the file is not
-# preset-specific.
+# and commit. It is the single source of truth for Jira parameters used by
+# the taskstoissues-jira preset (and by any other tool in the repo that
+# wants to read it).
 #
-# Per-contributor values (assignee, team, extra labels) live separately —
-# for the taskstoissues-jira preset, under
-# .specify/presets/taskstoissues-jira/templates/overrides/<email-slug>.yml.
+# The assignee for every created issue is the user running the command,
+# resolved from `git config user.email` via lookupJiraAccountId — no
+# per-user configuration file is needed.
 
 # REQUIRED — Atlassian site URL. Matched against
 # getAccessibleAtlassianResources to resolve cloudId.
@@ -30,7 +29,14 @@ custom_fields:
   # sprint: customfield_XXXXX
   # story_points: customfield_XXXXX
 
-# REQUIRED — labels applied to every created issue. Per-contributor extra
-# labels are merged from templates/overrides/<email-slug>.yml.
+# REQUIRED — Atlassian Team assigned to every created issue. `name` is the
+# human label; `id` is the bare UUID Jira's Teams picker requires. Leave
+# `id` empty on first run and the command will resolve it from `name` and
+# write it back here.
+team:
+  name: "Core"
+  id: ""
+
+# REQUIRED — labels applied to every created issue.
 labels_default:
   - spec-kit

@@ -51,7 +51,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` from repo root and parse `FEATURE_DIR` and `AVAILABLE_DOCS` list. All paths must be absolute. Extract the absolute path to `tasks.md` from `FEATURE_DIR`. For single quotes in args like "I'm Groot", use escape syntax: e.g `'I'\''m Groot'` (or double-quote if possible: `"I'm Groot"`).
 
 2. **Load project configuration**:
-   - Read the project-level Jira config from `dev/jira.yml` at the repo root. Required keys: `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.epic_link`, `custom_fields.team`, `labels_default`. Optional: additional `custom_fields.*` entries (e.g. `sprint`, `story_points`) for future use.
+   - Read the project-level Jira config from `dev/jira.yml` at the repo root. Required keys: `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.epic_link`, `custom_fields.team`, `team.name`, `labels_default`. Optional: `team.id` (cached UUID; auto-populated on first run), additional `custom_fields.*` entries (e.g. `sprint`, `story_points`) for future use.
 
      > [!CAUTION]
      > If `dev/jira.yml` does not exist, abort with: `> dev/jira.yml not found. Copy .specify/presets/taskstoissues-jira/templates/jira.example.yml to dev/jira.yml at the repo root, fill in every REQUIRED field, and commit before re-running.`
@@ -65,11 +65,6 @@ You **MUST** consider the user input before proceeding (if not empty).
      > [!CAUTION]
      > If `custom_fields.epic_link` or `custom_fields.team` equals `customfield_XXXXX`, abort with: `> dev/jira.yml still has placeholder custom field IDs. Resolve real IDs with mcp__claude_ai_Atlassian__getJiraIssueTypeMetaWithFields and update the file before re-running.` Do not invent IDs.
 
-   - Resolve the per-user override:
-     - Run `git config user.email` and slugify the result: lowercase, replace every non-alphanumeric character with `-` (e.g. `pol@opsmill.com` → `pol-opsmill-com`).
-     - Load `.specify/presets/taskstoissues-jira/templates/overrides/<slug>.yml`.
-     - If the file is missing, prompt: `> No override found for <slug>. Copy templates/overrides/example.yml to templates/overrides/<slug>.yml and fill in assignee.email + team before retrying.` Stop. Do not silently default.
-
 3. **Resolve Atlassian cloud id**: Call `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` once and match `cloud` from `dev/jira.yml` against the returned site URLs to obtain `cloudId`.
 
    > [!CAUTION]
@@ -81,12 +76,12 @@ You **MUST** consider the user input before proceeding (if not empty).
    3. If still no match, prompt: `> Provide the Jira Epic for these tasks (e.g. <default_project_key>-1234):` and wait for input. Validate the input matches the same `<default_project_key>-\d+` pattern (case-insensitive).
    4. Validate the resolved key by calling `mcp__claude_ai_Atlassian__getJiraIssue` and confirming `fields.issuetype.name == "Epic"`. Abort if it is not an Epic.
 
-5. **Resolve assignee account id**: From the per-user override read `assignee.email`. Call `mcp__claude_ai_Atlassian__lookupJiraAccountId` once with that email and `cloudId`. Cache the returned `accountId` for the duration of this run.
+5. **Resolve assignee account id**: Run `git config user.email` to obtain the current user's email. Call `mcp__claude_ai_Atlassian__lookupJiraAccountId` once with that email and `cloudId`. Cache the returned `accountId` for the duration of this run.
 
    > [!CAUTION]
-   > If `lookupJiraAccountId` returns no match, abort with: `> Assignee email <email> not found in Atlassian. Fix templates/overrides/<slug>.yml or use a valid Atlassian-linked email before re-running.` Do not create any issues.
+   > If `lookupJiraAccountId` returns no match, abort with: `> git user.email <email> not found in Atlassian. Set git config user.email to an Atlassian-linked address before re-running.` Do not create any issues.
 
-6. **Resolve team UUID**: From the per-user override read `team.id` and `team.name`. Jira's Atlassian Teams picker (`custom_fields.team`) only accepts a UUID — `team.name` is kept in the override file as a human label/comment, never sent to Jira.
+6. **Resolve team UUID**: From `dev/jira.yml` read `team.name` and `team.id`. Jira's Atlassian Teams picker (`custom_fields.team`) only accepts a UUID — `team.name` is kept in `dev/jira.yml` as a human label, never sent to Jira.
 
    - If `team.id` is set, use it as-is.
    - If `team.id` is empty or missing, resolve it once via Atlassian:
@@ -95,9 +90,9 @@ You **MUST** consider the user input before proceeding (if not empty).
         - `jql = 'project = <default_project_key> AND "Team[Team]" is not EMPTY ORDER BY created DESC'`
         - `fields = ["<custom_fields.team>"]`
         - `maxResults = 20`
-     2. Scan the returned issues' `<custom_fields.team>.name` for an exact case-insensitive match to the override's `team.name`. Extract the matching `<custom_fields.team>.id` (the UUID).
-     3. If a match is found, persist the UUID back into the per-user override file at `team.id` so future runs skip this lookup, and use that UUID for issue creation.
-     4. If no match is found, abort with: `> Team '<team.name>' not found in Atlassian (searched recent issues in <default_project_key>). Set team.id explicitly in templates/overrides/<slug>.yml before re-running.` Do not create any issues.
+     2. Scan the returned issues' `<custom_fields.team>.name` for an exact case-insensitive match to `team.name` from `dev/jira.yml`. Extract the matching `<custom_fields.team>.id` (the UUID).
+     3. If a match is found, persist the UUID back into `dev/jira.yml` at `team.id` so future runs skip this lookup, and use that UUID for issue creation.
+     4. If no match is found, abort with: `> Team '<team.name>' not found in Atlassian (searched recent issues in <default_project_key>). Set team.id explicitly in dev/jira.yml before re-running.` Do not create any issues.
 
    Pass the resolved value to `createJiraIssue` as a **bare UUID string** (e.g. `"<custom_fields.team>": "079e72e1-..."`). The object form `{"id": "<uuid>"}` and the name form (e.g. `"Backend Team"`) are both rejected by Jira's Teams picker — confirmed empirically: the bare-string form is the only one that works.
 
@@ -116,7 +111,16 @@ You **MUST** consider the user input before proceeding (if not empty).
    - `cloudId` from step 3.
    - `projectKey` from `default_project_key`.
    - `issueTypeName` from `default_issue_type`.
-   - `summary` = `"[<feature-id> P<phase_number>] <phase_title>"` where `<feature-id>` is the Jira reference parsed from the branch name (e.g. `INFP-556`, `IFC-2521`, or any `<KEY>-<NNNN>` token in the branch) — fall back to the Epic key from step 4 if no other reference is present. Example: `"[INFP-556 P3] US1 (P1 MVP) — Auto-create groups …"`.
+   - `summary` = the descriptive part of the `## Phase N: <title>` header only. The parser already strips `Phase N:` in step 7; on top of that, before sending the title to Jira **also strip spec-kit-internal taxonomy tags** from `<title>`:
+     - `US<N>` user-story tags — already captured as a `US<N>` Jira label (see `additional_fields.labels` below), so redundant in the title.
+     - `P<N>` priority/phase tags — already captured by the `Blocks` links created in step 9, so redundant too.
+     - Bracketed `[…]` decorations carrying the same data (`[P]`, `[US<N>]`).
+
+     **Keep** meaningful tier markers (`MVP`, `Beta`, `Alpha`, etc.) and the descriptive feature text. Drop surrounding parentheses if their only remaining content is itself dropped (e.g. `(P1 MVP)` → `MVP`, but `(Beta)` stays as `(Beta)`).
+   - Examples:
+     - header `## Phase 3: US1 (P1 MVP) — Auto-create groups` → summary `"MVP — Auto-create groups"`
+     - header `## Phase 1: US2 — Bulk import` → summary `"Bulk import"`
+     - header `## Phase 2: (Beta) Pagination on lists` → summary `"(Beta) Pagination on lists"` (no internal tags to strip)
    - `description` composed in this order:
      1. The `goal_block` (if any).
      2. The `independent_test_block` (if any).
@@ -126,7 +130,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      6. A trailing line `_Source:_ <relative path from repo root to tasks.md>`.
    - `additional_fields`:
      - `assignee`: `{ accountId: <resolved accountId> }`
-     - `labels`: union of `labels_default` (from `dev/jira.yml`) + `labels` (per-user override) + `US<story>` if the phase has a `story` value
+     - `labels`: `labels_default` (from `dev/jira.yml`) + `US<story>` if the phase has a `story` value
      - `custom_fields`:
        - `<custom_fields.epic_link>`: `<Epic key from step 4>` (e.g. `customfield_10014: "IFC-2521"`)
        - `<custom_fields.team>`: the bare UUID string resolved in step 6 (e.g. `customfield_10001: "079e72e1-..."`). Never send the object form `{"id": "<uuid>"}` and never send `team.name`.
