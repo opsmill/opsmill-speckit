@@ -76,10 +76,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    3. If still no match, prompt: `> Provide the Jira Epic for these tasks (e.g. <default_project_key>-1234):` and wait for input. Validate the input matches the same `<default_project_key>-\d+` pattern (case-insensitive).
    4. Validate the resolved key by calling `mcp__claude_ai_Atlassian__getJiraIssue` and confirming `fields.issuetype.name == "Epic"`. Abort if it is not an Epic.
 
-5. **Resolve assignee account id**: Run `git config user.email` to obtain the current user's email. Call `mcp__claude_ai_Atlassian__lookupJiraAccountId` once with that email and `cloudId`. Cache the returned `accountId` for the duration of this run.
+5. **Resolve assignee account id**: Call `mcp__claude_ai_Atlassian__atlassianUserInfo` once and read `account_id` from the response. That is the accountId of the user currently authenticated to the Atlassian MCP — the same user running the command — and becomes the assignee for every issue created in this run. Cache it for the duration of this run.
 
    > [!CAUTION]
-   > If `lookupJiraAccountId` returns no match, abort with: `> git user.email <email> not found in Atlassian. Set git config user.email to an Atlassian-linked address before re-running.` Do not create any issues.
+   > If `atlassianUserInfo` fails or returns no `account_id`, abort with: `> Atlassian MCP not authenticated. Authenticate the Atlassian MCP server before re-running.` Do not create any issues.
 
 6. **Resolve team UUID**: From `dev/jira.yml` read `team.name` and `team.id`. Jira's Atlassian Teams picker (`custom_fields.team`) only accepts a UUID — `team.name` is kept in `dev/jira.yml` as a human label, never sent to Jira.
 
@@ -111,16 +111,16 @@ You **MUST** consider the user input before proceeding (if not empty).
    - `cloudId` from step 3.
    - `projectKey` from `default_project_key`.
    - `issueTypeName` from `default_issue_type`.
-   - `summary` = the descriptive part of the `## Phase N: <title>` header only. The parser already strips `Phase N:` in step 7; on top of that, before sending the title to Jira **also strip spec-kit-internal taxonomy tags** from `<title>`:
-     - `US<N>` user-story tags — already captured as a `US<N>` Jira label (see `additional_fields.labels` below), so redundant in the title.
-     - `P<N>` priority/phase tags — already captured by the `Blocks` links created in step 9, so redundant too.
+   - `summary` = `phase_title` from step 7, with spec-kit-internal taxonomy tags stripped:
+     - `US<N>` tags — already captured as a `US<N>` label below.
+     - `P<N>` tags — already captured by the `Blocks` links in step 9.
      - Bracketed `[…]` decorations carrying the same data (`[P]`, `[US<N>]`).
 
      **Keep** meaningful tier markers (`MVP`, `Beta`, `Alpha`, etc.) and the descriptive feature text. Drop surrounding parentheses if their only remaining content is itself dropped (e.g. `(P1 MVP)` → `MVP`, but `(Beta)` stays as `(Beta)`).
    - Examples:
-     - header `## Phase 3: US1 (P1 MVP) — Auto-create groups` → summary `"MVP — Auto-create groups"`
-     - header `## Phase 1: US2 — Bulk import` → summary `"Bulk import"`
-     - header `## Phase 2: (Beta) Pagination on lists` → summary `"(Beta) Pagination on lists"` (no internal tags to strip)
+     - `Phase 3: US1 (P1 MVP) — Auto-create groups` → `"MVP — Auto-create groups"`
+     - `Phase 1: US2 — Bulk import` → `"Bulk import"`
+     - `Phase 2: (Beta) Pagination on lists` → `"(Beta) Pagination on lists"`
    - `description` composed in this order:
      1. The `goal_block` (if any).
      2. The `independent_test_block` (if any).

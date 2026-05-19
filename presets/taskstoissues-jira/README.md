@@ -22,7 +22,7 @@ After install, the preset's files live at `.specify/presets/taskstoissues-jira/`
 
 ## Configuration model
 
-One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Jira parameter the preset reads — `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `team.name` / `team.id`, `labels_default`. There is no per-contributor config: the assignee for every created issue is the user running the command, resolved from `git config user.email` via `lookupJiraAccountId`.
+One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Jira parameter the preset reads — `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `team.name` / `team.id`, `labels_default`. There is no per-contributor config: the assignee for every created issue is the user currently authenticated to the Atlassian MCP, resolved via `atlassianUserInfo`.
 
 The preset itself ships no `config/` directory — every project parameter is consumer-owned. The preset only contributes the command body and the project template (`jira.example.yml`).
 

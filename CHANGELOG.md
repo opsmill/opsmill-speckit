@@ -22,22 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     block in `tasks.md`, with `Blocks` links derived from `T<NNN>` mentions
     (transitively reduced). Talks to Atlassian through the Atlassian MCP.
   - `templates/jira.example.yml` — template the consumer copies to
-    `dev/jira.yml` at their repo root. Holds **all project-related
-    parameters**: `cloud`, `default_project_key`, `default_issue_type`,
-    `custom_fields.{epic_link,team}`, `labels_default` (all required).
-    `dev/jira.yml` is the single source of truth for project config; the
-    preset itself ships no `config/` directory. Since `dev/jira.yml`
-    lives outside the preset install dir, re-running `specify preset add
-    taskstoissues-jira` to update the preset never clobbers consumer
-    config.
-  - `templates/overrides/example.yml` + `templates/overrides/README.md` —
-    per-contributor override template keyed on a slug derived from
-    `git config user.email`. Real overrides are gitignored.
+    `dev/jira.yml` at their repo root. Holds every Jira parameter the
+    preset reads: `cloud`, `default_project_key`, `default_issue_type`,
+    `custom_fields.{epic_link,team}`, `team.{name,id}`, `labels_default`.
+    Since `dev/jira.yml` lives outside the preset install dir, re-running
+    `specify preset add taskstoissues-jira` to update the preset never
+    clobbers consumer config. The assignee is the user authenticated to
+    the Atlassian MCP (resolved via `atlassianUserInfo`) — no per-user
+    config file is needed.
   - `README.md` — preset-level install and setup docs.
-- `.gitignore` updated to exclude
-  `presets/taskstoissues-jira/templates/overrides/*.yml` with `example.yml`
-  allow-listed (replaces the previous root-level `templates/overrides/`
-  glob).
 
 ### Changed
 - The `taskstoissues` workflow is now shipped as a **preset override** of
@@ -53,9 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fires after `speckit.taskstoissues` runs, including when that command is
   served by the new preset.
 - Consumer install paths shift from `.specify/extensions/opsmill/` to
-  `.specify/presets/taskstoissues-jira/` for the Jira config and
-  per-contributor overrides. The command body has been updated to read
-  from the new location.
+  `.specify/presets/taskstoissues-jira/` for the preset's command body
+  and template. Project config lives at `dev/jira.yml` at the repo root.
 
 ### Provenance
 Ported from the Infrahub preset in

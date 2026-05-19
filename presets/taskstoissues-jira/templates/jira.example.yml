@@ -6,9 +6,9 @@
 # the taskstoissues-jira preset (and by any other tool in the repo that
 # wants to read it).
 #
-# The assignee for every created issue is the user running the command,
-# resolved from `git config user.email` via lookupJiraAccountId — no
-# per-user configuration file is needed.
+# The assignee for every created issue is the user currently
+# authenticated to the Atlassian MCP (resolved via atlassianUserInfo) —
+# no per-user configuration file is needed.
 
 # REQUIRED — Atlassian site URL. Matched against
 # getAccessibleAtlassianResources to resolve cloudId.

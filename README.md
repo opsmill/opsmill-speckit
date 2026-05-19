@@ -92,8 +92,7 @@ specify preset add taskstoissues-jira \
 ```
 
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
-for shared config (`jira.yml`), per-contributor overrides, and failure-mode
-details.
+for config (`dev/jira.yml`) and failure-mode details.
 
 ## Hooks (auto-fire during SDD)
 
@@ -137,14 +136,10 @@ Two surgical line edits update self-references to the namespaced form
 (`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
 for the exact lines.
 
-The `taskstoissues-jira` preset (its command, `config/jira.yml`, and
-`templates/overrides/` scaffolding) is ported from the Infrahub preset
-introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208).
-Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`)
-and custom field IDs become placeholders driven by the shared
-`config/jira.yml`. Preset id renamed from `infrahub` to `taskstoissues-jira`
-so it reads as a portable Jira-flavored override of
-`speckit.taskstoissues` rather than a single-product preset.
+The `taskstoissues-jira` preset is ported from the Infrahub preset in
+[opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208);
+see [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md#provenance)
+for the generalization details.
 
 ## License
 
