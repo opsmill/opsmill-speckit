@@ -41,7 +41,7 @@ Pinned release:
 
 ```bash
 specify extension add opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.0.0.zip
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.1.0.zip
 ```
 
 Local development install (from a working tree):
