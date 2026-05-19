@@ -1,2 +1,0 @@
-presets/taskstoissues-jira/templates/overrides/*.yml
-!presets/taskstoissues-jira/templates/overrides/example.yml
