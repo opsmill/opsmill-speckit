@@ -1,9 +1,8 @@
 # Changelog — extension `opsmill`
 
 Release history for the `opsmill` spec-kit extension at the root of this
-repository (`extension.yml`). Each artifact in this repo has its own
-version stream; the `taskstoissues-jira` preset tracks its own releases in
-[`presets/taskstoissues-jira/CHANGELOG.md`](presets/taskstoissues-jira/CHANGELOG.md).
+repository (`extension.yml`). The `presets/` collection has its own
+version stream — see [`presets/CHANGELOG.md`](presets/CHANGELOG.md).
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

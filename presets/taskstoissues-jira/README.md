@@ -62,4 +62,4 @@ Ported from the Infrahub preset introduced in [opsmill/infrahub#9208](https://gi
 
 ## Releases
 
-This preset versions independently of the `opsmill` extension at the repo root — see [`CHANGELOG.md`](CHANGELOG.md) for its release history.
+This preset is shipped as part of the [`presets/` collection](../) — see [`presets/CHANGELOG.md`](../CHANGELOG.md) for the collection's release history. The `version` field in `preset.yml` is the per-preset semver describing this preset's behavior; the bundle ships under the collection's release stream.
