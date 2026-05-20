@@ -59,3 +59,7 @@ The run stops at the first `createJiraIssue` / `createIssueLink` error and print
 ## Provenance
 
 Ported from the Infrahub preset introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208). Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`) and custom field IDs become placeholders consumers fill in via `dev/jira.yml`.
+
+## Releases
+
+This preset versions independently of the `opsmill` extension at the repo root — see [`CHANGELOG.md`](CHANGELOG.md) for its release history.

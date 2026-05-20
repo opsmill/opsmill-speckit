@@ -3,7 +3,7 @@ schema_version: "1.0"
 extension:
   id: "opsmill"
   name: "OpsMill Speckit Workflow"
-  version: "1.1.0"
+  version: "1.0.0"
   description: "OpsMill house spec-kit commands: knowledge extraction, session retrospective, and session summary."
   author: "opsmill"
   repository: "https://github.com/opsmill/opsmill-speckit"
