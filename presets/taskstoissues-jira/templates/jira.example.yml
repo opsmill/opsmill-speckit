@@ -2,13 +2,9 @@
 # Project-level Jira configuration for this repo.
 #
 # Copy this file to `dev/jira.yml` at your repo root, fill in real values,
-# and commit. It is the single source of truth for Jira parameters used by
-# the taskstoissues-jira preset (and by any other tool in the repo that
-# wants to read it).
-#
-# The assignee for every created issue is the user currently
-# authenticated to the Atlassian MCP (resolved via atlassianUserInfo) —
-# no per-user configuration file is needed.
+# and commit. Holds every Jira parameter the taskstoissues-jira preset
+# reads. The assignee for each created issue is the user authenticated
+# to the Atlassian MCP (resolved via atlassianUserInfo).
 
 # REQUIRED — Atlassian site URL. Matched against
 # getAccessibleAtlassianResources to resolve cloudId.

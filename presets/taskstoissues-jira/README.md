@@ -2,8 +2,6 @@
 
 A spec-kit preset that **overrides** the native `speckit.taskstoissues` command with a Jira-flavored implementation. One Jira issue is created per `## Phase N:` block in `tasks.md` (not per task line); inter-task `T<NNN>` mentions are resolved at phase granularity and emitted as `Blocks` issue links between phase issues (transitively reduced). All Atlassian traffic goes through the Atlassian MCP.
 
-This preset is published from the same repo as the [`opsmill` extension](../../README.md), but the two are independent: install the preset alone if you only need the Jira workflow, or install both for the full OpsMill SDD experience.
-
 ## Install
 
 ```bash
@@ -22,9 +20,7 @@ After install, the preset's files live at `.specify/presets/taskstoissues-jira/`
 
 ## Configuration model
 
-One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Jira parameter the preset reads — `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `team.name` / `team.id`, `labels_default`. There is no per-contributor config: the assignee for every created issue is the user currently authenticated to the Atlassian MCP, resolved via `atlassianUserInfo`.
-
-The preset itself ships no `config/` directory — every project parameter is consumer-owned. The preset only contributes the command body and the project template (`jira.example.yml`).
+One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Jira parameter the preset reads — `cloud`, `default_project_key`, `default_issue_type`, `custom_fields.*`, `team.name` / `team.id`, `labels_default`. The assignee for every created issue is the user authenticated to the Atlassian MCP, resolved via `atlassianUserInfo`.
 
 ## One-time setup (per consumer repo)
 
@@ -59,7 +55,3 @@ The run stops at the first `createJiraIssue` / `createIssueLink` error and print
 ## Provenance
 
 Ported from the Infrahub preset introduced in [opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208). Generalized for cross-repo reuse: the Infrahub-specific project key (`IFC`) and custom field IDs become placeholders consumers fill in via `dev/jira.yml`.
-
-## Releases
-
-This preset is shipped as part of the [`presets/` collection](../) — see [`presets/CHANGELOG.md`](../CHANGELOG.md) for the collection's release history. The `version` field in `preset.yml` is the per-preset semver describing this preset's behavior; the bundle ships under the collection's release stream.

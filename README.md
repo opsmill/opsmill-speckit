@@ -137,9 +137,7 @@ Two surgical line edits update self-references to the namespaced form
 for the exact lines.
 
 The `taskstoissues-jira` preset is ported from the Infrahub preset in
-[opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208);
-see [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md#provenance)
-for the generalization details.
+[opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208).
 
 ## License
 

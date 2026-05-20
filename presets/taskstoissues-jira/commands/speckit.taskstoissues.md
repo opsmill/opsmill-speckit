@@ -94,7 +94,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      3. If a match is found, persist the UUID back into `dev/jira.yml` at `team.id` so future runs skip this lookup, and use that UUID for issue creation.
      4. If no match is found, abort with: `> Team '<team.name>' not found in Atlassian (searched recent issues in <default_project_key>). Set team.id explicitly in dev/jira.yml before re-running.` Do not create any issues.
 
-   Pass the resolved value to `createJiraIssue` as a **bare UUID string** (e.g. `"<custom_fields.team>": "079e72e1-..."`). The object form `{"id": "<uuid>"}` and the name form (e.g. `"Backend Team"`) are both rejected by Jira's Teams picker — confirmed empirically: the bare-string form is the only one that works.
+   Pass the resolved value to `createJiraIssue` as a **bare UUID string** (e.g. `"<custom_fields.team>": "079e72e1-..."`). The object form `{"id": "<uuid>"}` and the name form (e.g. `"Backend Team"`) are both rejected by Jira's Teams picker.
 
 7. **Parse `tasks.md` by phase**: Walk the file top-to-bottom and split it into phases, where a phase starts at a `## Phase <N>: <title>` header and ends at the next `## Phase` header (or end of file). For each phase capture:
    - `phase_number` (`<N>`) and `phase_title` (`<title>`) from the header line
@@ -152,7 +152,7 @@ You **MUST** consider the user input before proceeding (if not empty).
       - `inwardIssue` = the blocker phase's Jira key (from the `phase_number -> issueKey` map)
       - `outwardIssue` = the blocked phase's Jira key
 
-   Phase headers and `[P]` markers remain sequencing hints only — they are **not** first-class dependencies and must not produce link edges. The link source is exclusively `T<NNN>` mentions, now resolved at phase granularity.
+   Phase headers and `[P]` markers remain sequencing hints only — they are **not** first-class dependencies and must not produce link edges. The link source is exclusively `T<NNN>` mentions.
 
 10. **Summary output**: Print a markdown table mapping `Phase` → `IssueKey` → `Summary`. Do not edit `tasks.md` automatically; the user can paste the mapping back if they want.
 

@@ -1,13 +1,6 @@
 # Changelog — preset collection
 
-Release history for the `presets/` directory in this repository, taken
-as a unit. Each preset inside still carries its own `version` field in
-its `preset.yml` (a per-preset semver describing that preset's behavior),
-but the release stream — tags, this CHANGELOG, what consumers see when
-they pull a versioned bundle — is owned by the collection.
-
-The `opsmill` extension at the repo root has its own version stream —
-see [`../CHANGELOG.md`](../CHANGELOG.md).
+Release history for the `presets/` directory, taken as a unit.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -36,7 +29,7 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
   (transitively reduced). Talks to Atlassian through the Atlassian MCP.
   Project config lives at `dev/jira.yml` in the consumer repo; the
   assignee is the user authenticated to the Atlassian MCP (resolved via
-  `atlassianUserInfo`), so no per-user config file is needed. See
+  `atlassianUserInfo`). See
   [`taskstoissues-jira/README.md`](taskstoissues-jira/README.md) for the
   full configuration model and behavior.
 
