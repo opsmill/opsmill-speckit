@@ -15,11 +15,12 @@ independently installable artifacts:
      Claude Code session next to `spec.md` / `plan.md` in the active feature
      directory.
 
-2. **Preset [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)** —
-   overrides the native `/speckit.taskstoissues` command with a Jira-flavored
-   implementation that fans `tasks.md` out into Jira issues under a single
-   Epic (one issue per `## Phase N:` block) via the Atlassian MCP. Install
-   independently or alongside the extension.
+2. **Presets** — drop-in overrides for native spec-kit commands. Each preset
+   is installed independently of the extension. Currently one ships:
+   - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
+     `/speckit.taskstoissues` with a Jira-flavored implementation that fans
+     `tasks.md` out into Jira issues under a single Epic (one issue per
+     `## Phase N:` block) via the Atlassian MCP.
 
 ## Requires
 
@@ -135,9 +136,6 @@ Command bodies in v1 are verbatim lifts from
 Two surgical line edits update self-references to the namespaced form
 (`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
 for the exact lines.
-
-The `taskstoissues-jira` preset is ported from the Infrahub preset in
-[opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208).
 
 ## License
 
