@@ -37,7 +37,7 @@ One file: `dev/jira.yml` at the consumer repo root, committed. It holds every Ji
    - `default_project_key` — your repo's Jira project key. The shipped placeholder `PROJ` aborts on purpose.
    - `default_issue_type` — issue type for created phase issues (e.g. `Task`, `Story`).
    - `custom_fields.epic_link` + `custom_fields.team` — real custom field IDs for your Jira instance. Resolve with `mcp__claude_ai_Atlassian__getJiraIssueTypeMetaWithFields` and replace each `customfield_XXXXX` placeholder.
-   - `team.name` — the Atlassian Team for every created issue. Leave `team.id` empty on first run; the command resolves it from `name` and writes the UUID back.
+   - `team.name` — the Atlassian Team for every created issue. Leave `team.id` empty on first run; the command resolves it from `name` and writes the UUID back. Expect a `dev/jira.yml` diff after the first run — commit it.
    - `labels_default` — labels stamped on every created issue (e.g. `[spec-kit]`).
 
 3. Commit `dev/jira.yml`. The whole repo shares it.
