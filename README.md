@@ -39,7 +39,7 @@ specify extension add opsmill \
 Local development install (from a working tree):
 
 ```bash
-specify extension add opsmill --dev /path/to/opsmill-speckit
+specify extension add --dev /path/to/opsmill-speckit
 ```
 
 ## Commands
