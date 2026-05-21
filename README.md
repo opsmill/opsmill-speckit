@@ -1,17 +1,26 @@
 # opsmill-speckit
 
-OpsMill house [spec-kit](https://github.com/github/spec-kit) extension. Ships
-three workflow commands under the `opsmill` namespace:
+OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
+independently installable artifacts:
 
-- `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
-  ADRs from completed spec directories into `dev/knowledge/`, `dev/guidelines/`,
-  `dev/adr/`.
-- `/speckit.opsmill.retrospect` — run a session retrospective that surfaces
-  context-management gaps and routes them to `fix-now`, `open-pr`,
-  `github-issue`, or `local-only` dispositions.
-- `/speckit.opsmill.summary` — produce a flow-level timeline of the current
-  Claude Code session next to `spec.md` / `plan.md` in the active feature
-  directory.
+1. **Extension `opsmill`** — three workflow commands under the `opsmill`
+   namespace:
+   - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
+     ADRs from completed spec directories into `dev/knowledge/`,
+     `dev/guidelines/`, `dev/adr/`.
+   - `/speckit.opsmill.retrospect` — run a session retrospective that surfaces
+     context-management gaps and routes them to `fix-now`, `open-pr`,
+     `github-issue`, or `local-only` dispositions.
+   - `/speckit.opsmill.summary` — produce a flow-level timeline of the current
+     Claude Code session next to `spec.md` / `plan.md` in the active feature
+     directory.
+
+2. **Presets** — drop-in overrides for native spec-kit commands. Each preset
+   is installed independently of the extension. Currently one ships:
+   - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
+     `/speckit.taskstoissues` with a Jira-flavored implementation that fans
+     `tasks.md` out into Jira issues under a single Epic (one issue per
+     `## Phase N:` block) via the Atlassian MCP.
 
 ## Requires
 
@@ -71,6 +80,20 @@ summary, chronological timeline, and outcomes — written into the active
 feature directory next to `spec.md` / `plan.md`.
 
 Supports `--since <commit|time>` to bound the summary window.
+
+### `/speckit.taskstoissues` (preset override)
+
+Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
+preset, not the extension. Install separately:
+
+```bash
+specify preset add taskstoissues-jira \
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
+  --subdir presets/taskstoissues-jira
+```
+
+See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
+for config (`dev/jira.yml`) and failure-mode details.
 
 ## Hooks (auto-fire during SDD)
 
