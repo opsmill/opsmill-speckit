@@ -14,6 +14,9 @@ independently installable artifacts:
    - `/speckit.opsmill.summary` — produce a flow-level timeline of the current
      Claude Code session next to `spec.md` / `plan.md` in the active feature
      directory.
+   - `/speckit.opsmill.qa` — produce a manual QA checklist (`qa-checklist.md`)
+     next to `spec.md` / `plan.md` so a human tester can verify the
+     just-implemented feature step-by-step.
 
 2. **Presets** — drop-in overrides for native spec-kit commands. Each preset
    is installed independently of the extension. Currently one ships:
@@ -95,6 +98,18 @@ specify preset add taskstoissues-jira \
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
 for config (`dev/jira.yml`) and failure-mode details.
 
+### `/speckit.opsmill.qa`
+
+Produces a manual QA checklist at `FEATURE_DIR/qa-checklist.md` that walks
+a human tester through verifying the just-implemented feature. Scope is
+**manual / user-facing only** — exact commands, URLs, UI paths, and the
+outputs to look for. Automated test suites are intentionally out of scope.
+
+The checklist is organized into Scope, Prerequisites, Setup, Test Scenarios,
+Edge Cases, Teardown, and Sign-off sections. Re-running on the same feature
+prompts before overwriting; pass `--force` to skip the prompt, or any other
+free-form text as scope guidance (e.g. `focus on the CLI surface`).
+
 ## Hooks (auto-fire during SDD)
 
 The extension registers two opt-in hooks at install time. Each prompts before
@@ -105,13 +120,13 @@ running (`optional: true`):
 | `after_implement` | `/speckit.opsmill.extract` | Promote durable knowledge / guidelines / ADRs out of the just-completed spec. |
 | `after_taskstoissues` | `/speckit.opsmill.summary` | Capture the session timeline at the moment of handoff to the issue tracker. |
 
-`/speckit.opsmill.retrospect` is not wired by default — it remains a manual
-command for interactive session reflection.
+`/speckit.opsmill.retrospect` and `/speckit.opsmill.qa` are not wired by
+default — they remain manual commands.
 
 The `extension.yml` `hooks:` schema accepts one command per event. To fire
 additional commands at the same event, append entries to your repo's
-`.specify/extensions.yml` registry. Example: also fire `summary` at
-`after_implement`:
+`.specify/extensions.yml` registry. Example: also fire `qa` at
+`after_implement` so the manual checklist is generated alongside extraction:
 
 ```yaml
 # .specify/extensions.yml (consumer-side, snippet)

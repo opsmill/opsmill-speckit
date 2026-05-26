@@ -26,6 +26,9 @@ provides:
     - name: "speckit.opsmill.summary"
       file: "commands/summary.md"
       description: "Produce a flow-level timeline of the current Claude Code session in the active feature directory."
+    - name: "speckit.opsmill.qa"
+      file: "commands/qa.md"
+      description: "Produce a manual QA checklist next to spec.md / plan.md that walks a human tester through verifying the implemented feature."
 
 hooks:
   after_implement:
@@ -44,4 +47,5 @@ tags:
   - "extract"
   - "retrospect"
   - "summary"
+  - "qa"
   - "workflow"
