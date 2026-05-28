@@ -37,11 +37,6 @@ provides:
       description: "Run the implementation + review tail in clean-context subagents from an existing tasks.md, then produce a final report."
 
 hooks:
-  after_implement:
-    command: "speckit.opsmill.extract"
-    optional: true
-    prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
-    description: "Promote durable content into dev/knowledge, dev/guidelines, dev/adr before the spec ages out."
   after_taskstoissues:
     command: "speckit.opsmill.summary"
     optional: true
