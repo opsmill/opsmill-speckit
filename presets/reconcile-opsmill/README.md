@@ -51,9 +51,8 @@ Optional scope flags: `--spec-only`, `--plan-only`, `--tasks-only`.
 
 The command body is derived from `commands/reconcile.md` in
 [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
-at commit `886f1dd` (identical to the copy vendored in
-`opsmill/styrmin/.specify/extensions/reconcile/`), lifted verbatim in
-preset v1.0.0 and adapted in v1.1.0 as listed above — the per-commit
-history on this directory documents each divergence. Upstream is
-MIT-licensed by Stanislav Deviatov; the license ships alongside in
+at commit `886f1dd`, lifted verbatim in preset v1.0.0 and adapted in
+v1.1.0 as listed above — the per-commit history on this directory
+documents each divergence from upstream. Upstream is MIT-licensed by
+Stanislav Deviatov; the license ships alongside in
 [`LICENSE`](LICENSE).

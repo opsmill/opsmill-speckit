@@ -50,9 +50,8 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Provenance
 `reconcile-opsmill` derives from the upstream `commands/reconcile.md`
-(stn1slv/spec-kit-reconcile @ `886f1dd`, identical to the copy vendored
-in `opsmill/styrmin/.specify/extensions/reconcile/`): preset v1.0.0 was
-the verbatim lift (baseline commit in git history), v1.1.0 the OpsMill
+(stn1slv/spec-kit-reconcile @ `886f1dd`): preset v1.0.0 was the
+verbatim lift (baseline commit in git history), v1.1.0 the OpsMill
 adaptations listed above. Upstream is MIT-licensed by Stanislav
 Deviatov; the license ships in `reconcile-opsmill/LICENSE`.
 
