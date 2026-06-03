@@ -52,9 +52,13 @@ If `tasks.md` does not exist, create it with a `## Phase 1: Remediation — Gap 
 
 Read `FEATURE_SPEC`, `IMPL_PLAN`, and `TASKS_FILE`.
 
-Also read `.specify/memory/constitution.md` if it exists. If found, extract MUST-level constraints and Architecture Standards. These are enforced in Step 1 — any remediation item that conflicts with a MUST principle is flagged as CRITICAL:
+Also read `.specify/memory/constitution.md` if it exists. If found, extract MUST-level constraints and Architecture Standards.
+
+Additionally load the OpsMill documentation system if present: MUST/MUST NOT rules from `dev/guidelines/*.md` and accepted decisions from `dev/adr/*.md` (this is where `/speckit.opsmill.extract` promotes durable constraints). Treat these as the same class of constraints as constitution MUSTs.
+
+All loaded constraints are enforced in Step 1 — any remediation item that conflicts with a MUST principle is flagged as CRITICAL:
 ```
-🔴 CONSTITUTION CONFLICT: [remediation item] conflicts with [principle]
+🔴 CONSTITUTION CONFLICT: [remediation item] conflicts with [principle / guideline / ADR]
 → This must be resolved in Step 2 clarification before edits proceed.
 ```
 
@@ -72,7 +76,7 @@ Analyze the user's **Gap Report** and normalize it into structured remediation i
 | **Test Coverage** | New wiring/navigation without verification | Add task for Integration Test |
 | **Logic/UX** | Success toasts missing, error handling gaps | Add tasks for implementation |
 
-For each normalized item, verify it does not conflict with any MUST-level constitution constraint loaded in Step 0.2. Flag any conflicts as CRITICAL and include them in Step 2 clarification.
+For each normalized item, verify it does not conflict with any MUST-level constraint loaded in Step 0.2 (constitution, `dev/guidelines/`, `dev/adr/`). Flag any conflicts as CRITICAL and include them in Step 2 clarification.
 
 ---
 
