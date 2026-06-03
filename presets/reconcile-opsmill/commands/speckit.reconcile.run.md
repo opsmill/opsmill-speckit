@@ -46,7 +46,7 @@ Derive absolute paths for:
 > ⚠️ Missing required files in `FEATURE_DIR`. Expected: spec.md, plan.md.
 > Run `/speckit.specify` and `/speckit.plan` first.
 
-If `tasks.md` does not exist, create it with a `## Remediation: Gaps` heading before appending tasks.
+If `tasks.md` does not exist, create it with a `## Phase 1: Remediation — Gap Report` heading before appending tasks.
 
 ### 0.2 Load Context
 
@@ -142,7 +142,7 @@ Where `[P]` is an optional priority flag — include it only for tasks that are 
 
 **Rules for Tasks**:
 1. **Increment IDs**: Find the highest `T###` in `tasks.md`. Start new tasks from `max + 1`. Never reuse or renumber.
-2. **Phase Placement**: Place new tasks under the relevant User Story phase (e.g., `## [US2] Settings Dashboard`). If no phase fits, create a `## Remediation: Gaps` section at the end.
+2. **Phase Placement**: Place new tasks under the relevant existing `## Phase <N>: <title>` block (e.g., `## Phase 3: User Story 1 - Settings Dashboard`). If no phase fits, append a new `## Phase <max+1>: Remediation — Gap Report` block at the end, where `<max>` is the highest existing phase number. Never introduce non-`## Phase` headings for tasks — downstream tooling (e.g., the `taskstoissues-jira` preset) only fans out `## Phase <N>:` blocks, so tasks under any other heading are invisible to it.
 3. **Exact Paths**: Every task MUST include an exact file path where the change is needed.
 4. **Mandatory Integration Test**: If you identified a **Wiring & Navigation** gap, you MUST add a task for an Integration Test to verify it.
 
