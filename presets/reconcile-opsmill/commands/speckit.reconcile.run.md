@@ -138,7 +138,7 @@ This is the most critical step. Create remediation tasks to close the drift.
 **Task Formatting**:
 `- [ ] T{NNN} [P] [{story}] {action verb} {what} in {exact/file/path.ext} [Sync: Gap Report]`
 
-Where `[P]` is an optional priority flag — include it only for tasks that are blocking or high-urgency. Omit for normal priority. The `[Sync: Gap Report]` tag is always appended for traceability.
+Where `[P]` keeps its core spec-kit meaning — the task can run in parallel (different files, no dependencies on other remediation tasks). Omit it whenever ordering matters; never use it as a priority or urgency marker. The `[Sync: Gap Report]` tag is always appended for traceability.
 
 **Rules for Tasks**:
 1. **Increment IDs**: Find the highest `T###` in `tasks.md`. Start new tasks from `max + 1`. Never reuse or renumber.
