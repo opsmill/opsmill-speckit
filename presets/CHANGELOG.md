@@ -5,6 +5,39 @@ Release history for the `presets/` directory, taken as a unit.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-03
+
+### Added
+- **`reconcile-opsmill`** (preset version `1.0.0`) — initial release.
+  Spec-kit preset (`schema_version: "1.0"`,
+  `requires.speckit_version: ">=0.8.0"`) that declares one command
+  override under `provides.templates`: `type: command`,
+  `name: speckit.reconcile.run`,
+  `file: commands/speckit.reconcile.run.md`,
+  `replaces: speckit.reconcile.run` (default `replace` strategy).
+  Installable independently via:
+
+  ```bash
+  specify preset add reconcile-opsmill \
+    --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
+    --subdir presets/reconcile-opsmill
+  ```
+
+  Overrides `speckit.reconcile.run` — the drift-fixing command of the
+  [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+  extension — so OpsMill can adapt the command body to its repo
+  structure without forking the upstream extension. The override only
+  registers when the `reconcile` extension is installed in the
+  consumer repo (`.specify/extensions/reconcile/`).
+
+### Provenance
+`reconcile-opsmill` v1.0.0 ships the upstream `commands/reconcile.md`
+**verbatim** (stn1slv/spec-kit-reconcile @ `886f1dd`, identical to the
+copy vendored in `opsmill/styrmin/.specify/extensions/reconcile/`).
+Upstream is MIT-licensed by Stanislav Deviatov; the license ships in
+`reconcile-opsmill/LICENSE`. OpsMill-specific adaptations land in later
+preset versions.
+
 ## [1.0.0] - 2026-05-20
 
 ### Added

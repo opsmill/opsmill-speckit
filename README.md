@@ -15,12 +15,20 @@ independently installable artifacts:
      Claude Code session next to `spec.md` / `plan.md` in the active feature
      directory.
 
-2. **Presets** — drop-in overrides for native spec-kit commands. Each preset
-   is installed independently of the extension. Currently one ships:
+2. **Presets** — drop-in overrides for spec-kit commands (native or
+   extension-provided). Each preset is installed independently of the
+   extension. Currently two ship:
    - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
      `/speckit.taskstoissues` with a Jira-flavored implementation that fans
      `tasks.md` out into Jira issues under a single Epic (one issue per
      `## Phase N:` block) via the Atlassian MCP.
+   - [`reconcile-opsmill`](presets/reconcile-opsmill/README.md) — overrides
+     `/speckit.reconcile.run` from the
+     [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+     extension with the OpsMill-maintained command body (v1.0.0 is a
+     verbatim baseline; OpsMill adaptations land in later versions).
+     Requires the `reconcile` extension to be installed in the consumer
+     repo.
 
 ## Requires
 
@@ -94,6 +102,25 @@ specify preset add taskstoissues-jira \
 
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
 for config (`dev/jira.yml`) and failure-mode details.
+
+### `/speckit.reconcile.run` (preset override)
+
+Provided by the [`reconcile-opsmill`](presets/reconcile-opsmill/README.md)
+preset, not the extension. Overrides the command of the
+[stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+extension, which must already be installed in the consumer repo:
+
+```bash
+specify extension add reconcile \
+  --from https://github.com/stn1slv/spec-kit-reconcile/archive/refs/heads/main.zip
+
+specify preset add reconcile-opsmill \
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
+  --subdir presets/reconcile-opsmill
+```
+
+See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
+for provenance and behavior.
 
 ## Hooks (auto-fire during SDD)
 
