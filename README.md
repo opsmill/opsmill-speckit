@@ -25,10 +25,12 @@ independently installable artifacts:
    - [`reconcile-opsmill`](presets/reconcile-opsmill/README.md) — overrides
      `/speckit.reconcile.run` from the
      [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
-     extension with the OpsMill-maintained command body (v1.0.0 is a
-     verbatim baseline; OpsMill adaptations land in later versions).
-     Requires the `reconcile` extension to be installed in the consumer
-     repo.
+     extension with an OpsMill-adapted command body: remediation tasks
+     stay inside `## Phase <N>:` blocks, `[P]` keeps its core
+     "parallelizable" meaning, the compliance gate reads
+     `dev/guidelines/` + `dev/adr/`, and the report is Jira- and
+     extraction-aware. Requires the `reconcile` extension to be
+     installed in the consumer repo.
 
 ## Requires
 

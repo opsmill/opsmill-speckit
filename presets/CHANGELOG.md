@@ -8,7 +8,7 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
 ## [1.1.0] - 2026-06-03
 
 ### Added
-- **`reconcile-opsmill`** (preset version `1.0.0`) — initial release.
+- **`reconcile-opsmill`** (preset version `1.1.0`) — initial release.
   Spec-kit preset (`schema_version: "1.0"`,
   `requires.speckit_version: ">=0.8.0"`) that declares one command
   override under `provides.templates`: `type: command`,
@@ -30,13 +30,31 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
   registers when the `reconcile` extension is installed in the
   consumer repo (`.specify/extensions/reconcile/`).
 
+  OpsMill adaptations over the upstream body (one commit each in the
+  preset's git history):
+  - Remediation tasks placed in `## Phase <N>:` blocks (new
+    `## Phase <max+1>: Remediation — Gap Report` when no phase fits)
+    instead of upstream's `## Remediation: Gaps` heading, which the
+    `taskstoissues-jira` fan-out would silently skip.
+  - `[P]` restored to the core spec-kit meaning ("can run in
+    parallel") instead of upstream's priority/urgency flag.
+  - Compliance gate additionally loads MUSTs from `dev/guidelines/`
+    and decisions from `dev/adr/` alongside
+    `.specify/memory/constitution.md`.
+  - Sync Impact Report's Next Step is Jira-aware when `dev/jira.yml`
+    exists, warning against wholesale `/speckit.taskstoissues`
+    re-runs.
+  - Reconciling a spec marked `EXTRACTED.md` (by
+    `/speckit.opsmill.extract`) flags promoted knowledge as possibly
+    stale.
+
 ### Provenance
-`reconcile-opsmill` v1.0.0 ships the upstream `commands/reconcile.md`
-**verbatim** (stn1slv/spec-kit-reconcile @ `886f1dd`, identical to the
-copy vendored in `opsmill/styrmin/.specify/extensions/reconcile/`).
-Upstream is MIT-licensed by Stanislav Deviatov; the license ships in
-`reconcile-opsmill/LICENSE`. OpsMill-specific adaptations land in later
-preset versions.
+`reconcile-opsmill` derives from the upstream `commands/reconcile.md`
+(stn1slv/spec-kit-reconcile @ `886f1dd`, identical to the copy vendored
+in `opsmill/styrmin/.specify/extensions/reconcile/`): preset v1.0.0 was
+the verbatim lift (baseline commit in git history), v1.1.0 the OpsMill
+adaptations listed above. Upstream is MIT-licensed by Stanislav
+Deviatov; the license ships in `reconcile-opsmill/LICENSE`.
 
 ## [1.0.0] - 2026-05-20
 
