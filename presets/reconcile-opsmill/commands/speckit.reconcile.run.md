@@ -178,6 +178,7 @@ Output the final report:
 ## Next Step
 [Recommend based on what changed:]
 - If remediation tasks were added → `/speckit.implement` to execute them
+- If remediation tasks were added and `dev/jira.yml` exists → the remediation tasks have no Jira issue yet. Do **not** blindly re-run `/speckit.taskstoissues` — it creates one issue per phase that still has unchecked tasks and is not idempotent, so a full re-run duplicates existing phase issues. Create the remediation phase's issue manually (or scope a run to that phase only).
 - If plan was significantly updated → `/speckit.plan` to review architecture
 - If only spec was updated → Review changes and proceed with implementation
 ```
