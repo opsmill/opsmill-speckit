@@ -118,6 +118,7 @@ running (`optional: true`):
 | Event | Command | Purpose |
 |---|---|---|
 | `after_implement` | `/speckit.opsmill.extract` | Promote durable knowledge / guidelines / ADRs out of the just-completed spec. |
+| `after_implement` | `/speckit.opsmill.qa` | Create QA testing checklist. |
 | `after_taskstoissues` | `/speckit.opsmill.summary` | Capture the session timeline at the moment of handoff to the issue tracker. |
 
 `/speckit.opsmill.retrospect` and `/speckit.opsmill.qa` are not wired by

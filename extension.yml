@@ -32,10 +32,14 @@ provides:
 
 hooks:
   after_implement:
-    command: "speckit.opsmill.extract"
-    optional: true
-    prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
-    description: "Promote durable content into dev/knowledge, dev/guidelines, dev/adr before the spec ages out."
+    - command: "speckit.opsmill.extract"
+      optional: true
+      prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
+      description: "Promote durable content into dev/knowledge, dev/guidelines, dev/adr before the spec ages out."
+    - command: "speckit.opsmill.qa"
+      optional: true
+      prompt: "Create QA testing checklist?"
+      description: "Create QA testing checklist."
   after_taskstoissues:
     command: "speckit.opsmill.summary"
     optional: true
