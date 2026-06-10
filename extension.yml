@@ -4,7 +4,7 @@ extension:
   id: "opsmill"
   name: "OpsMill Speckit Workflow"
   version: "1.0.0"
-  description: "OpsMill house spec-kit commands: knowledge extraction, session retrospective, and session summary."
+  description: "OpsMill house spec-kit commands: knowledge extraction, session retrospective, session summary, qa checklist"
   author: "opsmill"
   repository: "https://github.com/opsmill/opsmill-speckit"
   license: "Apache-2.0"

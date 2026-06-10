@@ -3,7 +3,7 @@
 OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
 independently installable artifacts:
 
-1. **Extension `opsmill`** — three workflow commands under the `opsmill`
+1. **Extension `opsmill`** — four workflow commands under the `opsmill`
    namespace:
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
@@ -124,9 +124,10 @@ running (`optional: true`):
 `/speckit.opsmill.retrospect` and `/speckit.opsmill.qa` are not wired by
 default — they remain manual commands.
 
-The `extension.yml` `hooks:` schema accepts one command per event. To fire
-additional commands at the same event, append entries to your repo's
-`.specify/extensions.yml` registry. Example: also fire `qa` at
+The `extension.yml` `hooks:` schema accepts multiple commands per event. 
+
+To fire additional commands at the same event, append entries to your repo's
+`.specify/extensions.yml` registry. Example: also fire `summary` at
 `after_implement` so the manual checklist is generated alongside extraction:
 
 ```yaml

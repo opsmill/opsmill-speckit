@@ -12,9 +12,7 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   `FEATURE_DIR/qa-checklist.md` that walks a human tester through
   verifying the just-implemented feature (scope, prerequisites, setup,
   test scenarios, edge cases, teardown, sign-off). Manual / user-facing
-  only; automated suites are out of scope. Not wired to a default hook —
-  consumers can opt in via their `.specify/extensions.yml` registry
-  (typically on `after_implement`).
+- optionally you can use the hook defined in `extension.yml` so the command auto-prompts after the implementation
 
 ## [1.0.0] - 2026-05-11
 
