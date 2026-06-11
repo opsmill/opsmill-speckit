@@ -121,6 +121,8 @@ Before making any edits, produce a brief impact map:
 
 **Constraint**: Operate strictly in place. Do not create branches, switch branches, or run feature-creation scripts. All edits target existing files in `FEATURE_DIR`.
 
+**Scope**: If a scope flag was parsed from `$ARGUMENTS`, restrict edits to that artifact and skip the others — `--spec-only` runs only 4.1, `--plan-only` only 4.2, `--tasks-only` only 4.3. Omit the skipped artifacts from the Impact Map (Step 3) and the Sync Impact Report (Step 5). With no flag, run all three subsections.
+
 ### 4.1 Update Specification (`spec.md`)
 - **Acceptance Criteria**: Amend existing criteria or add new ones to reflect the shipped reality.
 - **User Scenarios**: Add missing scenarios discovered during implementation (e.g., specific edge cases).
