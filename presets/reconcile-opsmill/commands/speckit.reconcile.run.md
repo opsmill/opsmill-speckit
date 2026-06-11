@@ -149,7 +149,7 @@ This is the most critical step. Create remediation tasks to close the drift.
 Where `[P]` keeps its core spec-kit meaning — the task can run in parallel (different files, no dependencies on other remediation tasks). Omit it whenever ordering matters; never use it as a priority or urgency marker. The `[Sync: Gap Report]` tag is always appended for traceability.
 
 **Rules for Tasks**:
-1. **Increment IDs**: Find the highest `T###` in `tasks.md`. Start new tasks from `max + 1`. Never reuse or renumber.
+1. **Increment IDs**: Find the highest `T###` in `tasks.md`. Start new tasks from `max + 1`. If `tasks.md` has no existing `T###` task (e.g. it was just created in Step 0.1), start at `T001`. Never reuse or renumber.
 2. **Phase Placement**: Place new tasks under the relevant existing `## Phase <N>: <title>` block (e.g., `## Phase 3: User Story 1 - Settings Dashboard`). If no phase fits, append a new `## Phase <max+1>: Remediation — Gap Report` block at the end, where `<max>` is the highest existing phase number. Never introduce non-`## Phase` headings for tasks — downstream tooling (e.g., the `taskstoissues-jira` preset) only fans out `## Phase <N>:` blocks, so tasks under any other heading are invisible to it.
 3. **Exact Paths**: Every task MUST include an exact file path where the change is needed.
 4. **Mandatory Integration Test**: If you identified a **Wiring & Navigation** gap, you MUST add a task for an Integration Test to verify it.
