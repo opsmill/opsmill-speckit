@@ -119,6 +119,8 @@ Before making any edits, produce a brief impact map:
 
 ## Step 4: Reconciliation (Surgical Edits)
 
+**Gate**: If any 🔴 CRITICAL conflict raised in Step 0.2 / Step 1 is still unresolved after Step 2, **STOP** — do not edit any artifact. Output the unresolved conflict(s) and instruct the user to amend the gap report or the conflicting constraint (constitution / `dev/guidelines/` / `dev/adr/`), then re-run.
+
 **Constraint**: Operate strictly in place. Do not create branches, switch branches, or run feature-creation scripts. All edits target existing files in `FEATURE_DIR`.
 
 **Scope**: If a scope flag was parsed from `$ARGUMENTS`, restrict edits to that artifact and skip the others — `--spec-only` runs only 4.1, `--plan-only` only 4.2, `--tasks-only` only 4.3. Omit the skipped artifacts from the Impact Map (Step 3) and the Sync Impact Report (Step 5). With no flag, run all three subsections.
