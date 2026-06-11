@@ -54,7 +54,7 @@ Read `FEATURE_SPEC`, `IMPL_PLAN`, and `TASKS_FILE`.
 
 Also read `.specify/memory/constitution.md` if it exists. If found, extract MUST-level constraints and Architecture Standards.
 
-Additionally load the OpsMill documentation system if present: MUST/MUST NOT rules from `dev/guidelines/*.md` and accepted decisions from `dev/adr/*.md` (this is where `/speckit.opsmill.extract` promotes durable constraints). Treat these as the same class of constraints as constitution MUSTs.
+Additionally load the OpsMill documentation system if present: MUST/MUST NOT rules from `dev/guidelines/*.md` and accepted decisions from `dev/adr/*.md`. Treat these as the same class of constraints as constitution MUSTs.
 
 All loaded constraints are enforced in Step 1 — any remediation item that conflicts with a MUST principle is flagged as CRITICAL:
 ```
@@ -129,7 +129,6 @@ Before making any edits, produce a brief impact map:
   ### Revision: Implementation Sync [YYYY-MM-DD]
   - Reason: [Summary of drift reconciled]
   ```
-- **Extraction staleness**: If `EXTRACTED.md` exists in `FEATURE_DIR` (the spec was already processed by `/speckit.opsmill.extract`), the content promoted to `dev/knowledge/`, `dev/guidelines/`, or `dev/adr/` may now be stale relative to the amended spec. Flag this in the Sync Impact Report.
 
 ### 4.2 Update Plan (`plan.md`)
 - **Routing & Navigation**: Add any missing routes, endpoints, or UI wiring details.
@@ -182,7 +181,6 @@ Output the final report:
 - If remediation tasks were added and `dev/jira.yml` exists → the remediation tasks have no Jira issue yet. Do **not** blindly re-run `/speckit.taskstoissues` — it creates one issue per phase that still has unchecked tasks and is not idempotent, so a full re-run duplicates existing phase issues. Create the remediation phase's issue manually (or scope a run to that phase only).
 - If plan was significantly updated → `/speckit.plan` to review architecture
 - If only spec was updated → Review changes and proceed with implementation
-- If `EXTRACTED.md` exists in `FEATURE_DIR` → previously extracted knowledge may be stale; consider re-running `/speckit.opsmill.extract` once remediation lands
 ```
 
 ---

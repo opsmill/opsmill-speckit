@@ -44,9 +44,6 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
   - Sync Impact Report's Next Step is Jira-aware when `dev/jira.yml`
     exists, warning against wholesale `/speckit.taskstoissues`
     re-runs.
-  - Reconciling a spec marked `EXTRACTED.md` (by
-    `/speckit.opsmill.extract`) flags promoted knowledge as possibly
-    stale.
 
 ### Provenance
 `reconcile-opsmill` derives from the upstream `commands/reconcile.md`

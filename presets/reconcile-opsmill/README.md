@@ -8,7 +8,6 @@ The preset exists so OpsMill can adapt the command body to its repo structure wi
 - **Core `[P]` semantics** — `[P]` means "can run in parallel" (spec-kit core), not upstream's priority/urgency flag.
 - **OpsMill compliance gate** — the CRITICAL-conflict check loads MUSTs from `dev/guidelines/` and decisions from `dev/adr/` in addition to `.specify/memory/constitution.md`.
 - **Jira-aware Next Step** — when `dev/jira.yml` exists, the Sync Impact Report notes the remediation tasks have no Jira issue yet and warns against wholesale re-runs of `/speckit.taskstoissues`.
-- **Extraction staleness** — reconciling a spec already marked by `/speckit.opsmill.extract` (`EXTRACTED.md` present) flags that promoted knowledge may be stale.
 
 ## Prerequisite: the `reconcile` extension
 
