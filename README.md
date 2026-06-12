@@ -114,7 +114,7 @@ extension, which must already be installed in the consumer repo:
 
 ```bash
 specify extension add reconcile \
-  --from https://github.com/stn1slv/spec-kit-reconcile/archive/refs/heads/main.zip
+  --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
 
 git clone https://github.com/opsmill/opsmill-speckit
 specify preset add --dev opsmill-speckit/presets/reconcile-opsmill

@@ -15,7 +15,7 @@ Preset overrides of extension commands only register when the target extension i
 
 ```bash
 specify extension add reconcile \
-  --from https://github.com/stn1slv/spec-kit-reconcile/archive/refs/heads/main.zip
+  --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
 ```
 
 If the extension is absent when the preset is added, the `speckit.reconcile.run` override is silently skipped, and nothing re-applies it when the extension arrives later — the preset reads as installed while the extension's own command body stays active. Install the extension first. To recover from a wrong-order install, re-register the preset once the extension is present:
