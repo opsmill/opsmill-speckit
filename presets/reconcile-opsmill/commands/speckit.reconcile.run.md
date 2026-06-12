@@ -144,9 +144,9 @@ Before making any edits, produce a brief impact map:
 This is the most critical step. Create remediation tasks to close the drift.
 
 **Task Formatting**:
-`- [ ] T{NNN} [P] [US<N>] {action verb} {what} in {exact/file/path.ext} [Sync: Gap Report]`
+`- [ ] T{NNN} [P] [US<N>] [Sync: Gap Report] {action verb} {what} in {exact/file/path.ext}`
 
-Where `[P]` keeps its core spec-kit meaning — the task can run in parallel (different files, no dependencies on other remediation tasks). Omit it whenever ordering matters; never use it as a priority or urgency marker. `[US<N>]` is the optional user-story tag (same convention as core spec-kit and the `taskstoissues-jira` fan-out) — include it only when the remediation maps to an existing user story, otherwise omit it. The `[Sync: Gap Report]` tag is always appended for traceability.
+Where `[P]` keeps its core spec-kit meaning — the task can run in parallel (different files, no dependencies on other remediation tasks). Omit it whenever ordering matters; never use it as a priority or urgency marker. `[US<N>]` is the optional user-story tag (same convention as core spec-kit and the `taskstoissues-jira` fan-out) — include it only when the remediation maps to an existing user story, otherwise omit it. The `[Sync: Gap Report]` tag is always included for traceability; keep it among the leading bracket tags as shown so the file path stays the trailing token (the `taskstoissues-jira` fan-out reads file paths from the end of the line).
 
 **Rules for Tasks**:
 1. **Increment IDs**: Find the highest `T###` in `tasks.md`. Start new tasks from `max + 1`. If `tasks.md` has no existing `T###` task (e.g. it was just created in Step 0.1), start at `T001`. Never reuse or renumber.
@@ -172,9 +172,9 @@ Output the final report:
 
 ## New Remediation Tasks
 [List the new tasks added in the Step 4.3 line format, e.g.]
-- `T045` [P] Add sidebar link in `src/components/Sidebar.tsx` [Sync: Gap Report]
-- `T046` Update router in `src/router/index.ts` [Sync: Gap Report]
-- `T047` Integration test: navigate to Settings in `tests/integration/navigation.test.ts` [Sync: Gap Report]
+- `T045` [P] [Sync: Gap Report] Add sidebar link in `src/components/Sidebar.tsx`
+- `T046` [Sync: Gap Report] Update router in `src/router/index.ts`
+- `T047` [Sync: Gap Report] Integration test: navigate to Settings in `tests/integration/navigation.test.ts`
 [T046 and T047 omit `[P]` — the router change and its integration test depend on the wiring above them.]
 
 ## Outstanding Decisions
