@@ -192,6 +192,7 @@ Output the final report:
 
 ## Done Criteria
 - Gap report parsed and categorized.
+- Remediation items checked against constitution / `dev/guidelines/` / `dev/adr/` MUSTs, with any CRITICAL conflict resolved before edits.
 - Feature's own `spec.md` and `plan.md` surgically updated.
 - `tasks.md` updated with incremented `T###` IDs and exact file paths.
 - Mandatory integration test task added for wiring gaps.
