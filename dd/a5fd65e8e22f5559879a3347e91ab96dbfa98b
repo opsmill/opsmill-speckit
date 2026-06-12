@@ -1,0 +1,22 @@
+commands/extract.md
+  s_a2176cfc9b041c::t_036c372a0923e6 131-132,160
+  s_a2176cfc9b041c::t_1321c1cb822ba3 188
+  s_a2176cfc9b041c::t_e7cc099ebdfc62 211,213
+  s_a2176cfc9b041c::t_9bc9ed6896658b 181
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "dda5fd65e8e22f5559879a3347e91ab96dbfa98b",
+  "prompts": {},
+  "sessions": {
+    "s_a2176cfc9b041c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7c829fe-24b1-4834-a286-1e595e784668",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Benoit Kohler <bkohler@bearchitek.com>"
+    }
+  }
+}
