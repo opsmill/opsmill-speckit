@@ -107,10 +107,11 @@ for config (`dev/jira.yml`) and failure-mode details.
 
 ### `/speckit.reconcile.run` (preset override)
 
-Provided by the [`reconcile-opsmill`](presets/reconcile-opsmill/README.md)
-preset, not the extension. Overrides the command of the
+The `/speckit.reconcile.run` command comes from the
 [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
-extension, which must already be installed in the consumer repo:
+extension; the [`reconcile-opsmill`](presets/reconcile-opsmill/README.md)
+preset overrides its body. Install the extension first (it must be
+present in the consumer repo), then the preset:
 
 ```bash
 specify extension add reconcile \
