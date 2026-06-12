@@ -1,8 +1,8 @@
 ---
 description: "Reconcile implementation drift by updating the feature's own spec, plan, and tasks"
 scripts:
-  sh: .specify/scripts/bash/check-prerequisites.sh --json --paths-only --include-tasks
-  ps: .specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly -IncludeTasks
+  sh: ../../scripts/bash/check-prerequisites.sh --json --paths-only --include-tasks
+  ps: ../../scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly -IncludeTasks
 ---
 Act as the **Chief Software Architect** and **Implementation Auditor**.
 A feature implementation has landed, but "artifact drift" has been discovered (e.g., missing routes, updated behavior, or unlinked UI). Your goal is to **reconcile** this drift by surgically amending the feature's own specification, plan, and task artifacts.
