@@ -116,9 +116,8 @@ extension, which must already be installed in the consumer repo:
 specify extension add reconcile \
   --from https://github.com/stn1slv/spec-kit-reconcile/archive/refs/heads/main.zip
 
-specify preset add reconcile-opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
-  --subdir presets/reconcile-opsmill
+git clone https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 
 See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)

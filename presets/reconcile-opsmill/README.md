@@ -23,12 +23,11 @@ If the extension is absent when the preset is added, the `speckit.reconcile.run`
 ## Install
 
 ```bash
-specify preset add reconcile-opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
-  --subdir presets/reconcile-opsmill
+git clone https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 
-Local development install (from a working tree):
+Or from an existing working tree:
 
 ```bash
 specify preset add --dev ./presets/reconcile-opsmill
