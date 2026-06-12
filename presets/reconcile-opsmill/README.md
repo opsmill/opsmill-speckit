@@ -18,7 +18,12 @@ specify extension add reconcile \
   --from https://github.com/stn1slv/spec-kit-reconcile/archive/refs/heads/main.zip
 ```
 
-If the extension is absent when the preset is added, the `speckit.reconcile.run` override is silently skipped.
+If the extension is absent when the preset is added, the `speckit.reconcile.run` override is silently skipped, and nothing re-applies it when the extension arrives later — the preset reads as installed while the extension's own command body stays active. Install the extension first. To recover from a wrong-order install, re-register the preset once the extension is present:
+
+```bash
+specify preset remove reconcile-opsmill
+specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
+```
 
 ## Install
 
