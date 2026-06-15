@@ -128,8 +128,8 @@ Use this format:
 
 | # | Source | Title | Target File |
 |---|--------|-------|-------------|
-| 1 | R1 | <title> | dev/adr/adr-NNN-<slug>.md |
-| 2 | R2 | <title> | dev/adr/adr-NNN-<slug>.md |
+| 1 | R1 | <title> | dev/adr/nnnn-<slug>.md |
+| 2 | R2 | <title> | dev/adr/nnnn-<slug>.md |
 
 #### Knowledge Updates (<count>)
 
@@ -157,7 +157,7 @@ Use this format:
 
 | # | Source | Title | Target File |
 |---|--------|-------|-------------|
-| 5 | R1 | <title> | dev/adr/adr-NNN-<slug>.md |
+| 5 | R1 | <title> | dev/adr/nnnn-<slug>.md |
 
 ...
 ```
@@ -178,14 +178,14 @@ Wait for user response before proceeding. Do NOT write any files until the user 
 
 ## Phase 3: Write Extractions
 
-For each approved item across all specs, write the content. ADR numbering is sequential across all specs (i.e., if spec 1 creates ADR-005 and ADR-006, spec 2 starts at ADR-007).
+For each approved item across all specs, write the content. ADR numbering is sequential across all specs (i.e., if spec 1 creates `0005` and `0006`, spec 2 starts at `0007`).
 
 ### ADRs
 
 Create new files in `dev/adr/` using this format:
 
 ```markdown
-# ADR-NNN: <Title>
+# N. <Title>
 
 **Status**: Accepted
 **Date**: <today's date YYYY-MM-DD>
@@ -208,9 +208,9 @@ Create new files in `dev/adr/` using this format:
 <What other options were evaluated and why they were rejected. Taken from the Alternatives considered field.>
 ```
 
-**Numbering**: Read existing files in `dev/adr/` to find the highest existing ADR number. Start new ADRs at the next sequential number. Zero-pad to 3 digits (e.g., `adr-001`, `adr-012`).
+**Numbering**: Read existing files in `dev/adr/` to find the highest existing ADR number. Start new ADRs at the next sequential number. Zero-pad the **filename** sequence to **4 digits** (e.g., `0001`, `0012`); the H1 heading uses the un-padded number (e.g., `# 1.`, `# 12.`).
 
-**File naming**: `adr-NNN-kebab-case-short-title.md` (e.g., `adr-001-schema-changes-without-migrations.md`).
+**File naming**: canonical MADR `nnnn-kebab-case-short-title.md` — 4-digit zero-padded sequence, lowercase kebab title, **no** `adr-`/`ADR-` prefix (e.g., `0001-schema-changes-without-migrations.md`).
 
 ### Knowledge updates
 
