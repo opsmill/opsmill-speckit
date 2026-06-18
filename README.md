@@ -28,8 +28,8 @@ independently installable artifacts:
      extension with an OpsMill-adapted command body: remediation tasks
      stay inside `## Phase <N>:` blocks, `[P]` keeps its core
      "parallelizable" meaning, the compliance gate reads
-     `dev/guidelines/` + `dev/adr/`, and the report is Jira- and
-     extraction-aware. Requires the `reconcile` extension to be
+     `dev/guidelines/` + `dev/adr/`, and the report is
+     Jira-aware. Requires the `reconcile` extension to be
      installed in the consumer repo.
 
 ## Requires
