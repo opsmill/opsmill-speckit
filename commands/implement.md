@@ -12,7 +12,7 @@ You **MUST** consider the user input before proceeding (if not empty). `$ARGUMEN
 
 ## Outline
 
-You are running the **implementation + review tail** of the speckit pipeline. This command picks up where `speckit.auto.prep` leaves off: it expects a feature directory under `specs/` containing `spec.md`, `plan.md`, and `tasks.md`. It does **not** generate or modify those documents — it executes them.
+You are running the **implementation + review tail** of the speckit pipeline. This command picks up where `speckit-opsmill-prep` leaves off: it expects a feature directory under `specs/` containing `spec.md`, `plan.md`, and `tasks.md`. It does **not** generate or modify those documents — it executes them.
 
 The implementation phase runs as a **loop** over chunks of `tasks.md`, with each chunk implemented inside a **clean-context subagent**. The orchestrator (you) never edits feature code directly — it dispatches, integrates, and reports.
 
@@ -22,15 +22,22 @@ After all chunks are complete, you run a single review pass across the whole cha
 
 ### Phase 0 — Preflight
 
+**Invocation context.** This command runs in one of two modes, and the stop-conditions below behave differently in each:
+
+- **Interactive** (a user invoked it directly). On a stop-condition you may pause and ask the user, as written.
+- **Autonomous parent** (invoked as Phase B of `speckit-opsmill-auto`). There is no user to resume a pause, so you **MUST NOT** pause or wait. Treat every stop-condition below as a hard abort: do **not** start the implement loop, and end your run with the `STATUS: BLOCKED` status line defined in **Completion** so the parent orchestrator can detect it and stop cleanly. Never proceed on a dirty tree or missing docs — doing so contaminates the `HEAD@start..HEAD@now` review diff. You can tell you are running under an autonomous parent because you were dispatched with a resolved spec-dir path and no interactive session.
+
 Before any work begins:
 
 1. Resolve the target spec directory (from `$ARGUMENTS` or the most recently modified `specs/<feature>/` with a `tasks.md`). Record the absolute path; you will pass this to every subagent.
-2. Verify `spec.md`, `plan.md`, and `tasks.md` all exist. If any are missing, abort with a clear error directing the user to run `speckit.auto.prep` first.
+2. Verify `spec.md`, `plan.md`, and `tasks.md` all exist. If any are missing: interactive → abort with a clear error directing the user to run `speckit.opsmill.prep` first; autonomous parent → abort with `STATUS: BLOCKED` (reason: missing prep artifacts).
 3. Read `tasks.md` end-to-end and identify the chunking boundaries (see "Chunking strategy" below). Build a numbered list of chunks with their task IDs.
-4. Verify the working tree is clean (or only contains expected prep artifacts). If it is dirty in unrelated ways, surface that and pause.
+4. Verify the working tree is clean (or only contains expected prep artifacts). If it is dirty in unrelated ways: interactive → surface that and pause; autonomous parent → abort with `STATUS: BLOCKED` (reason: unexpectedly dirty working tree). Do not attempt to stash or clean it yourself.
 5. Note the current `HEAD` commit — you will diff against it for the review and report.
 
 ### Phase 5 — Implement (looped, clean-context subagents)
+
+> **Phase numbering.** This file is the implementation tail; phases jump 0 → 5 → 6 → 7 on purpose. Phases 1–4 (Specify → Plan → Critique → Tasks) run in `speckit-opsmill-prep`. They are not missing or skipped here.
 
 Loop over the chunks identified in Phase 0. For **each chunk**:
 
@@ -50,7 +57,7 @@ Loop over the chunks identified in Phase 0. For **each chunk**:
 
 3. **Wait for the subagent to return**, then:
    - Pull its outcome lines into your running ledger of chunk results.
-   - Verify `tasks.md` checkboxes for that chunk are now `[X]` (re-read the file). If the subagent forgot to tick them, do it yourself and amend or add a fixup commit.
+   - Verify `tasks.md` checkboxes for that chunk are now `[X]` (re-read the file). If the subagent forgot to tick them, do it yourself and add a **fresh fixup commit** — do **not** `--amend` the subagent's commit. Its SHA is already recorded in the Phase 7 chunk ledger (§2) and may be referenced elsewhere; amending would rewrite it and make the final report cite a commit that no longer exists.
    - If the subagent reports ❌ blocked: do not auto-retry blindly. Decide between (i) re-dispatching with sharper instructions, (ii) splitting the chunk smaller and retrying, or (iii) recording the block and moving on. State which you chose and why.
    - Do **not** invoke `speckit-checkpoint-commit` again here — the subagent already committed. Only commit yourself if you applied a fixup (e.g. ticking missed checkboxes).
 
@@ -96,7 +103,7 @@ Write a markdown report to `<spec-dir>/opsmill-implement-report.md` and also pri
    If no tests were added or modified by the whole run, write `n/a — no new or modified tests in this implementation` instead of the table and state it explicitly so reviewers can verify the claim against the diff.
 5. **Review findings** — table of severity / file / one-line summary. Mark which were fixed inline and which were deferred.
 6. **Autonomous decisions** — any judgment calls the orchestrator made that the user might want to revisit (chunk splits, blocked-task handling, review-finding triage choices).
-7. **Suggested next steps** — e.g. "open a PR", "rerun `speckit.auto.implement` to retry the 2 blocked tasks", "address the deferred review findings".
+7. **Suggested next steps** — e.g. "open a PR", "rerun `speckit.opsmill.implement` to retry the 2 blocked tasks", "address the deferred review findings".
 
 **Blocking rule.** If §4 contains any `MISSING` row, the report header MUST mark the run `INCOMPLETE` and §7 MUST list "produce local-pass evidence for the listed tests" as the first next step. Do not declare the spec done while local-pass evidence is missing. (`deferred — local E2E not supported` rows do NOT trigger this rule, but they MUST be flagged in §6.)
 
@@ -104,4 +111,16 @@ Commit the report via `speckit-checkpoint-commit` as the final action.
 
 ## Completion
 
-Print a 4-6 line summary mirroring the report header + outcome counts so the user does not need to open the file to know the result. Then stop — do **not** open a PR, do **not** push, do **not** start a new feature. The user will take it from there.
+Print a 4-6 line summary mirroring the report header + outcome counts so the user does not need to open the file to know the result.
+
+**Machine-readable status line (REQUIRED).** The **final line** of your output MUST be exactly:
+
+`STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | REASON: <short reason or n/a>`
+
+- `STATUS: DONE` — all chunks completed and §4 local-pass evidence has no `MISSING` rows.
+- `STATUS: INCOMPLETE` — the run finished but the report is marked `INCOMPLETE` (e.g. missing local-pass evidence, or blocked tasks recorded).
+- `STATUS: BLOCKED` — a Phase 0 stop-condition aborted the run before the implement loop (missing prep artifacts, unexpectedly dirty tree). In this case no report is written; emit only the summary explaining why, then this line.
+
+The parent `speckit-opsmill-auto` parses this line; keep it as the literal last line, unwrapped.
+
+Then stop — do **not** open a PR, do **not** push, do **not** start a new feature. The user will take it from there.

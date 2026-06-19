@@ -3,8 +3,16 @@
 OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
 independently installable artifacts:
 
-1. **Extension `opsmill`** — three workflow commands under the `opsmill`
+1. **Extension `opsmill`** — six workflow commands under the `opsmill`
    namespace:
+   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
+     implement) autonomously, making all decisions without pausing. Stops
+     before extract.
+   - `/speckit.opsmill.prep` — run the preparation phases
+     (specify → plan → critique → tasks → spec/ask alignment check)
+     autonomously, stopping before implementation.
+   - `/speckit.opsmill.implement` — run the implementation + review tail from an
+     existing `tasks.md` in clean-context subagents, then emit a final report.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -128,16 +136,13 @@ hooks:
 
 ## Provenance
 
-Command bodies in v1 are verbatim lifts from
-`opsmill/styrmin/.specify/extensions/`:
+The `extract`, `retrospect`, and `summary` command bodies originated as lifts
+from an internal spec-kit extensions set, with two surgical line edits to
+update self-references to the namespaced form (`speckit.opsmill.<cmd>`); no
+other content changes.
 
-- `commands/extract.md` ← `extract/commands/extract.md`
-- `commands/retrospect.md` ← `retrospect/commands/retrospect.md`
-- `commands/summary.md` ← `summary/commands/run.md`
-
-Two surgical line edits update self-references to the namespaced form
-(`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
-for the exact lines.
+The `auto`, `prep`, and `implement` commands (added in 1.1.0) are authored
+from scratch in this repo — they are **not** lifts. See `CHANGELOG.md`.
 
 ## License
 

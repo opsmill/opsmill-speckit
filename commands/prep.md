@@ -74,6 +74,7 @@ Inspect `$ARGUMENTS`. The check is **only meaningful when the user provided a su
 If you decided to run the check:
 
 - For each URL in `$ARGUMENTS`, fetch its content using the harness's web fetch tool (in Claude Code: the `WebFetch` tool). Extract the requirement-bearing sections.
+- **If the harness has no web-fetch capability at all** (the tool is absent, not merely failing): you cannot resolve URL-only PRDs. Fall back to any inline PRD content in `$ARGUMENTS`. If the only source was a URL and there is no inline content, you cannot run a meaningful check — skip the rest of Phase 5, record `verdict: ⚠️ SKIPPED — source PRD unreachable (no web-fetch tool)` in the alignment report, and note it prominently in the Completion summary so the user knows alignment was not verified.
 - If a URL is gated (auth required, 404, network error), record that and fall back to whatever PRD content is in `$ARGUMENTS` itself. If neither is usable, skip the rest of Phase 5 with a note.
 - Concatenate the fetched / inline PRD content into a single "source PRD" view that you will compare against `spec.md`.
 
@@ -102,21 +103,27 @@ Commit the report via `speckit-checkpoint-commit`.
 
 #### 5e. Remediate significant drift (with retry budget)
 
-If the verdict is `🛑 SIGNIFICANT DRIFT`:
+This step is the **loop body**. Initialize a remediation counter to `0` before the first entry. Enter this step whenever the most recent 5d verdict is `🛑 SIGNIFICANT DRIFT`.
 
-1. **Update `spec.md`** by re-invoking the `speckit-specify` skill with an augmented input that includes:
+While the latest verdict is `🛑 SIGNIFICANT DRIFT`:
+
+1. **Check the budget first.** If the counter is already `2`, do **not** start another pass — go to "budget exhausted" below.
+2. **Increment the counter** (this pass now counts against the budget of 2).
+3. **Update `spec.md`** by re-invoking the `speckit-specify` skill with an augmented input that includes:
    - The original `$ARGUMENTS` content (and fetched PRD body if from URL).
    - An explicit list of the drift findings the spec must fix (missing requirements to add, off-scope items to remove, semantic changes to revert).
    The skill will update the existing `spec.md` in place.
-2. **Re-run Phase 2 (Plan)** to refresh `plan.md` against the corrected spec.
-3. **Re-run Phase 3 (Critique)** to validate the corrected spec/plan.
-4. **Re-run Phase 4 (Tasks)** to regenerate `tasks.md` against the corrected plan.
-5. **Re-run Phase 5c–5d** (do **not** re-resolve the source PRD — keep the same source) to confirm the drift is gone.
+4. **Re-run Phase 2 (Plan)** to refresh `plan.md` against the corrected spec.
+5. **Re-run Phase 3 (Critique)** to validate the corrected spec/plan.
+6. **Re-run Phase 4 (Tasks)** to regenerate `tasks.md` against the corrected plan.
+7. **Re-run Phase 5c–5d** (do **not** re-resolve the source PRD — keep the same source) to produce a fresh verdict, then return to the top of this loop and re-evaluate it.
 
-**Retry budget**: at most **2 remediation passes**. Track the count explicitly.
+**Loop exits:**
 
-- If the second remediation pass still reports `🛑 SIGNIFICANT DRIFT`, stop the loop. Update `alignment-check.md` with verdict `🛑 UNRESOLVED — manual review required`, list the remaining findings, and surface this prominently in the Completion summary. Do **not** silently proceed.
-- If a remediation pass produces `⚠️ MINOR DRIFT`, accept it and proceed.
+- **Aligned/minor** — a pass produces `✅ ALIGNED` or `⚠️ MINOR DRIFT`: accept it and proceed to Completion.
+- **Budget exhausted** — the counter reached `2` and the verdict is still `🛑 SIGNIFICANT DRIFT`: stop. Update `alignment-check.md` with verdict `🛑 UNRESOLVED — manual review required`, list the remaining findings, and surface this prominently in the Completion summary. Do **not** silently proceed.
+
+**Retry budget**: at most **2 remediation passes**, tracked by the counter above.
 
 Commit each remediation pass's artifacts as it runs (the inner skills handle their own commits; you only need to commit the updated `alignment-check.md` at the end of each pass).
 
@@ -129,5 +136,15 @@ After all five phases are complete, provide a brief summary:
 - Any critique findings that were addressed inline
 - **Alignment check status** — verdict, source PRD reference, number of remediation passes used (if any), and any unresolved drift
 - Any notable decisions you made autonomously
+
+**Machine-readable status line (REQUIRED).** The **final line** of your output MUST be exactly:
+
+`STATUS: <READY|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | REASON: <short reason or n/a>`
+
+- `STATUS: READY` — `tasks.md` was generated **and** the alignment outcome is `✅ ALIGNED`, `⚠️ MINOR DRIFT`, or `⚠️ SKIPPED`. Only in this state is the spec safe to implement.
+- `STATUS: BLOCKED` — alignment is `🛑 UNRESOLVED` after the retry budget, or any phase could not complete. This is the explicit failure signal the parent `speckit-opsmill-auto` checks before deciding whether to start implementation; do not dress an unresolved run up as a success.
+- `SPEC_DIR` MUST be the absolute path to the spec directory, so the parent can hand it to the implement phase without parsing prose.
+
+Keep this as the literal last line, unwrapped.
 
 Do **not** proceed to implementation, review, or extraction. The user will run those phases (or `speckit-opsmill-auto` from scratch) when ready.
