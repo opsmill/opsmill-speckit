@@ -3,8 +3,16 @@
 OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
 independently installable artifacts:
 
-1. **Extension `opsmill`** — three workflow commands under the `opsmill`
+1. **Extension `opsmill`** — six workflow commands under the `opsmill`
    namespace:
+   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
+     implement) autonomously, making all decisions without pausing. Stops
+     before extract.
+   - `/speckit.opsmill.prep` — run the preparation phases
+     (specify → plan → critique → tasks → spec/ask alignment check)
+     autonomously, stopping before implementation.
+   - `/speckit.opsmill.implement` — run the implementation + review tail from an
+     existing `tasks.md` in clean-context subagents, then emit a final report.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -97,45 +105,44 @@ for config (`dev/jira.yml`) and failure-mode details.
 
 ## Hooks (auto-fire during SDD)
 
-The extension registers two opt-in hooks at install time. Each prompts before
+The extension registers one opt-in hook at install time. It prompts before
 running (`optional: true`):
 
 | Event | Command | Purpose |
 |---|---|---|
-| `after_implement` | `/speckit.opsmill.extract` | Promote durable knowledge / guidelines / ADRs out of the just-completed spec. |
 | `after_taskstoissues` | `/speckit.opsmill.summary` | Capture the session timeline at the moment of handoff to the issue tracker. |
 
-`/speckit.opsmill.retrospect` is not wired by default — it remains a manual
-command for interactive session reflection.
+`/speckit.opsmill.extract` and `/speckit.opsmill.retrospect` are not wired by
+default — they remain manual commands. Extract is intentionally manual so the
+user can review the implementation report before promoting content into
+`dev/`.
 
 The `extension.yml` `hooks:` schema accepts one command per event. To fire
-additional commands at the same event, append entries to your repo's
-`.specify/extensions.yml` registry. Example: also fire `summary` at
-`after_implement`:
+additional commands at the same event (or to re-wire `extract` to fire
+automatically after implement if you prefer that workflow), append entries
+to your repo's `.specify/extensions.yml` registry. Example: fire `extract`
+at `after_implement` on the consumer side:
 
 ```yaml
 # .specify/extensions.yml (consumer-side, snippet)
 hooks:
   after_implement:
     - extension: opsmill
-      command: speckit.opsmill.summary
+      command: speckit.opsmill.extract
       enabled: true
       optional: true
-      prompt: "Produce a session summary in the feature directory?"
+      prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
 ```
 
 ## Provenance
 
-Command bodies in v1 are verbatim lifts from
-`opsmill/styrmin/.specify/extensions/`:
+The `extract`, `retrospect`, and `summary` command bodies originated as lifts
+from an internal spec-kit extensions set, with two surgical line edits to
+update self-references to the namespaced form (`speckit.opsmill.<cmd>`); no
+other content changes.
 
-- `commands/extract.md` ← `extract/commands/extract.md`
-- `commands/retrospect.md` ← `retrospect/commands/retrospect.md`
-- `commands/summary.md` ← `summary/commands/run.md`
-
-Two surgical line edits update self-references to the namespaced form
-(`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
-for the exact lines.
+The `auto`, `prep`, and `implement` commands (added in 1.1.0) are authored
+from scratch in this repo — they are **not** lifts. See `CHANGELOG.md`.
 
 ## License
 
