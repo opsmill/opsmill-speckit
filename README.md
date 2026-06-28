@@ -36,6 +36,14 @@ independently installable artifacts:
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
+- **Two companion extensions.** The `prep`, `auto`, and `implement` commands
+  invoke skills provided by separate extensions:
+  - [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
+    `speckit-critique-run` skill used by `prep` and `auto`.
+  - [`review`](https://github.com/ismaelJimenez/spec-kit-review) — provides the
+    `speckit-review-run` skill used by `implement` and `auto`.
+
+  Install both before using `prep`, `auto`, or `implement` (see below).
 
 ## Install
 
@@ -57,6 +65,19 @@ Local development install (from a working tree):
 
 ```bash
 specify extension add --dev /path/to/opsmill-speckit
+```
+
+### Companion extensions
+
+The `prep`, `auto`, and `implement` commands depend on two other extensions.
+Install both:
+
+```bash
+specify extension add review \
+  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.1.zip
+
+specify extension add critique \
+  --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
 ```
 
 ## Commands
