@@ -32,9 +32,8 @@ independently installable artifacts:
 
 ## Quick start (bootstrap)
 
-The fastest way to put a repository on OpsMill spec-kit standards — and to keep
-it there — is the [`bootstrap.sh`](bootstrap.sh) script. Run it **from inside
-the repository** you want to set up:
+[`bootstrap.sh`](bootstrap.sh) sets up — and updates — a repository to OpsMill
+spec-kit standards in one command. Run it **from inside the target repo**:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/bootstrap.sh -o bootstrap.sh
@@ -42,26 +41,14 @@ bash bootstrap.sh
 rm bootstrap.sh
 ```
 
-One command does everything below: it initializes spec-kit (if needed),
-installs the `opsmill` extension plus the `review` and `critique` companions
-from `main`, and applies the OpsMill layout — `.agents/` as the canonical
-directory with `.claude/{skills,commands,rules}` symlinked into it, and
-`AGENTS.md` as the canonical context file with `CLAUDE.md` symlinked to it.
+It initializes spec-kit, installs the `opsmill` extension plus the `review` and
+`critique` companions from `main`, and applies the OpsMill layout (`.agents/`
+canonical, with `.claude/*` and `CLAUDE.md` symlinked into it). It's idempotent
+and non-destructive — **re-run it to update** (extensions refresh from `main`;
+an existing `.specify/`, `CLAUDE.md`, or `AGENTS.md` is left untouched).
 
-**Re-run it any time to update.** The script is idempotent and non-destructive:
-
-- spec-kit init runs only when `.specify/` is absent;
-- the `opsmill`, `review`, and `critique` extensions are refreshed from `main`
-  on every run — so re-running is how you pull the latest OpsMill commands;
-- an existing `CLAUDE.md` / `AGENTS.md` is never modified;
-- correct symlinks and already-installed components are left untouched.
-
-**Requirements:** `git`, and either `specify` already on your `PATH` or
-[`uv`](https://docs.astral.sh/uv/) (the script installs spec-kit for you when
-`specify` is missing).
-
-Prefer to wire the pieces up by hand, or need finer control? The manual steps
-are documented below.
+Requires `git` and either `specify` on `PATH` or
+[`uv`](https://docs.astral.sh/uv/). Manual steps are documented below.
 
 ## Requires
 
