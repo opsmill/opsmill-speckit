@@ -3,8 +3,16 @@
 OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
 independently installable artifacts:
 
-1. **Extension `opsmill`** — four workflow commands under the `opsmill`
+1. **Extension `opsmill`** — seven workflow commands under the `opsmill`
    namespace:
+   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
+     implement) autonomously, making all decisions without pausing. Stops
+     before extract.
+   - `/speckit.opsmill.prep` — run the preparation phases
+     (specify → plan → critique → tasks → spec/ask alignment check)
+     autonomously, stopping before implementation.
+   - `/speckit.opsmill.implement` — run the implementation + review tail from an
+     existing `tasks.md` in clean-context subagents, then emit a final report.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -18,12 +26,22 @@ independently installable artifacts:
      next to `spec.md` / `plan.md` so a human tester can verify the
      just-implemented feature step-by-step.
 
-2. **Presets** — drop-in overrides for native spec-kit commands. Each preset
-   is installed independently of the extension. Currently one ships:
+2. **Presets** — drop-in overrides for spec-kit commands (native or
+   extension-provided). Each preset is installed independently of the
+   extension. Currently two ship:
    - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
      `/speckit.taskstoissues` with a Jira-flavored implementation that fans
      `tasks.md` out into Jira issues under a single Epic (one issue per
      `## Phase N:` block) via the Atlassian MCP.
+   - [`reconcile-opsmill`](presets/reconcile-opsmill/README.md) — overrides
+     `/speckit.reconcile.run` from the
+     [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+     extension with an OpsMill-adapted command body: remediation tasks
+     stay inside `## Phase <N>:` blocks, `[P]` keeps its core
+     "parallelizable" meaning, the compliance gate reads
+     `dev/guidelines/` + `dev/adr/`, and the report is
+     Jira-aware. Requires the `reconcile` extension to be
+     installed in the consumer repo.
 
 ## Requires
 
@@ -31,6 +49,14 @@ independently installable artifacts:
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
+- **Two companion extensions.** The `prep`, `auto`, and `implement` commands
+  invoke skills provided by separate extensions:
+  - [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
+    `speckit-critique-run` skill used by `prep` and `auto`.
+  - [`review`](https://github.com/ismaelJimenez/spec-kit-review) — provides the
+    `speckit-review-run` skill used by `implement` and `auto`.
+
+  Install both before using `prep`, `auto`, or `implement` (see below).
 
 ## Install
 
@@ -52,6 +78,19 @@ Local development install (from a working tree):
 
 ```bash
 specify extension add --dev /path/to/opsmill-speckit
+```
+
+### Companion extensions
+
+The `prep`, `auto`, and `implement` commands depend on two other extensions.
+Install both:
+
+```bash
+specify extension add review \
+  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.1.zip
+
+specify extension add critique \
+  --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
 ```
 
 ## Commands
@@ -84,6 +123,18 @@ feature directory next to `spec.md` / `plan.md`.
 
 Supports `--since <commit|time>` to bound the summary window.
 
+### `/speckit.opsmill.qa`
+
+Produces a manual QA checklist at `FEATURE_DIR/qa-checklist.md` that walks
+a human tester through verifying the just-implemented feature. Scope is
+**manual / user-facing only** — exact commands, URLs, UI paths, and the
+outputs to look for. Automated test suites are intentionally out of scope.
+
+The checklist is organized into Scope, Prerequisites, Setup, Test Scenarios,
+Edge Cases, Teardown, and Sign-off sections. Re-running on the same feature
+prompts before overwriting; pass `--force` to skip the prompt, or any other
+free-form text as scope guidance (e.g. `focus on the CLI surface`).
+
 ### `/speckit.taskstoissues` (preset override)
 
 Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
@@ -98,61 +149,70 @@ specify preset add taskstoissues-jira \
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
 for config (`dev/jira.yml`) and failure-mode details.
 
-### `/speckit.opsmill.qa`
+### `/speckit.reconcile.run` (preset override)
 
-Produces a manual QA checklist at `FEATURE_DIR/qa-checklist.md` that walks
-a human tester through verifying the just-implemented feature. Scope is
-**manual / user-facing only** — exact commands, URLs, UI paths, and the
-outputs to look for. Automated test suites are intentionally out of scope.
+The `/speckit.reconcile.run` command comes from the
+[stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+extension; the [`reconcile-opsmill`](presets/reconcile-opsmill/README.md)
+preset overrides its body. Install the extension first (it must be
+present in the consumer repo), then the preset:
 
-The checklist is organized into Scope, Prerequisites, Setup, Test Scenarios,
-Edge Cases, Teardown, and Sign-off sections. Re-running on the same feature
-prompts before overwriting; pass `--force` to skip the prompt, or any other
-free-form text as scope guidance (e.g. `focus on the CLI surface`).
+```bash
+specify extension add reconcile \
+  --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
+
+git clone https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
+```
+
+See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
+for provenance and behavior.
 
 ## Hooks (auto-fire during SDD)
 
-The extension registers two opt-in hooks at install time. Each prompts before
+The extension registers one opt-in hook at install time. It prompts before
 running (`optional: true`):
 
 | Event | Command | Purpose |
 |---|---|---|
-| `after_implement` | `/speckit.opsmill.extract` | Promote durable knowledge / guidelines / ADRs out of the just-completed spec. |
-| `after_implement` | `/speckit.opsmill.qa` | Create QA testing checklist. |
 | `after_taskstoissues` | `/speckit.opsmill.summary` | Capture the session timeline at the moment of handoff to the issue tracker. |
 
-`/speckit.opsmill.retrospect` and `/speckit.opsmill.qa` are not wired by
-default — they remain manual commands.
+`/speckit.opsmill.extract`, `/speckit.opsmill.retrospect`, and
+`/speckit.opsmill.qa` are not wired by default — they remain manual commands.
+Extract is intentionally manual so the user can review the implementation
+report before promoting content into `dev/`.
 
-The `extension.yml` `hooks:` schema accepts multiple commands per event. 
-
-To fire additional commands at the same event, append entries to your repo's
-`.specify/extensions.yml` registry. Example: also fire `summary` at
-`after_implement` so the manual checklist is generated alongside extraction:
+The `extension.yml` `hooks:` schema accepts one command per event. To fire
+additional commands at the same event (or to re-wire `extract` or `qa` to
+fire automatically after implement if you prefer that workflow), append
+entries to your repo's `.specify/extensions.yml` registry. Example: fire
+`extract` and `qa` at `after_implement` on the consumer side:
 
 ```yaml
 # .specify/extensions.yml (consumer-side, snippet)
 hooks:
   after_implement:
     - extension: opsmill
-      command: speckit.opsmill.summary
+      command: speckit.opsmill.extract
       enabled: true
       optional: true
-      prompt: "Produce a session summary in the feature directory?"
+      prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
+    - extension: opsmill
+      command: speckit.opsmill.qa
+      enabled: true
+      optional: true
+      prompt: "Create QA testing checklist?"
 ```
 
 ## Provenance
 
-Command bodies in v1 are verbatim lifts from
-`opsmill/styrmin/.specify/extensions/`:
+The `extract`, `retrospect`, and `summary` command bodies originated as lifts
+from an internal spec-kit extensions set, with two surgical line edits to
+update self-references to the namespaced form (`speckit.opsmill.<cmd>`); no
+other content changes.
 
-- `commands/extract.md` ← `extract/commands/extract.md`
-- `commands/retrospect.md` ← `retrospect/commands/retrospect.md`
-- `commands/summary.md` ← `summary/commands/run.md`
-
-Two surgical line edits update self-references to the namespaced form
-(`speckit.opsmill.<cmd>`); no other content changes. See `CHANGELOG.md`
-for the exact lines.
+The `auto`, `prep`, and `implement` commands (added in 1.1.0) are authored
+from scratch in this repo — they are **not** lifts. See `CHANGELOG.md`.
 
 ## License
 

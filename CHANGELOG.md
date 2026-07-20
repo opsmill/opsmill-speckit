@@ -12,7 +12,42 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   `FEATURE_DIR/qa-checklist.md` that walks a human tester through
   verifying the just-implemented feature (scope, prerequisites, setup,
   test scenarios, edge cases, teardown, sign-off). Manual / user-facing
-- optionally you can use the hook defined in `extension.yml` so the command auto-prompts after the implementation
+  only; automated test suites are intentionally out of scope. Not wired
+  to any hook by default — run it manually, or re-wire it at
+  `after_implement` on the consumer side (snippet in README).
+- `tags` gains `qa` for registry discoverability.
+
+### Changed
+- `extension.version` bumped `1.1.0` → `1.2.0`.
+- `extension.description` updated to cover the QA checklist command.
+
+## [1.1.0] - 2026-06-19
+
+### Added
+- Three autonomous-workflow commands (authored from scratch, not lifts):
+  - `speckit.opsmill.auto` — runs the full pipeline end-to-end (prep +
+    implement) autonomously, stopping before extract.
+  - `speckit.opsmill.prep` — runs the preparation phases
+    (specify → plan → critique → tasks → spec/ask alignment check),
+    stopping before implementation. Emits a machine-readable
+    `STATUS: <READY|BLOCKED> | SPEC_DIR: … | REASON: …` final line so
+    `auto` can detect failure and hand off the spec dir deterministically.
+  - `speckit.opsmill.implement` — runs the implementation + review tail from
+    an existing `tasks.md` in clean-context subagents, then emits a final
+    report and a `STATUS: <DONE|INCOMPLETE|BLOCKED> | …` final line. Phase 0
+    stop-conditions abort (rather than pause) when run under the autonomous
+    parent.
+- `tags` gains `auto`, `prep`, `implement`, `autonomous` for registry
+  discoverability.
+
+### Removed
+- The `after_implement` → `speckit.opsmill.extract` hook. Extract is now an
+  explicit manual follow-up the user runs after reviewing the implementation
+  report; `auto` deliberately stops before it.
+
+### Changed
+- `extension.version` bumped `1.0.0` → `1.1.0`.
+- `extension.description` updated to cover the autonomous end-to-end workflow.
 
 ## [1.0.0] - 2026-05-11
 

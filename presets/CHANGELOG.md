@@ -5,6 +5,52 @@ Release history for the `presets/` directory, taken as a unit.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-03
+
+### Added
+- **`reconcile-opsmill`** (preset version `1.1.0`) — first release, versioned to the preset collection (there is no released `1.0.0`).
+  Spec-kit preset (`schema_version: "1.0"`,
+  `requires.speckit_version: ">=0.8.0"`) that declares one command
+  override under `provides.templates`: `type: command`,
+  `name: speckit.reconcile.run`,
+  `file: commands/speckit.reconcile.run.md`,
+  `replaces: speckit.reconcile.run` (default `replace` strategy).
+  Installable independently via:
+
+  ```bash
+  git clone https://github.com/opsmill/opsmill-speckit
+  specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
+  ```
+
+  Overrides `speckit.reconcile.run` — the drift-fixing command of the
+  [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+  extension — so OpsMill can adapt the command body to its repo
+  structure without forking the upstream extension. The override only
+  registers when the `reconcile` extension is installed in the
+  consumer repo (`.specify/extensions/reconcile/`).
+
+  OpsMill adaptations over the upstream body (one commit each in the
+  preset's git history):
+  - Remediation tasks placed in `## Phase <N>:` blocks (new
+    `## Phase <max+1>: Remediation — Gap Report` when no phase fits)
+    instead of upstream's `## Remediation: Gaps` heading, which the
+    `taskstoissues-jira` fan-out would silently skip.
+  - `[P]` restored to the core spec-kit meaning ("can run in
+    parallel") instead of upstream's priority/urgency flag.
+  - Compliance gate additionally loads MUSTs from `dev/guidelines/`
+    and decisions from `dev/adr/` alongside
+    `.specify/memory/constitution.md`.
+  - Sync Impact Report's Next Step is Jira-aware when `dev/jira.yml`
+    exists, warning against wholesale `/speckit.taskstoissues`
+    re-runs.
+
+### Provenance
+`reconcile-opsmill` derives from the upstream `commands/reconcile.md`
+(stn1slv/spec-kit-reconcile @ `886f1dd`): the verbatim lift is this
+preset's baseline commit in git history, and the first released version
+is `1.1.0`, carrying the OpsMill adaptations listed above. Upstream is MIT-licensed by Stanislav
+Deviatov; the license ships in `reconcile-opsmill/LICENSE`.
+
 ## [1.0.0] - 2026-05-20
 
 ### Added
