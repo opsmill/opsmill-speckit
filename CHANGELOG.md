@@ -5,6 +5,16 @@ Release history for the `opsmill` spec-kit extension (`extension.yml`).
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- `speckit.opsmill.prep` Phase 2 (Plan) gains a research directive for
+  constrained third-party dependencies: when a dependency lacks a capability
+  the feature needs, the research phase must evaluate the dependency's
+  extension mechanism and upstream contribution before designing a
+  workaround, and record the decision in `research.md`. Applies to
+  `speckit.opsmill.auto` as well via its delegation to prep.
+
 ## [1.1.0] - 2026-06-19
 
 ### Added

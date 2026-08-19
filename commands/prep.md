@@ -35,6 +35,11 @@ Invoke the `speckit-specify` skill with the user's feature description (`$ARGUME
 Invoke the `speckit-plan` skill.
 
 - Complete the full plan workflow: research unknowns, generate `plan.md`, `research.md`, `data-model.md`, API contracts, `quickstart.md`.
+- **Research directive — constrained third-party dependencies.** If the feature depends on a third-party library or tool that does not support something the implementation needs, you MUST evaluate extending that dependency before designing around the gap:
+  - Check for a built-in extension mechanism (plugin system, hooks, middleware, custom providers, etc.) that could supply the missing capability.
+  - Consider an upstream contribution (patch, feature PR) when no extension mechanism fits.
+  - Record the evaluation in `research.md` as an explicit decision: the chosen approach, the rationale, and the extension/upstream alternatives that were rejected and why.
+  - Only fall back to working around the limitation in our own codebase when both routes are infeasible (e.g., unmaintained upstream, unacceptable timeline) — and record why. The point is to avoid overly complex implementations whose only cause is a dependency gap that the dependency itself was designed to let you fill.
 - Make all design decisions autonomously.
 - Commit the plan artifacts.
 
