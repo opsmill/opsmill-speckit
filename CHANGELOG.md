@@ -5,6 +5,22 @@ Release history for the `opsmill` spec-kit extension (`extension.yml`).
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `speckit.opsmill.qa` — produces a manual QA checklist at
+  `FEATURE_DIR/qa-checklist.md` that walks a human tester through
+  verifying the just-implemented feature (scope, prerequisites, setup,
+  test scenarios, edge cases, teardown, sign-off). Manual / user-facing
+  only; automated test suites are intentionally out of scope. Not wired
+  to any hook by default — run it manually, or re-wire it at
+  `after_implement` on the consumer side (snippet in README).
+- `tags` gains `qa` for registry discoverability.
+
+### Changed
+- `extension.version` bumped `1.1.0` → `1.2.0`.
+- `extension.description` updated to cover the QA checklist command.
+
 ## [1.1.0] - 2026-06-19
 
 ### Added

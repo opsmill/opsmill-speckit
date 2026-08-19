@@ -3,7 +3,7 @@
 OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
 independently installable artifacts:
 
-1. **Extension `opsmill`** — six workflow commands under the `opsmill`
+1. **Extension `opsmill`** — seven workflow commands under the `opsmill`
    namespace:
    - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
      implement) autonomously, making all decisions without pausing. Stops
@@ -22,6 +22,9 @@ independently installable artifacts:
    - `/speckit.opsmill.summary` — produce a flow-level timeline of the current
      Claude Code session next to `spec.md` / `plan.md` in the active feature
      directory.
+   - `/speckit.opsmill.qa` — produce a manual QA checklist (`qa-checklist.md`)
+     next to `spec.md` / `plan.md` so a human tester can verify the
+     just-implemented feature step-by-step.
 
 2. **Presets** — drop-in overrides for spec-kit commands (native or
    extension-provided). Each preset is installed independently of the
@@ -120,6 +123,18 @@ feature directory next to `spec.md` / `plan.md`.
 
 Supports `--since <commit|time>` to bound the summary window.
 
+### `/speckit.opsmill.qa`
+
+Produces a manual QA checklist at `FEATURE_DIR/qa-checklist.md` that walks
+a human tester through verifying the just-implemented feature. Scope is
+**manual / user-facing only** — exact commands, URLs, UI paths, and the
+outputs to look for. Automated test suites are intentionally out of scope.
+
+The checklist is organized into Scope, Prerequisites, Setup, Test Scenarios,
+Edge Cases, Teardown, and Sign-off sections. Re-running on the same feature
+prompts before overwriting; pass `--force` to skip the prompt, or any other
+free-form text as scope guidance (e.g. `focus on the CLI surface`).
+
 ### `/speckit.taskstoissues` (preset override)
 
 Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
@@ -162,16 +177,16 @@ running (`optional: true`):
 |---|---|---|
 | `after_taskstoissues` | `/speckit.opsmill.summary` | Capture the session timeline at the moment of handoff to the issue tracker. |
 
-`/speckit.opsmill.extract` and `/speckit.opsmill.retrospect` are not wired by
-default — they remain manual commands. Extract is intentionally manual so the
-user can review the implementation report before promoting content into
-`dev/`.
+`/speckit.opsmill.extract`, `/speckit.opsmill.retrospect`, and
+`/speckit.opsmill.qa` are not wired by default — they remain manual commands.
+Extract is intentionally manual so the user can review the implementation
+report before promoting content into `dev/`.
 
 The `extension.yml` `hooks:` schema accepts one command per event. To fire
-additional commands at the same event (or to re-wire `extract` to fire
-automatically after implement if you prefer that workflow), append entries
-to your repo's `.specify/extensions.yml` registry. Example: fire `extract`
-at `after_implement` on the consumer side:
+additional commands at the same event (or to re-wire `extract` or `qa` to
+fire automatically after implement if you prefer that workflow), append
+entries to your repo's `.specify/extensions.yml` registry. Example: fire
+`extract` and `qa` at `after_implement` on the consumer side:
 
 ```yaml
 # .specify/extensions.yml (consumer-side, snippet)
@@ -182,6 +197,11 @@ hooks:
       enabled: true
       optional: true
       prompt: "Extract knowledge, guidelines, and ADRs from the completed spec?"
+    - extension: opsmill
+      command: speckit.opsmill.qa
+      enabled: true
+      optional: true
+      prompt: "Create QA testing checklist?"
 ```
 
 ## Provenance
