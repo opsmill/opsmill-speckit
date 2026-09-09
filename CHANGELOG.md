@@ -16,10 +16,35 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   to any hook by default — run it manually, or re-wire it at
   `after_implement` on the consumer side (snippet in README).
 - `tags` gains `qa` for registry discoverability.
+- **Companion-extension fallbacks.** `implement` Phase 0 now resolves a
+  review provider (`REVIEW_MODE`), and `prep` Phase 3 resolves a critique
+  provider (`CRITIQUE_MODE`), by checking the filesystem for the installed
+  extension. When a companion extension is missing, the phase runs a reduced
+  built-in reviewer/critic in a clean-context subagent instead of silently
+  skipping the gate. Where no subagent dispatch exists either, the mode is
+  `none` and the run says so.
+- `implement` Phase 7 §5 now opens with a required `Review mode:` line, and
+  §6 must record any non-`extension` mode as an autonomous decision.
+- `implement` gains a review blocking rule: `REVIEW_MODE: none` marks the run
+  `INCOMPLETE` and makes "install the review extension and re-run the review"
+  the first next step, mirroring the existing local-pass-evidence rule.
+- `auto` Completion must now state the `CRITIQUE` and `REVIEW` coverage of the
+  run, leading with it when either gate was degraded.
+- README: companion extensions documented as soft dependencies, plus a
+  Troubleshooting section covering the upstream `review` install failure on
+  spec-kit 1.0.x (opsmill/opsmill-speckit#16) and the `REVIEW: none` state.
 
 ### Changed
 - `extension.version` bumped `1.1.0` → `1.2.0`.
 - `extension.description` updated to cover the QA checklist command.
+- **Status-line contract (breaking for external parsers).** `prep` now emits a
+  `CRITIQUE:` field and `implement` a `REVIEW:` field:
+  - `STATUS: <READY|BLOCKED> | SPEC_DIR: <path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <...>`
+  - `STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <path> | REVIEW: <extension|fallback|none|n/a> | REASON: <...>`
+
+  `auto` parses both. Anything outside this repo that reads these lines
+  positionally needs updating; the previously documented fields keep their
+  order and meaning.
 
 ## [1.1.0] - 2026-06-19
 

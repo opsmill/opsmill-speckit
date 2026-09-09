@@ -40,7 +40,23 @@ Invoke the `speckit-plan` skill.
 
 ### Phase 3 — Critique
 
-Invoke the `speckit-critique-run` skill.
+**Resolve the critique provider first.** Record the answer as `CRITIQUE_MODE`, the same way Phase 0 of `speckit-opsmill-implement` resolves `REVIEW_MODE`:
+
+| Check | `CRITIQUE_MODE` |
+|-------|-----------------|
+| The `critique` extension is installed — any of `.specify/extensions/critique/`, a `speckit.critique.run` entry in `.specify/extensions.yml`, or the harness skill directory (in Claude Code, `.claude/skills/speckit-critique-run/`) | `extension` |
+| Not installed, but you can dispatch clean-context subagents | `fallback` |
+| Not installed and no subagent dispatch is available | `none` |
+
+Resolve this by **checking the filesystem**, not by asking yourself whether you "have" the skill. A missing critique provider never blocks the run; it selects the branch below and it is reported on the status line.
+
+**3a — `CRITIQUE_MODE: extension`.** Invoke the `speckit-critique-run` skill.
+
+**3b — `CRITIQUE_MODE: fallback`.** Dispatch **one** clean-context subagent to run the same dual-lens critique. Brief it self-contained: absolute paths to `spec.md`, `plan.md`, and the resolved project context files, plus the required return shape — findings tagged 🎯 Must-Address, 💡 Recommendation, or 🤔 Question, and a verdict of `PROCEED` or `RETHINK`. Findings only; the subagent must not edit the spec or plan. Reduced depth compared with the extension, so flag it in Completion rather than presenting it as an equivalent pass.
+
+**3c — `CRITIQUE_MODE: none`.** Skip the critique and proceed to Phase 4 with no findings. Never describe the run as critiqued, and do not substitute an unstructured reread of `spec.md` for the critique.
+
+**Finding handling is identical in 3a and 3b:**
 
 - Run the dual-lens (Product + Engineering) critique against `spec.md` and `plan.md` before any tasks are generated.
 - For any 🎯 **Must-Address** findings, apply the suggested fixes to `spec.md` / `plan.md` autonomously and commit them — do not pause for user approval.
@@ -133,17 +149,18 @@ After all five phases are complete, provide a brief summary:
 
 - Feature name and spec directory
 - Number of tasks generated in `tasks.md`
-- Any critique findings that were addressed inline
+- Any critique findings that were addressed inline, and the `CRITIQUE_MODE` used. State a `fallback` or `none` mode plainly, with the install hint `specify extension add critique`
 - **Alignment check status** — verdict, source PRD reference, number of remediation passes used (if any), and any unresolved drift
 - Any notable decisions you made autonomously
 
 **Machine-readable status line (REQUIRED).** The **final line** of your output MUST be exactly:
 
-`STATUS: <READY|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | REASON: <short reason or n/a>`
+`STATUS: <READY|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <short reason or n/a>`
 
 - `STATUS: READY` — `tasks.md` was generated **and** the alignment outcome is `✅ ALIGNED`, `⚠️ MINOR DRIFT`, or `⚠️ SKIPPED`. Only in this state is the spec safe to implement.
 - `STATUS: BLOCKED` — alignment is `🛑 UNRESOLVED` after the retry budget, or any phase could not complete. This is the explicit failure signal the parent `speckit-opsmill-auto` checks before deciding whether to start implementation; do not dress an unresolved run up as a success.
 - `SPEC_DIR` MUST be the absolute path to the spec directory, so the parent can hand it to the implement phase without parsing prose.
+- `CRITIQUE` mirrors the `CRITIQUE_MODE` resolved in Phase 3, so the parent never has to infer critique coverage from prose. A degraded mode does **not** make the run `BLOCKED` — the spec is still implementable — but it MUST be reported. Use `CRITIQUE: n/a` only when the run aborted before Phase 3.
 
 Keep this as the literal last line, unwrapped.
 
