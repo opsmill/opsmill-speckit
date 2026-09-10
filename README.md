@@ -86,11 +86,21 @@ The `prep`, `auto`, and `implement` commands depend on two other extensions.
 Install both:
 
 ```bash
-specify extension add review \
-  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.1.zip
+# review — install from the fix branch. The upstream v1.0.1 tag fails to
+# install on spec-kit 1.0.x; see Troubleshooting below.
+git clone https://github.com/iddocohen/spec-kit-review -b fix/script-name-slugs
+specify extension add ./spec-kit-review --dev
 
 specify extension add critique \
   --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
+```
+
+Once upstream tags `v1.0.2`, the fork is no longer needed and `review` installs
+the same way as `critique`:
+
+```bash
+specify extension add review \
+  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.2.zip
 ```
 
 Neither is a hard dependency. `prep`, `auto`, and `implement` resolve their
@@ -98,10 +108,6 @@ quality gates at runtime and fall back to a reduced built-in critique or review
 subagent when a companion extension is missing. The fallback is always reported
 on the machine-readable status line (`CRITIQUE:` / `REVIEW:`) and in the run
 summary, so a degraded run is never silent. Install both for the full passes.
-
-> **Known issue: the `review` pin above fails on spec-kit 1.0.x** with
-> `Validation Error: Invalid script name 'detect-changed-files.sh'`. See
-> Troubleshooting below.
 
 ## Commands
 

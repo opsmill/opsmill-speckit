@@ -18,11 +18,17 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 - `tags` gains `qa` for registry discoverability.
 - **Companion-extension fallbacks.** `implement` Phase 0 now resolves a
   review provider (`REVIEW_MODE`), and `prep` Phase 3 resolves a critique
-  provider (`CRITIQUE_MODE`), by checking the filesystem for the installed
-  extension. When a companion extension is missing, the phase runs a reduced
-  built-in reviewer/critic in a clean-context subagent instead of silently
-  skipping the gate. Where no subagent dispatch exists either, the mode is
-  `none` and the run says so.
+  provider (`CRITIQUE_MODE`), by running a literal shell check for
+  `.specify/extensions/<id>/` and the installer's `.specify/extensions/.registry`
+  record — both installer-written and harness-independent. When a companion
+  extension is missing, the phase runs a reduced built-in reviewer/critic in a
+  clean-context subagent instead of silently skipping the gate. Where no
+  subagent dispatch exists either, the mode is `none` and the run says so.
+- A half-installed extension (files on disk, command never registered)
+  downgrades at invocation time: if `speckit-review-run` / `speckit-critique-run`
+  cannot be invoked, the phase drops to the fallback branch and reports the mode
+  that actually ran, rather than reporting `extension` for a pass that did not
+  happen.
 - `implement` Phase 7 §5 now opens with a required `Review mode:` line, and
   §6 must record any non-`extension` mode as an autonomous decision.
 - `implement` gains a review blocking rule: `REVIEW_MODE: none` marks the run
@@ -35,16 +41,20 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   spec-kit 1.0.x (opsmill/opsmill-speckit#16) and the `REVIEW: none` state.
 
 ### Changed
-- `extension.version` bumped `1.1.0` → `1.2.0`.
+- `extension.version` bumped `1.1.0` → `2.0.0`. Major, not minor: the
+  status-line change below moves an existing field.
 - `extension.description` updated to cover the QA checklist command.
-- **Status-line contract (breaking for external parsers).** `prep` now emits a
-  `CRITIQUE:` field and `implement` a `REVIEW:` field:
+- **BREAKING — status-line contract.** `prep` now emits a `CRITIQUE:` field and
+  `implement` a `REVIEW:` field, both inserted **before** `REASON:`:
   - `STATUS: <READY|BLOCKED> | SPEC_DIR: <path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <...>`
   - `STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <path> | REVIEW: <extension|fallback|none|n/a> | REASON: <...>`
 
-  `auto` parses both. Anything outside this repo that reads these lines
-  positionally needs updating; the previously documented fields keep their
-  order and meaning.
+  `STATUS` and `SPEC_DIR` keep their position and meaning; anything reading
+  `REASON` by field index breaks. Consumers were audited before the change:
+  `auto` in this extension (updated here) is the only parser. `infrahub-speckit`
+  does not read these lines at all — it ships three route commands and no status
+  parsing — and an org-wide code search for `SPEC_DIR` returns only vendored
+  copies of this extension, no independent readers.
 
 ## [1.1.0] - 2026-06-19
 

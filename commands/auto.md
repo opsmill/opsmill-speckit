@@ -39,7 +39,7 @@ Parse that line — do **not** infer success from the prose summary:
 
 - Take **`SPEC_DIR`** from this line as the spec directory to pass to Phase B. This is the deterministic hand-off; do not scrape the path out of free text.
 - If **`STATUS: BLOCKED`** (e.g., alignment never converged within its retry budget, or a phase could not complete), surface the reason to the user and **stop**. Do **not** proceed to implementation on a misaligned or incomplete spec.
-- Take **`CRITIQUE`** as the critique coverage of the run. Anything other than `extension` means the critique extension was unavailable and prep either ran a reduced fallback critique or none at all. This does **not** block Phase B — carry it into the final summary.
+- Take **`CRITIQUE`** as the critique coverage of the run. Anything other than `extension` or `n/a` means the critique extension was unavailable and prep either ran a reduced fallback critique or none at all. `n/a` is not a coverage claim — it means prep aborted before Phase 3 ever resolved a provider, so read it together with `STATUS`. This does **not** block Phase B — carry it into the final summary.
 - Only proceed to Phase B when `STATUS: READY`.
 
 ### Phase B — Implementation tail (delegated to `speckit-opsmill-implement`)
@@ -56,7 +56,7 @@ Invoke the `speckit-opsmill-implement` skill with the `SPEC_DIR` path from Phase
 - `STATUS: BLOCKED` — a Phase 0 stop-condition aborted before any implementation (no report written). Surface the reason in the final summary; do not retry from this orchestrator.
 - `STATUS: INCOMPLETE` — blocked tasks, missing local-pass evidence, or `REVIEW: none`; capture that for the final summary. The user decides whether to re-run.
 - `STATUS: DONE` — all chunks completed with evidence.
-- Take **`REVIEW`** as the review coverage of the run. A missing review extension does not stop the implement phase: `REVIEW: fallback` means the sub-skill ran a reduced built-in review, `REVIEW: none` means no review happened at all and forces `STATUS: INCOMPLETE`. Never treat a completed implement phase as a reviewed change set without checking this field.
+- Take **`REVIEW`** as the review coverage of the run. A missing review extension does not stop the implement phase: `REVIEW: fallback` means the sub-skill ran a reduced built-in review, `REVIEW: none` means no review happened at all and forces `STATUS: INCOMPLETE`. `REVIEW: n/a` is not a coverage claim either — it means implement aborted before Phase 0 resolved a provider, and it pairs with `STATUS: BLOCKED`. Never treat a completed implement phase as a reviewed change set without checking this field.
 
 In every case, do **not** retry from this orchestrator.
 
