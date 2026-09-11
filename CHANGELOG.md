@@ -41,20 +41,21 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   spec-kit 1.0.x (opsmill/opsmill-speckit#16) and the `REVIEW: none` state.
 
 ### Changed
-- `extension.version` bumped `1.1.0` → `2.0.0`. Major, not minor: the
-  status-line change below moves an existing field.
+- `extension.version` bumped `1.1.0` → `1.3.0`.
 - `extension.description` updated to cover the QA checklist command.
-- **BREAKING — status-line contract.** `prep` now emits a `CRITIQUE:` field and
-  `implement` a `REVIEW:` field, both inserted **before** `REASON:`:
+- **Status-line contract — field order changed.** `prep` now emits a `CRITIQUE:`
+  field and `implement` a `REVIEW:` field, both inserted **before** `REASON:`:
   - `STATUS: <READY|BLOCKED> | SPEC_DIR: <path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <...>`
   - `STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <path> | REVIEW: <extension|fallback|none|n/a> | REASON: <...>`
 
-  `STATUS` and `SPEC_DIR` keep their position and meaning; anything reading
-  `REASON` by field index breaks. Consumers were audited before the change:
-  `auto` in this extension (updated here) is the only parser. `infrahub-speckit`
+  `STATUS` and `SPEC_DIR` keep their position and meaning, but `REASON` moves
+  from the third field to the fourth, so anything reading it by index needs
+  updating. Shipped as a minor bump rather than a major one (review call on
+  opsmill/opsmill-speckit#17) because the consumer audit found no such reader:
+  `auto` in this extension (updated here) is the only parser, `infrahub-speckit`
   does not read these lines at all — it ships three route commands and no status
   parsing — and an org-wide code search for `SPEC_DIR` returns only vendored
-  copies of this extension, no independent readers.
+  copies of this extension.
 
 ## [1.1.0] - 2026-06-19
 
