@@ -86,12 +86,28 @@ The `prep`, `auto`, and `implement` commands depend on two other extensions.
 Install both:
 
 ```bash
-specify extension add review \
-  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.1.zip
+# review — install from the fix branch. The upstream v1.0.1 tag fails to
+# install on spec-kit 1.0.x; see Troubleshooting below.
+git clone https://github.com/iddocohen/spec-kit-review -b fix/script-name-slugs
+specify extension add ./spec-kit-review --dev
 
 specify extension add critique \
   --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
 ```
+
+Once upstream tags `v1.0.2`, the fork is no longer needed and `review` installs
+the same way as `critique`:
+
+```bash
+specify extension add review \
+  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.2.zip
+```
+
+Neither is a hard dependency. `prep`, `auto`, and `implement` resolve their
+quality gates at runtime and fall back to a reduced built-in critique or review
+subagent when a companion extension is missing. The fallback is always reported
+on the machine-readable status line (`CRITIQUE:` / `REVIEW:`) and in the run
+summary, so a degraded run is never silent. Install both for the full passes.
 
 ## Commands
 
@@ -203,6 +219,45 @@ hooks:
       optional: true
       prompt: "Create QA testing checklist?"
 ```
+
+## Troubleshooting
+
+### `Validation Error: Invalid script name 'detect-changed-files.sh'`
+
+Installing the `review` companion extension fails on spec-kit **1.0.x**:
+
+```
+$ specify extension add review --from .../spec-kit-review/archive/refs/tags/v1.0.1.zip
+Validation Error: Invalid script name 'detect-changed-files.sh': must be lowercase alphanumeric with hyphens only
+```
+
+Upstream bug in `ismaelJimenez/spec-kit-review`: its `extension.yml` puts the
+file name in `provides.scripts[].name`, which spec-kit 1.0.0 began validating
+against `^[a-z0-9-]+$` (the path belongs in `file:`). Validation aborts before
+any command or hook is registered, so `speckit-review-run` is absent rather
+than broken.
+
+Tracked in opsmill/opsmill-speckit#16. Upstream fix:
+[issue](https://github.com/ismaelJimenez/spec-kit-review/issues/4),
+[PR](https://github.com/ismaelJimenez/spec-kit-review/pull/5).
+
+Until upstream tags v1.0.2, install from the fix branch:
+
+```bash
+git clone https://github.com/iddocohen/spec-kit-review -b fix/script-name-slugs
+specify extension add ./spec-kit-review --dev
+```
+
+Without it, `implement` and `auto` run their fallback reviewer and report
+`REVIEW: fallback`. That is a safety net with less depth than the extension,
+not an equivalent pass.
+
+### `implement` or `auto` reports `REVIEW: none` / `CRITIQUE: none`
+
+The companion extension is missing **and** the harness offered no subagent
+dispatch, so no fallback was possible. `REVIEW: none` marks the run
+`INCOMPLETE` by design. Install the companion extension and re-run the gate
+over the same diff.
 
 ## Provenance
 
