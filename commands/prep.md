@@ -92,7 +92,7 @@ Inspect `$ARGUMENTS`. The check is **only meaningful when the user provided a su
 
 1. **`$ARGUMENTS` contains one or more URLs** (links to a Notion / Confluence / Google Doc / GitHub issue / Linear ticket / shared Markdown / PDF). Treat each URL as a likely PRD location. **Run the check.**
 2. **`$ARGUMENTS` itself looks like a detailed PRD** — multiple paragraphs with structure such as headings, bullet lists of requirements, explicit goals/non-goals, acceptance criteria, or > ~400 characters of substantive description. **Run the check.**
-3. **`$ARGUMENTS` is a one-line description, vague brief, or empty.** **Skip the check** — there is no source-of-truth document to align against. Write a short note in your final summary stating you skipped this phase and why, and proceed to Completion.
+3. **`$ARGUMENTS` is a one-line description, vague brief, or empty.** **Skip the check** — there is no source-of-truth document to align against. Write a short note in your final summary stating you skipped this phase and why, and proceed to Completion. If the input is short (under ~400 characters) but still carries substantive, requirement-bearing detail, use your judgment and treat it as a PRD under rule 2 rather than skipping.
 
 #### 5b. Resolve the source-of-truth PRD
 
