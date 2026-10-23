@@ -1,0 +1,26 @@
+presets/taskstoissues-jira/README.md
+  s_c27296f43eae57::t_d69b56bd04de16 7,10
+presets/reconcile-opsmill/README.md
+  s_c27296f43eae57::t_d69b56bd04de16 30,33
+  s_c27296f43eae57::t_e6c2036088ff32 25
+README.md
+  s_c27296f43eae57::t_d69b56bd04de16 158-159,162,180
+CHANGELOG.md
+  s_c27296f43eae57::t_95a032b30c2470 20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c64e0e3caefa3126510b694a857f9f86e8985b40",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
