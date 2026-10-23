@@ -1,0 +1,25 @@
+CHANGELOG.md
+  s_c27296f43eae57::t_e7077e890ed106 20
+README.md
+  s_c27296f43eae57::t_cfb28b97f68272 158,161-162,180-181
+presets/reconcile-opsmill/README.md
+  s_c27296f43eae57::t_1efd474da6a7bc 25,30-35,38
+presets/taskstoissues-jira/README.md
+  s_c27296f43eae57::t_5a3b021685793a 7-12,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e928757331b1ce17d7427c97c9f6ca94ea286d84",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
