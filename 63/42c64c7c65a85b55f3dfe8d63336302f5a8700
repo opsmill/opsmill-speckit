@@ -1,0 +1,35 @@
+README.md
+  s_c27296f43eae57::t_ded72c4d504d06 184
+  s_c27296f43eae57::t_e68221d70d9d4b 48-49,54-56,60-61,65,68-69,79-85
+  s_c27296f43eae57::t_c22cb4111afa37 158-159,162-163,166-167
+  s_c27296f43eae57::t_c9fcabdb0ab178 86
+  s_c27296f43eae57::t_916c6f913d2cfa 168
+presets/reconcile-opsmill/README.md
+  s_c27296f43eae57::t_67431ec9d87058 30-31,33,37
+  s_c27296f43eae57::t_2351fdc56ec832 38
+presets/taskstoissues-jira/README.md
+  s_c27296f43eae57::t_93779ae1bd507c 7-8,10-11,14
+  s_c27296f43eae57::t_14a5eea7d34c31 15
+CHANGELOG.md
+  s_c27296f43eae57::t_f32af82a0ebd8f 10-27
+.extensionignore
+  s_c27296f43eae57::t_eeed527e7e2d4a 1-2
+extension.yml
+  s_c27296f43eae57::t_09aecf5c8f3ec2 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6342c64c7c65a85b55f3dfe8d63336302f5a8700",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
