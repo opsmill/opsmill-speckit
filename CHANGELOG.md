@@ -7,15 +7,21 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-23
+
+### Fixed
+- `extract`: knowledge and guideline source markers now point to the archived
+  spec path (`specs/archive/<spec-name>`), matching the ADR rule, so references
+  no longer break after Phase 4 archives the spec. The Knowledge updates
+  section gains a "create a new one if needed" branch, for parity with
+  Guidelines updates (opsmill/opsmill-speckit#10).
+
+### Changed
+- `extension.version` bumped `1.3.0` → `1.3.1`.
+
+## [1.3.0] - 2026-09-12
+
 ### Added
-- `speckit.opsmill.qa` — produces a manual QA checklist at
-  `FEATURE_DIR/qa-checklist.md` that walks a human tester through
-  verifying the just-implemented feature (scope, prerequisites, setup,
-  test scenarios, edge cases, teardown, sign-off). Manual / user-facing
-  only; automated test suites are intentionally out of scope. Not wired
-  to any hook by default — run it manually, or re-wire it at
-  `after_implement` on the consumer side (snippet in README).
-- `tags` gains `qa` for registry discoverability.
 - **Companion-extension fallbacks.** `implement` Phase 0 now resolves a
   review provider (`REVIEW_MODE`), and `prep` Phase 3 resolves a critique
   provider (`CRITIQUE_MODE`), by running a literal shell check for
@@ -41,8 +47,7 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   spec-kit 1.0.x (opsmill/opsmill-speckit#16) and the `REVIEW: none` state.
 
 ### Changed
-- `extension.version` bumped `1.1.0` → `1.3.0`.
-- `extension.description` updated to cover the QA checklist command.
+- `extension.version` bumped `1.2.0` → `1.3.0` (opsmill/opsmill-speckit#17).
 - **Status-line contract — field order changed.** `prep` now emits a `CRITIQUE:`
   field and `implement` a `REVIEW:` field, both inserted **before** `REASON:`:
   - `STATUS: <READY|BLOCKED> | SPEC_DIR: <path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <...>`
@@ -56,6 +61,33 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   does not read these lines at all — it ships three route commands and no status
   parsing — and an org-wide code search for `SPEC_DIR` returns only vendored
   copies of this extension.
+
+## [1.2.0] - 2026-08-19
+
+### Added
+- `speckit.opsmill.qa` — produces a manual QA checklist at
+  `FEATURE_DIR/qa-checklist.md` that walks a human tester through
+  verifying the just-implemented feature (scope, prerequisites, setup,
+  test scenarios, edge cases, teardown, sign-off). Manual / user-facing
+  only; automated test suites are intentionally out of scope. Not wired
+  to any hook by default — run it manually, or re-wire it at
+  `after_implement` on the consumer side (snippet in README)
+  (opsmill/opsmill-speckit#5).
+- `tags` gains `qa` for registry discoverability.
+- README: the `critique` and `review` companion extensions, whose
+  `speckit-critique-run` and `speckit-review-run` skills `prep`, `auto` and
+  `implement` invoke, are listed under Requires with install commands
+  (opsmill/opsmill-speckit#9).
+
+### Changed
+- `extension.version` bumped `1.1.0` → `1.2.0`.
+- `extension.description` updated to cover the QA checklist command.
+
+### Fixed
+- `retrospect`: the issue-creation skill reference follows the skill renames
+  in opsmill-skills, first `create-issue` → `creating-issues`
+  (opsmill/opsmill-speckit#8), then `creating-issues` →
+  `opsmill-dev-creating-issues` (opsmill/opsmill-speckit#11).
 
 ## [1.1.0] - 2026-06-19
 
@@ -84,6 +116,10 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 ### Changed
 - `extension.version` bumped `1.0.0` → `1.1.0`.
 - `extension.description` updated to cover the autonomous end-to-end workflow.
+- `extract` writes ADRs in the MADR layout used by infrahub and infrahub-mcp:
+  file `nnnn-kebab-case-title.md` (4 digits, no `adr-` prefix, previously
+  `adr-NNN-title.md`) and heading `# N. <Title>` (previously `# ADR-NNN:`)
+  (opsmill/opsmill-speckit#6).
 
 ## [1.0.0] - 2026-05-11
 

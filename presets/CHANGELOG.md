@@ -5,7 +5,7 @@ Release history for the `presets/` directory, taken as a unit.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-06-03
+## [1.1.0] - 2026-07-09
 
 ### Added
 - **`reconcile-opsmill`** (preset version `1.1.0`) — first release, versioned to the preset collection (there is no released `1.0.0`).
