@@ -28,7 +28,8 @@ jobs:
         id: "speckit"
         run: |
           uv tool install specify-cli
-          echo "version=$(uv tool list | sed -n 's/^specify-cli v//p')" >> "$GITHUB_OUTPUT"
+          version=$(uv tool list | sed -n 's/^specify-cli v//p')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: "Install and check every component"
         run: uv run .github/scripts/check_install.py
 
@@ -56,3 +57,24 @@ jobs:
           else
             gh issue create --title "$title" --body "$body"
           fi
+
+  close:
+    name: "Close issues once the install passes"
+    needs: install-latest
+    if: success()
+    runs-on: "ubuntu-latest"
+    permissions:
+      issues: write
+    steps:
+      - name: "Close open install-failure issues"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.install-latest.outputs.version }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue list --state open --search 'in:title "Install fails on spec-kit"' --json number,title \
+            --jq '.[] | select(.title | startswith("Install fails on spec-kit")) | .number' |
+            while read -r number; do
+              gh issue close "$number" --comment "The weekly install check passes again on spec-kit ${VERSION}: ${RUN_URL}"
+            done

@@ -28,7 +28,10 @@ jobs:
         uses: "astral-sh/setup-uv@v7"
       - name: "Read the minimum spec-kit version"
         id: "speckit"
-        run: echo "version=$(uv run -q .github/scripts/check_install.py min-version)" >> "$GITHUB_OUTPUT"
+        # Assigned first so that a failure of the script fails the step.
+        run: |
+          version=$(uv run -q .github/scripts/check_install.py min-version)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       # Old spec-kit releases are not on PyPI, so install from the git tag.
       - name: "Install spec-kit ${{ steps.speckit.outputs.version }}"
         run: uv tool install "git+https://github.com/github/spec-kit@v${{ steps.speckit.outputs.version }}"

@@ -8,8 +8,9 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 ## [Unreleased]
 
 ### Changed
-- `.extensionignore` also excludes `.github/`, so the repo's CI files are not
-  copied into `.specify/extensions/opsmill/`.
+- `.extensionignore` also excludes `.github/` and `.git`, so the repo's CI files
+  and, for a `--dev` install from a clone, its git history are not copied into
+  `.specify/extensions/opsmill/`.
 
 ## [1.3.2] - 2026-10-23
 

@@ -8,13 +8,16 @@ Everything comes from the repo itself, so the check needs no update when a
 component, command, hook or preset is added:
 
 - the extension from ``extension.yml``, every preset from
-  ``presets/*/preset.yml``, and the bundle from ``bundle.yml`` once it exists;
+  ``presets/*/preset.yml``, and every bundle from ``bundle.yml`` or
+  ``bundles/*/bundle.yml`` once one exists;
 - the extensions our presets depend on from ``.github/install-check.yml``.
 
-The components are installed from the files git tracks (what a tag archive
-holds), then checked against the registries spec-kit writes in
-``.specify/``: versions, registered commands, hooks, and files that must stay
-out of the installed extension (``.extensionignore`` plus ``FOREIGN_PATHS``).
+The components are installed from the files git tracks, plus untracked files
+that git does not ignore so that local changes can be tested before a commit.
+They are then checked against what spec-kit writes in ``.specify/`` and in the
+agent's directory: versions, registered commands, hooks, the text of every
+command a preset replaces, and files that must stay out of the installed
+extension (``.extensionignore`` plus ``FOREIGN_PATHS``).
 
 Usage:
     uv run .github/scripts/check_install.py              # install and check
@@ -28,6 +31,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -51,26 +55,47 @@ def load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text()) or {}
 
 
+def bundle_manifests(root: Path) -> list[Path]:
+    return sorted(
+        p
+        for p in [root / "bundle.yml", *root.glob("bundles/*/bundle.yml")]
+        if p.exists()
+    )
+
+
 def manifests(root: Path) -> list[Path]:
-    paths = [root / "extension.yml", *sorted(root.glob("presets/*/preset.yml"))]
-    if (root / "bundle.yml").exists():
-        paths.append(root / "bundle.yml")
-    return paths
+    return [
+        root / "extension.yml",
+        *sorted(root.glob("presets/*/preset.yml")),
+        *bundle_manifests(root),
+    ]
 
 
 def min_speckit_version(root: Path) -> Version:
     """Highest lower bound declared in requires.speckit_version across manifests."""
     bounds = []
     for path in manifests(root):
-        spec = load_yaml(path).get("requires", {}).get("speckit_version")
+        spec = (load_yaml(path).get("requires") or {}).get("speckit_version")
         if not spec:
             continue
-        for item in SpecifierSet(spec):
-            if item.operator in (">=", "==", "~="):
-                bounds.append(Version(item.version))
+        lower = [
+            Version(i.version)
+            for i in SpecifierSet(spec)
+            if i.operator in (">=", "==", "~=")
+        ]
+        if not lower:
+            raise CheckFailed(
+                f"{path.relative_to(root)}: speckit_version {spec!r} has no inclusive lower bound; use >="
+            )
+        bounds += lower
     if not bounds:
         raise CheckFailed("no manifest declares requires.speckit_version")
     return max(bounds)
+
+
+def release_version(version: Version) -> str:
+    """X.Y.Z form, as spec-kit names its tags (>=1.2 means tag v1.2.0)."""
+    return ".".join(str(part) for part in (*version.release, 0, 0)[:3])
 
 
 class Project:
@@ -132,9 +157,9 @@ def tracked_copy(root: Path, dest: Path) -> Path:
 
 
 # Never part of the installed extension, whatever .extensionignore says: other
-# components' manifests (presets and bundles install on their own) and git or
-# CI files.
-FOREIGN_PATHS = ["preset.yml", "bundle.yml", ".git", ".github"]
+# components' manifests (presets and bundles install on their own) and CI files.
+# .git is left out: the copy installed here never has one.
+FOREIGN_PATHS = ["preset.yml", "bundle.yml", ".github"]
 
 
 def ignored_paths(ext_root: Path, installed: Path) -> list[str]:
@@ -184,6 +209,47 @@ def check_registered(
     print(
         f"ok  {component_id} v{version}: {len(expected_commands)} commands registered"
     )
+
+
+def agent_file(project: Project, command: str) -> Path:
+    """The file the agent reads for a command: a skill, or a command file."""
+    skill = command.replace(".", "-")
+    candidates = [p for p in project.path.rglob("SKILL.md") if p.parent.name == skill]
+    candidates += project.path.rglob(f"{command}.md")
+    candidates = [
+        p for p in candidates if ".specify" not in p.relative_to(project.path).parts
+    ]
+    if not candidates:
+        raise CheckFailed(f"{command}: no skill or command file for the agent")
+    return candidates[0]
+
+
+def check_override(
+    preset_id: str, command: str, source: Path, project: Project
+) -> None:
+    """The agent's file for a replaced command must hold the preset's text.
+
+    The registry lists the command under the preset even when the override did
+    not apply, for example when the extension that owns the command is
+    installed after the preset.
+    """
+    body = re.sub(r"\A---\n.*?\n---\n", "", source.read_text(), flags=re.DOTALL)
+    # Lines spec-kit may rewrite on install ($ARGUMENTS, {SCRIPT}...) are skipped.
+    probes = [
+        line.strip()
+        for line in body.splitlines()
+        if len(line.strip()) >= 30 and not re.search(r"[${}]", line)
+    ]
+    installed = {
+        line.strip() for line in agent_file(project, command).read_text().splitlines()
+    }
+    missing = [line for line in probes if line not in installed]
+    if missing:
+        raise CheckFailed(
+            f"{preset_id}: {command} does not use the preset's text ({len(missing)} of {len(probes)} lines missing, "
+            f"first: {missing[0][:80]!r})"
+        )
+    print(f"ok  {preset_id}: {command} uses the preset's text")
 
 
 def check_hooks(ext_id: str, manifest: dict, project: Project) -> None:
@@ -240,27 +306,41 @@ def check(specify: list[str]) -> None:
         for dep_id, url in (config.get("extensions") or {}).items():
             project.run("extension", "add", dep_id, "--from", url, confirm=True)
 
+        pending_overrides = []
         for path in sorted(src.glob("presets/*/preset.yml")):
             preset = load_yaml(path)
             project.run("preset", "add", "--dev", str(path.parent))
             templates = preset.get("provides", {}).get("templates", [])
-            commands = [t["name"] for t in templates if t.get("type") == "command"]
+            commands = [t for t in templates if t.get("type") == "command"]
+            preset_id = preset["preset"]["id"]
             check_registered(
-                "presets", preset["preset"]["id"], preset["preset"], commands, project
+                "presets",
+                preset_id,
+                preset["preset"],
+                [t["name"] for t in commands],
+                project,
             )
+            pending_overrides += [
+                (preset_id, t["name"], path.parent / t["file"]) for t in commands
+            ]
 
-        if (src / "bundle.yml").exists():
+        # Checked once everything is installed, so that a later install that
+        # overwrites a preset's command is caught.
+        for preset_id, command, source in pending_overrides:
+            check_override(preset_id, command, source, project)
+
+        for bundle in bundle_manifests(src):
             # The components above are installed from this commit, so the
             # bundle install checks that its pins match them.
-            project.run("bundle", "install", str(src / "bundle.yml"))
-            print("ok  bundle installed")
+            project.run("bundle", "install", str(bundle))
+            print(f"ok  bundle {bundle.relative_to(src)} installed")
 
 
 def main() -> int:
     command = sys.argv[1] if len(sys.argv) > 1 else "check"
     try:
         if command == "min-version":
-            print(min_speckit_version(REPO_ROOT))
+            print(release_version(min_speckit_version(REPO_ROOT)))
         elif command == "check":
             check(shlex.split(os.environ.get("SPECIFY", "specify")))
             print("OK: every component installed and registered")
