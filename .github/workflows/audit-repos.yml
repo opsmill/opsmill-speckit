@@ -1,0 +1,58 @@
+---
+# yamllint disable rule:truthy
+# Once a week, report which repos run an outdated Spec Kit or OpsMill stack, in
+# the run summary and in one issue of this repo that each run updates.
+name: "Audit repos"
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: "Audit Spec Kit across repos"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    env:
+      # Read access to every audited repo; GITHUB_TOKEN only reaches this repo.
+      AUDIT_TOKEN: ${{ secrets.SPECKIT_AUDIT_TOKEN }}
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v7"
+        with:
+          # The report compares repos with the latest vX.Y.Z tag.
+          fetch-depth: 0
+      - name: "Report a missing token"
+        if: env.AUDIT_TOKEN == ''
+        run: |
+          echo "Secret SPECKIT_AUDIT_TOKEN is not set: the audit cannot read other repos." >> "$GITHUB_STEP_SUMMARY"
+      - name: "Install UV"
+        if: env.AUDIT_TOKEN != ''
+        uses: "astral-sh/setup-uv@v7"
+      - name: "Audit the repos"
+        if: env.AUDIT_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ env.AUDIT_TOKEN }}
+        run: |
+          uv run -q .github/scripts/audit_repos.py > report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: "Update the report issue"
+        if: env.AUDIT_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          title="Spec Kit status across repos"
+          number=$(gh issue list --state open --search "in:title \"$title\"" --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file report.md
+          else
+            gh issue create --title "$title" --body-file report.md
+          fi

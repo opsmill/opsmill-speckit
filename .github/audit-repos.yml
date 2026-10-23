@@ -1,0 +1,14 @@
+# Every non-archived repo of these orgs that has a .specify/ directory is listed
+# in the report.
+orgs:
+  - opsmill
+
+# Repos that must run the OpsMill stack. The report lists them first and
+# reports a repo as behind when it is not on the latest release.
+in_scope:
+  - opsmill/infrahub
+  - opsmill/styrmin
+  - opsmill/infrahub-sdk-python
+  - opsmill/infrahub-sync
+  - opsmill/infrahub-mcp
+  - opsmill/opsmill-cicd-workflows
