@@ -1,0 +1,26 @@
+.github/scripts/check_install.py
+  s_c27296f43eae57::t_12897ad1166119 236
+  s_c27296f43eae57::t_32399d9353a1bc 11-12,15-20,34,58-65,67-71,78,81-90,96-100,160-162,214-235,237-254,309,314-315,317-321,323-330,332,335-336,343
+.github/workflows/install-latest.yml
+  s_c27296f43eae57::t_88fe1ac30f3369 31-32,60-80
+.github/workflows/install.yml
+  s_c27296f43eae57::t_c2562ebcadb9bd 31-34
+CHANGELOG.md
+  s_c27296f43eae57::t_4bca8c598aba7e 11-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "36f368fe49c7742ec3934098d4762b1667cf8987",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
