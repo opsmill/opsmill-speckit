@@ -1,0 +1,2 @@
+# Presets install separately (specify preset add); keep them out of the extension copy.
+presets/

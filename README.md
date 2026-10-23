@@ -45,34 +45,28 @@ independently installable artifacts:
 
 ## Requires
 
-- spec-kit `>=0.8.0`
+- spec-kit `>=0.8.0` (`requires.speckit_version` in `extension.yml`). The
+  pinned install below is tested on spec-kit 0.11.9.
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
-- **Two companion extensions.** The `prep`, `auto`, and `implement` commands
-  invoke skills provided by separate extensions:
-  - [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
-    `speckit-critique-run` skill used by `prep` and `auto`.
-  - [`review`](https://github.com/ismaelJimenez/spec-kit-review) — provides the
-    `speckit-review-run` skill used by `implement` and `auto`.
 
-  Install both before using `prep`, `auto`, or `implement` (see below).
+Optional: the [companion extensions](#companion-extensions) `critique` and
+`review`, which give `prep`, `auto`, and `implement` their full critique and
+review passes.
 
 ## Install
 
-Latest `main`:
+Install a tagged release, never `main`. Releases are listed in
+[`CHANGELOG.md`](CHANGELOG.md):
 
 ```bash
 specify extension add opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.3.2.zip
 ```
 
-Pinned release:
-
-```bash
-specify extension add opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.0.0.zip
-```
+The URL is not in a spec-kit catalog, so `specify` asks you to confirm the
+source before installing.
 
 Local development install (from a working tree):
 
@@ -82,7 +76,14 @@ specify extension add --dev /path/to/opsmill-speckit
 
 ### Companion extensions
 
-The `prep`, `auto`, and `implement` commands depend on two other extensions.
+The `prep`, `auto`, and `implement` commands invoke skills from two other
+extensions:
+
+- [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
+  `speckit-critique-run` skill used by `prep` and `auto`.
+- [`review`](https://github.com/ismaelJimenez/spec-kit-review) — provides the
+  `speckit-review-run` skill used by `implement` and `auto`.
+
 Install both:
 
 ```bash
@@ -154,13 +155,16 @@ free-form text as scope guidance (e.g. `focus on the CLI surface`).
 ### `/speckit.taskstoissues` (preset override)
 
 Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
-preset, not the extension. Install separately:
+preset, not the extension. Install separately, from a clone of the same tag as
+the extension:
 
 ```bash
-specify preset add taskstoissues-jira \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
-  --subdir presets/taskstoissues-jira
+git clone --depth 1 --branch v1.3.2 https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/taskstoissues-jira
 ```
+
+`specify preset add` copies the preset into `.specify/presets/`, so the clone
+can be deleted afterwards.
 
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
 for config (`dev/jira.yml`) and failure-mode details.
@@ -177,7 +181,7 @@ present in the consumer repo), then the preset:
 specify extension add reconcile \
   --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
 
-git clone https://github.com/opsmill/opsmill-speckit
+git clone --depth 1 --branch v1.3.2 https://github.com/opsmill/opsmill-speckit
 specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 
