@@ -1,0 +1,8 @@
+# Extensions that our presets need but that this repo does not ship.
+# .github/scripts/check_install.py installs them before the presets.
+# Once the OpsMill catalog exists (migration plan task 4.2), list the catalog
+# here instead and let the bundle install these extensions.
+extensions:
+  # reconcile-opsmill overrides speckit.reconcile.run from this extension.
+  # Same pin as the README.
+  reconcile: "https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip"
