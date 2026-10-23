@@ -28,7 +28,7 @@ specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ## Install
 
 ```bash
-git clone https://github.com/opsmill/opsmill-speckit
+git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
 specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 

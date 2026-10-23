@@ -7,6 +7,24 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-10-23
+
+### Added
+- `.extensionignore` excludes `presets/` from the installed extension. A tag
+  archive holds the whole repo, so `specify extension add` copied the presets
+  into `.specify/extensions/opsmill/`, where spec-kit never reads them.
+
+### Fixed
+- README: installs pin a release tag instead of `main`. The preset installs
+  used `specify preset add --from … --subdir`, an option no spec-kit release
+  has; they now install with `--dev` from a clone of the tag.
+- README: the `critique` and `review` companion extensions move from Requires
+  to an optional section, since `prep`, `auto`, and `implement` fall back to a
+  built-in pass without them.
+
+### Changed
+- `extension.version` bumped `1.3.1` → `1.3.2`.
+
 ## [1.3.1] - 2026-10-23
 
 ### Fixed
