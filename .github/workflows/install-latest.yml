@@ -1,0 +1,58 @@
+---
+# yamllint disable rule:truthy
+# Install every component of this repo on the latest spec-kit release, once a
+# week. A failure opens an issue instead of blocking pull requests: it tells us
+# a spec-kit upgrade will need work before any repo takes it.
+name: "Install on latest spec-kit"
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install-latest:
+    name: "Install on the latest spec-kit version"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.speckit.outputs.version }}
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v7"
+      - name: "Install UV"
+        uses: "astral-sh/setup-uv@v7"
+      - name: "Install the latest spec-kit"
+        id: "speckit"
+        run: |
+          uv tool install specify-cli
+          echo "version=$(uv tool list | sed -n 's/^specify-cli v//p')" >> "$GITHUB_OUTPUT"
+      - name: "Install and check every component"
+        run: uv run .github/scripts/check_install.py
+
+  report:
+    name: "Open an issue on failure"
+    needs: install-latest
+    if: failure()
+    runs-on: "ubuntu-latest"
+    permissions:
+      issues: write
+    steps:
+      - name: "Open or update the issue"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.install-latest.outputs.version }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Install fails on spec-kit ${VERSION:-latest}"
+          body="The weekly install check failed on spec-kit ${VERSION:-latest}: ${RUN_URL}"
+          number=$(gh issue list --state open --search "in:title \"$title\"" --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi

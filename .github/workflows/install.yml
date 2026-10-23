@@ -1,5 +1,7 @@
 ---
 # yamllint disable rule:truthy
+# Install every component of this repo on the oldest spec-kit version the
+# manifests declare (requires.speckit_version). Blocking on pull requests.
 name: "Install"
 on:
   pull_request:
@@ -9,31 +11,26 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
-  install:
-    name: "Install on spec-kit ${{ matrix.speckit }}"
+  install-minimum:
+    name: "Install on the minimum spec-kit version"
     runs-on: "ubuntu-latest"
     timeout-minutes: 10
-    # 0.11.9 is the version most consumer repos run today. 1.2.3 is the
-    # migration target; it does not block until opsmill-speckit 2.0.0.
-    continue-on-error: ${{ matrix.speckit == '1.2.3' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        speckit:
-          - "0.11.9"
-          - "1.2.3"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v7"
       - name: "Install UV"
         uses: "astral-sh/setup-uv@v7"
-      - name: "Install spec-kit ${{ matrix.speckit }}"
-        run: "uv tool install specify-cli==${{ matrix.speckit }}"
-      - name: "Install the extension and presets"
-        run: ".github/scripts/check-install.sh"
+      - name: "Read the minimum spec-kit version"
+        id: "speckit"
+        run: echo "version=$(uv run -q .github/scripts/check_install.py min-version)" >> "$GITHUB_OUTPUT"
+      # Old spec-kit releases are not on PyPI, so install from the git tag.
+      - name: "Install spec-kit ${{ steps.speckit.outputs.version }}"
+        run: uv tool install "git+https://github.com/github/spec-kit@v${{ steps.speckit.outputs.version }}"
+      - name: "Install and check every component"
+        run: uv run .github/scripts/check_install.py
