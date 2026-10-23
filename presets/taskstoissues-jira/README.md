@@ -4,10 +4,15 @@ A spec-kit preset that **overrides** the native `speckit.taskstoissues` command 
 
 ## Install
 
-Presets cannot be installed by URL yet. Install from a local checkout of opsmill-speckit at a release tag (see the root [`CHANGELOG.md`](../../CHANGELOG.md)):
+```bash
+git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/taskstoissues-jira
+```
+
+Local development install (from a working tree):
 
 ```bash
-specify preset add --dev path/to/opsmill-speckit/presets/taskstoissues-jira
+specify preset add --dev ./presets/taskstoissues-jira
 ```
 
 After install, the preset's files live at `.specify/presets/taskstoissues-jira/` in the consumer repo, and `/speckit.taskstoissues` resolves to this preset's command body.

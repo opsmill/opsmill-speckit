@@ -155,11 +155,11 @@ free-form text as scope guidance (e.g. `focus on the CLI surface`).
 ### `/speckit.taskstoissues` (preset override)
 
 Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
-preset, not the extension. Presets cannot be installed by URL yet, so install
-it from a local checkout of opsmill-speckit at the same tag as the extension:
+preset, not the extension. Install separately:
 
 ```bash
-specify preset add --dev path/to/opsmill-speckit/presets/taskstoissues-jira
+git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/taskstoissues-jira
 ```
 
 See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
@@ -177,7 +177,8 @@ present in the consumer repo), then the preset:
 specify extension add reconcile \
   --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
 
-specify preset add --dev path/to/opsmill-speckit/presets/reconcile-opsmill
+git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
+specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 
 See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
