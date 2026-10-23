@@ -17,7 +17,8 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 ### Fixed
 - README: installs pin a release tag instead of `main`. The preset installs
   used `specify preset add --from … --subdir`, an option no spec-kit release
-  has; they now install with `--dev` from a clone of the tag.
+  has; they now install with `--dev` from a local checkout of the tag, until
+  presets ship as installable archives.
 - README: the `critique` and `review` companion extensions move from Requires
   to an optional section, since `prep`, `auto`, and `implement` fall back to a
   built-in pass without them.

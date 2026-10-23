@@ -22,24 +22,15 @@ If the extension is absent when the preset is added, the `speckit.reconcile.run`
 
 ```bash
 specify preset remove reconcile-opsmill
-specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
+specify preset add --dev path/to/opsmill-speckit/presets/reconcile-opsmill
 ```
 
 ## Install
 
-Install from a clone of a tagged release (see the root [`CHANGELOG.md`](../../CHANGELOG.md)):
+Presets cannot be installed by URL yet. Install from a local checkout of opsmill-speckit at a release tag (see the root [`CHANGELOG.md`](../../CHANGELOG.md)):
 
 ```bash
-git clone --depth 1 --branch v1.3.2 https://github.com/opsmill/opsmill-speckit
-specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
-```
-
-`specify preset add` copies the preset into `.specify/presets/`, so the clone can be deleted afterwards.
-
-Or from an existing working tree:
-
-```bash
-specify preset add --dev ./presets/reconcile-opsmill
+specify preset add --dev path/to/opsmill-speckit/presets/reconcile-opsmill
 ```
 
 After install, the preset's files live at `.specify/presets/reconcile-opsmill/` in the consumer repo, and `/speckit.reconcile.run` resolves to this preset's command body instead of the extension's.
