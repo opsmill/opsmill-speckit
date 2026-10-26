@@ -1,0 +1,27 @@
+presets/jira-branch/commands/speckit.git.feature.md
+  s_c27296f43eae57::t_143e8fdbf374f3 48
+  s_c27296f43eae57::t_d50652e09730b3 46,51-52,58-59,74-76
+  s_c27296f43eae57::t_4b39846d4e405e 47
+presets/critique-opsmill/README.md
+  s_c27296f43eae57::t_b1531acfa14d2a 30
+  s_c27296f43eae57::t_00d1ad5f4325e3 27-28
+presets/jira-branch/README.md
+  s_c27296f43eae57::t_791e22ccf65b15 1-33
+  s_c27296f43eae57::t_f3bf73305d97c0 34-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "83a1d9edd5b4fe0b5a7b6867989b006724a7d907",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
