@@ -28,7 +28,7 @@ independently installable artifacts:
 
 2. **Presets** — drop-in overrides for spec-kit commands (native or
    extension-provided). Each preset is installed independently of the
-   extension. Currently two ship:
+   extension. Currently four ship:
    - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
      `/speckit.taskstoissues` with a Jira-flavored implementation that fans
      `tasks.md` out into Jira issues under a single Epic (one issue per
@@ -42,11 +42,17 @@ independently installable artifacts:
      `dev/guidelines/` + `dev/adr/`, and the report is
      Jira-aware. Requires the `reconcile` extension to be
      installed in the consumer repo.
+   - [`critique-opsmill`](presets/critique-opsmill/README.md) — overrides
+     `/speckit.critique.run`, whose upstream version looks for its script in
+     the wrong folder. Requires the `critique` extension.
+   - [`jira-branch`](presets/jira-branch/README.md) — overrides
+     `/speckit.git.feature` so that a feature branch needs a JPD or Jira
+     reference. Requires the git extension.
 
 ## Requires
 
-- spec-kit `>=0.8.0` (`requires.speckit_version` in `extension.yml`). The
-  pinned install below is tested on spec-kit 0.11.9.
+- spec-kit `>=0.8.0` (`requires.speckit_version` in `extension.yml`). CI
+  installs every component on that version for each pull request.
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
@@ -183,6 +189,12 @@ specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 
 See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
 for provenance and behavior.
+
+### `/speckit.critique.run` and `/speckit.git.feature` (preset overrides)
+
+See [`critique-opsmill`](presets/critique-opsmill/README.md) and
+[`jira-branch`](presets/jira-branch/README.md) for what they change and how to
+install them.
 
 ## Hooks (auto-fire during SDD)
 

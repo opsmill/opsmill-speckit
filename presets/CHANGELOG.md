@@ -5,6 +5,17 @@ Release history for the `presets/` directory, taken as a unit.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **`critique-opsmill`** (`1.0.0`) — overrides `speckit.critique.run` from
+  the spec-kit-critique extension, whose command cannot find its script on
+  spec-kit 1.2. Upstream `run.md` at `v1.0.0`, with `../../scripts/` paths.
+- **`jira-branch`** (`1.0.0`) — overrides `speckit.git.feature` so that a
+  feature branch needs a JPD or Jira reference. Replaces the `infrahub` preset
+  of opsmill/infrahub, which breaks on spec-kit 1.2: the git extension renamed
+  its branch script, and `FEATURE_NUM` holds the full branch name.
+
 ## [1.1.0] - 2026-07-09
 
 ### Added
