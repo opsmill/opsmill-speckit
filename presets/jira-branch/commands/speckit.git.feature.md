@@ -43,16 +43,20 @@ Generate a concise short name (2-4 words) from the feature description:
 
 ## Step 3: Create Branch
 
-Construct the branch name as `<short-name>-<ticket-id>` (e.g., `user-auth-infp-460`), then pass it as `GIT_BRANCH_NAME` to bypass the script's automatic numbering:
+Construct the branch name as `<short-name>-<ticket-id>` (e.g., `user-auth-infp-460`), then pass it as `GIT_BRANCH_NAME` to bypass the script's automatic numbering.
+
+The git extension's branch script is `create-new-feature-branch.sh` or `create-new-feature.sh`. Run whichever exists in `.specify/extensions/git/scripts/bash/`:
 
 ```bash
-GIT_BRANCH_NAME="<short-name>-<ticket-id>" .specify/extensions/git/scripts/bash/create-new-feature.sh --json "<feature description>"
+script=$(ls .specify/extensions/git/scripts/bash/create-new-feature*.sh | head -n 1)
+GIT_BRANCH_NAME="<short-name>-<ticket-id>" "$script" --json "<feature description>"
 ```
 
 Example:
 
 ```bash
-GIT_BRANCH_NAME="user-auth-infp-460" .specify/extensions/git/scripts/bash/create-new-feature.sh --json "Add user authentication"
+script=$(ls .specify/extensions/git/scripts/bash/create-new-feature*.sh | head -n 1)
+GIT_BRANCH_NAME="user-auth-infp-460" "$script" --json "Add user authentication"
 ```
 
 **IMPORTANT**:
@@ -67,4 +71,6 @@ GIT_BRANCH_NAME="user-auth-infp-460" .specify/extensions/git/scripts/bash/create
 The script outputs JSON with:
 
 - `BRANCH_NAME`: The branch name (e.g., `user-auth-infp-460`)
-- `FEATURE_NUM`: The ticket ID
+- `FEATURE_NUM`: With `GIT_BRANCH_NAME` set, the script returns the full branch name here, not the ticket ID
+
+Report the ticket ID resolved in Step 1 (e.g., `infp-460`), not `FEATURE_NUM`.
