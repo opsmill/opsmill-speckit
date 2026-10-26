@@ -1,0 +1,61 @@
+.github/scripts/check_install.py
+  s_c27296f43eae57::t_32399d9353a1bc 7-10,12-17
+  s_f3df87e5b4ebd5::t_4a8ac00d7b4ff5 1-6,18-40
+  s_65009ef9c97ec4::t_9397fee0811533 41-45
+  s_f3df87e5b4ebd5::t_6d4187d34b00d4 11
+.github/install-check.yml
+  s_f3df87e5b4ebd5::t_3d222186c22fbb 1-8
+.github/scripts/.gitignore
+  s_f3df87e5b4ebd5::t_dc879a331d6aaf 1
+.github/scripts/install_check/checks.py
+  s_f3df87e5b4ebd5::t_af96349ebdb104 2-14,16-20,22-58,60-80,82,84-102,104-117,119-139,141-145
+  s_f3df87e5b4ebd5::t_d54de7405bad32 1,15,21,59,81,83,103,118,140
+.github/scripts/install_check/project.py
+  s_f3df87e5b4ebd5::t_ece336b5496d79 2-16,18-40,42-62,64-80,82-96
+  s_f3df87e5b4ebd5::t_485487ad15bb15 1,17,41,63,81
+.github/scripts/install_check/repo.py
+  s_f3df87e5b4ebd5::t_20d6d25299afa4 2-17,19-29,31-51,53-77,79-83,85-110
+  s_f3df87e5b4ebd5::t_1930847bb972ad 1,18,30,52,78,84
+.github/scripts/install_check/components.py
+  s_f3df87e5b4ebd5::t_30ee2784b17806 2-19,21-46,48-58,60-84,86-90,91-92
+  s_f3df87e5b4ebd5::t_721bf8b4b25a2d 1,20,47,59,85
+.github/scripts/install_check/errors.py
+  s_f3df87e5b4ebd5::t_6bc2f92905d569 1-2
+.github/scripts/install_check/installation.py
+  s_f3df87e5b4ebd5::t_e3a423d77eb01e 2-32,34-57
+  s_f3df87e5b4ebd5::t_42b973ef5aca02 1,33
+.github/scripts/install_check/__init__.py
+  s_f3df87e5b4ebd5::t_51ffb65b5b0115 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b6401d79a924e7f36c0835f0c4e2e6a527e2cc68",
+  "prompts": {},
+  "sessions": {
+    "s_65009ef9c97ec4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "26b37fac-c018-44b8-a39f-3eb967f624ea",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
