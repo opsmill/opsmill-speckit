@@ -12,6 +12,10 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
   and, for a `--dev` install from a clone, its git history are not copied into
   `.specify/extensions/opsmill/`.
 
+### Fixed
+- `summary` and `qa` find `check-prerequisites.sh` again on Spec Kit 1.2, which
+  resolves a command's script path from the extension directory.
+
 ## [1.3.2] - 2026-10-23
 
 ### Added
