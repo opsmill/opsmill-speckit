@@ -1,0 +1,21 @@
+.github/scripts/tests/conftest.py
+  s_f3df87e5b4ebd5::t_b2866f6a6329f0 12,28
+.github/scripts/tests/install_check/test_installation.py
+  s_f3df87e5b4ebd5::t_0dc28ec2582038 15,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "192dd19383a27a77e9b018fd0cf59c75122adebd",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
