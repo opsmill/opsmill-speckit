@@ -1,2 +1,5 @@
 # Presets install separately (specify preset add); keep them out of the extension copy.
 presets/
+# Repo tooling, not part of the extension.
+.github/
+.git
