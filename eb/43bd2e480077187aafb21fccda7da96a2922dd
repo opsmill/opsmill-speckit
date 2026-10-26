@@ -1,0 +1,31 @@
+.github/scripts/check_install.py
+  s_f3df87e5b4ebd5::t_6d4187d34b00d4 11
+.github/scripts/install_check/__init__.py
+  s_f3df87e5b4ebd5::t_51ffb65b5b0115 1
+.github/scripts/install_check/checks.py
+  s_f3df87e5b4ebd5::t_d54de7405bad32 1,15,21,59,81,83,103,118,140
+.github/scripts/install_check/components.py
+  s_f3df87e5b4ebd5::t_721bf8b4b25a2d 1,20,47,59,85
+.github/scripts/install_check/installation.py
+  s_f3df87e5b4ebd5::t_42b973ef5aca02 1,33
+.github/scripts/install_check/project.py
+  s_f3df87e5b4ebd5::t_485487ad15bb15 1,17,41,63,81
+.github/scripts/install_check/repo.py
+  s_f3df87e5b4ebd5::t_1930847bb972ad 1,18,30,52,78,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eb43bd2e480077187aafb21fccda7da96a2922dd",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
