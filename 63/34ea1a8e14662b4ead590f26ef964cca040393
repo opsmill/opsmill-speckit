@@ -1,0 +1,35 @@
+.github/scripts/repo_audit/report.py
+  s_f3df87e5b4ebd5::t_1897aad6ff30c5 1-77
+  s_f3df87e5b4ebd5::t_cd4ae645881774 78
+.github/scripts/repo_audit/__init__.py
+  s_f3df87e5b4ebd5::t_119713c15d9f70 1
+.github/scripts/audit_repos.py
+  s_f3df87e5b4ebd5::t_361ce4ee24ff93 17-31
+  s_f3df87e5b4ebd5::t_a564020aa2089b 1-16,32-38
+.github/scripts/repo_audit/release.py
+  s_f3df87e5b4ebd5::t_935519d26dbeb3 1-54
+.github/scripts/repo_audit/state.py
+  s_f3df87e5b4ebd5::t_0760c029d0eb10 1-58
+.github/scripts/repo_audit/github.py
+  s_f3df87e5b4ebd5::t_c7cd99ceb5c418 1-93
+.github/audit-repos.yml
+  s_f3df87e5b4ebd5::t_cf41e5ac0ab18c 1-20
+.github/workflows/audit-repos.yml
+  s_f3df87e5b4ebd5::t_67847d44b7c68e 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6334ea1a8e14662b4ead590f26ef964cca040393",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
