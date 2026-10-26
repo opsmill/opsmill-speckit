@@ -118,11 +118,15 @@ class ScriptsExist:
     """Every script that a component's commands run exists in the project."""
 
     # The project is initialized with --script sh, so commands run .sh scripts.
-    SCRIPT: ClassVar[re.Pattern] = re.compile(r"\.specify/[\w./-]+\.sh")
+    # Any path to one counts, wherever spec-kit resolves it.
+    SCRIPT: ClassVar[re.Pattern] = re.compile(r"/?(?:[\w.-]+/)+[\w.-]+\.sh\b")
 
     project: Project
     component_id: str
     commands: tuple[str, ...]
+    # Commands whose source declares `scripts:`, so their installed text must
+    # run at least one script.
+    scripted: tuple[str, ...] = ()
 
     def verify(self) -> str:
         found, missing = set(), set()
@@ -132,7 +136,12 @@ class ScriptsExist:
                 raise CheckFailed(
                     f"{self.component_id}: {command} still holds the {{SCRIPT}} placeholder"
                 )
-            for script in self.SCRIPT.findall(text):
+            scripts = self.SCRIPT.findall(text)
+            if command in self.scripted and not scripts:
+                raise CheckFailed(
+                    f"{self.component_id}: {command} declares scripts but runs none once installed"
+                )
+            for script in scripts:
                 found.add(script)
                 if not (self.project.path / script).is_file():
                     missing.add(f"{script} ({command})")

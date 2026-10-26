@@ -146,6 +146,24 @@ class TestScriptsExist:
         ):
             self.check(project).verify()
 
+    def test_fails_on_a_missing_script_outside_specify(self, project):
+        self.skill(project, "Run `scripts/bash/check-prerequisites.sh --json`.\n")
+        with pytest.raises(
+            CheckFailed, match=r"do not exist: scripts/bash/check-prerequisites\.sh"
+        ):
+            self.check(project).verify()
+
+    def test_fails_when_a_command_that_declares_scripts_runs_none(self, project):
+        self.skill(project, "Find the feature directory yourself.\n")
+        check = ScriptsExist(
+            project,
+            "opsmill",
+            ("speckit.opsmill.summary",),
+            ("speckit.opsmill.summary",),
+        )
+        with pytest.raises(CheckFailed, match="declares scripts but runs none"):
+            check.verify()
+
     def test_fails_on_an_unresolved_placeholder(self, project):
         self.skill(project, "Run `{SCRIPT}` from repo root.\n")
         with pytest.raises(

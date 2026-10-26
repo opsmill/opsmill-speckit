@@ -54,7 +54,8 @@ def repo(tmp_path: Path) -> Path:
     root = tmp_path / "repo"
     files = {
         "extension.yml": "extension: {id: opsmill, version: 1.0.0}\n"
-        "provides: {commands: [{name: speckit.opsmill.summary}]}\n",
+        "provides: {commands: [{name: speckit.opsmill.summary, file: commands/summary.md}]}\n",
+        "commands/summary.md": "Summarize the session.\n",
         "presets/r/preset.yml": "preset: {id: r, version: 2.0.0}\n"
         "provides: {templates: [{type: command, name: speckit.plan, file: plan.md}]}\n",
     }
