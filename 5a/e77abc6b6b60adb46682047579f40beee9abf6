@@ -1,0 +1,19 @@
+.github/workflows/unit-tests.yml
+  s_f3df87e5b4ebd5::t_9f883fa43432d9 30-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5ae77abc6b6b60adb46682047579f40beee9abf6",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
