@@ -1,0 +1,19 @@
+.github/scripts/tests/repo_audit/test_state.py
+  s_f3df87e5b4ebd5::t_9b33e710182b40 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3710bf4c4d80ae5998fb0ad03b7c0e79ffbc9658",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
