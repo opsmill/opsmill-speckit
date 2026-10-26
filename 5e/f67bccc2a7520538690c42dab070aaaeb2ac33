@@ -1,0 +1,19 @@
+.github/scripts/install_check/repo.py
+  s_f3df87e5b4ebd5::t_8b2ca37a830f1a 66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5ef67bccc2a7520538690c42dab070aaaeb2ac33",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
