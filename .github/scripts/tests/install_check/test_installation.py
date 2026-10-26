@@ -12,7 +12,7 @@ from install_check.installation import Installation
 
 @dataclass(frozen=True)
 class FakeSpeckit:
-    """A spec-kit that registers components but never applies preset overrides."""
+    """A spec-kit that registers components and writes skills for extension commands only."""
 
     def run(self, cwd: Path, *args: str, confirm: bool = False) -> str:
         specify = cwd / ".specify"
@@ -23,6 +23,10 @@ class FakeSpeckit:
             manifest = yaml.safe_load((Path(args[3]) / "extension.yml").read_text())
             commands = [c["name"] for c in manifest["provides"]["commands"]]
             self.register(specify, "extensions", manifest["extension"], commands)
+            for command in commands:
+                skill = cwd / ".claude" / "skills" / command.replace(".", "-")
+                skill.mkdir(parents=True)
+                (skill / "SKILL.md").write_text(f"The {command} command.\n")
         elif args[:3] == ("preset", "add", "--dev"):
             manifest = yaml.safe_load((Path(args[3]) / "preset.yml").read_text())
             templates = manifest["provides"]["templates"]
