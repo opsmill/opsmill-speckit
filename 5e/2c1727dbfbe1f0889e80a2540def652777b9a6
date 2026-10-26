@@ -1,0 +1,21 @@
+.github/scripts/tests/install_check/test_checks.py
+  s_f3df87e5b4ebd5::t_4633e4c1120103 6
+.github/scripts/tests/install_check/test_components.py
+  s_f3df87e5b4ebd5::t_fa30194ac90f34 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5e2c1727dbfbe1f0889e80a2540def652777b9a6",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
