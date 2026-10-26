@@ -1,0 +1,39 @@
+---
+# yamllint disable rule:truthy
+# Install every component of this repo on the oldest Spec Kit version the
+# manifests accept. Blocking on pull requests.
+name: "Install"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  install-minimum:
+    name: "Install on the minimum Spec Kit version"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v7"
+      - name: "Install UV"
+        uses: "astral-sh/setup-uv@v7"
+      - name: "Read the minimum Spec Kit version"
+        id: "speckit"
+        # Assigned first so that a failure of the script fails the step.
+        run: |
+          version=$(uv run -q .github/scripts/check_install.py min-version)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      # Old Spec Kit releases are not on PyPI, so install from the git tag.
+      - name: "Install Spec Kit ${{ steps.speckit.outputs.version }}"
+        run: uv tool install "git+https://github.com/github/spec-kit@v${{ steps.speckit.outputs.version }}"
+      - name: "Install and check every component"
+        run: uv run .github/scripts/check_install.py
