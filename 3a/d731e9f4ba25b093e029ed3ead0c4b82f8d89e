@@ -1,0 +1,25 @@
+.github/scripts/tests/install_check/test_checks.py
+  s_f3df87e5b4ebd5::t_6930f6ee12dca1 72-73
+.github/scripts/tests/install_check/test_components.py
+  s_f3df87e5b4ebd5::t_eeb1c0fe62ff2f 17,20
+.github/scripts/tests/install_check/test_installation.py
+  s_f3df87e5b4ebd5::t_5d68b5dedadc23 15,49,66
+.github/scripts/tests/install_check/test_repo.py
+  s_f3df87e5b4ebd5::t_0e1a62d65ff223 17,20-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3ad731e9f4ba25b093e029ed3ead0c4b82f8d89e",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
