@@ -1,8 +1,8 @@
 ---
 description: Perform a dual-lens critical review of the specification and plan from both product strategy and engineering risk perspectives before implementation.
 scripts:
-  sh: scripts/bash/check-prerequisites.sh --json --include-tasks
-  ps: scripts/powershell/check-prerequisites.ps1 -Json -IncludeTasks
+  sh: ../../scripts/bash/check-prerequisites.sh --json --include-tasks
+  ps: ../../scripts/powershell/check-prerequisites.ps1 -Json -IncludeTasks
 ---
 
 ## User Input
