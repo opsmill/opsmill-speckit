@@ -1,0 +1,19 @@
+.github/workflows/install.yml
+  s_f3df87e5b4ebd5::t_8e003b17a860f8 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f5f238005497b9a539fd9fa4500494c98d9ab11f",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
