@@ -1,0 +1,19 @@
+.github/install-check.yml
+  s_f3df87e5b4ebd5::t_68ff281e91da2f 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a82f38a3fe85587b59b644475c53c0e410dc6fde",
+  "prompts": {},
+  "sessions": {
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
