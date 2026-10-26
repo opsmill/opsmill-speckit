@@ -1,0 +1,16 @@
+.github/scripts/tests/install_check/test_components.py
+  h_bd00275aefc321 3-4
+.github/scripts/tests/install_check/test_repo.py
+  h_bd00275aefc321 9,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9939a00abe9e03c1ee3fb27ec30b279ffa8a19aa",
+  "prompts": {},
+  "humans": {
+    "h_bd00275aefc321": {
+      "author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
