@@ -1,0 +1,31 @@
+.github/scripts/install_check/python.py
+  s_c27296f43eae57::t_8d41891ff6b968 1-22
+.github/scripts/install_check/installation.py
+  s_c27296f43eae57::t_8d41891ff6b968 8,11,37-39
+.github/scripts/tests/install_check/test_checks.py
+  s_c27296f43eae57::t_af2bdf04449482 10,169-174,176-196
+  s_c27296f43eae57::t_11780cd0646db4 175
+.github/scripts/install_check/checks.py
+  s_c27296f43eae57::t_8d41891ff6b968 3,5,192-198,201-221,223-232
+  s_c27296f43eae57::t_99ed1720ec26e9 199-200,222
+.github/install-check.yml
+  s_c27296f43eae57::t_8d41891ff6b968 10-16
+README.md
+  s_c27296f43eae57::t_fb60bfa3b4ac1b 59-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "137ca70bfad0672608cae7ae3327efd9a05d7993",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
