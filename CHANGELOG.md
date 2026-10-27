@@ -8,6 +8,15 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 ## [Unreleased]
 
 ### Changed
+- `implement` reviews with the `pr-review-toolkit` Claude Code plugin when it is
+  installed, else with `/code-review` or `/review`, else with its built-in
+  reviewer. The spec-kit `review` extension is no longer used: it does not
+  install on spec-kit 1.x. The `REVIEW:` field of the status line now reads
+  `plugin`, `command`, `fallback`, `none` or `n/a`, instead of `extension`,
+  `fallback`, `none` or `n/a`.
+- README: the `checkpoint` extension, which provides the
+  `speckit-checkpoint-commit` skill that `prep`, `implement` and `auto` commit
+  with, is listed with the other companions.
 - `.extensionignore` also excludes `.github/` and `.git`, so the repo's CI files
   and, for a `--dev` install from a clone, its git history are not copied into
   `.specify/extensions/opsmill/`.

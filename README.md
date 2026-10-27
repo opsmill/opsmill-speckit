@@ -60,9 +60,9 @@ independently installable artifacts:
   in `SPECKIT_PYTHON_EXECUTABLE`. spec-kit needs it to read the presets'
   manifests; without it, `/speckit.plan` cannot prepare `plan.md`.
 
-Optional: the [companion extensions](#companion-extensions) `critique` and
-`review`, which give `prep`, `auto`, and `implement` their full critique and
-review passes.
+Recommended: the [companions](#companion-extensions) `checkpoint`, `critique`
+and the `pr-review-toolkit` Claude Code plugin, which give `prep`, `auto`, and
+`implement` their commits and their full critique and review passes.
 
 ## Install
 
@@ -85,39 +85,34 @@ specify extension add --dev /path/to/opsmill-speckit
 
 ### Companion extensions
 
-The `prep`, `auto`, and `implement` commands invoke skills from two other
-extensions:
+The `prep`, `auto`, and `implement` commands rely on these companions:
 
+- [`checkpoint`](https://github.com/aaronrsun/spec-kit-checkpoint) — provides
+  the `speckit-checkpoint-commit` skill that commits each phase and each chunk.
 - [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
-  `speckit-critique-run` skill used by `prep` and `auto`.
-- [`review`](https://github.com/ismaelJimenez/spec-kit-review) — provides the
-  `speckit-review-run` skill used by `implement` and `auto`.
-
-Install both:
+  `speckit-critique-run` skill used by `prep` and `auto`. Install the
+  [`critique-opsmill`](presets/critique-opsmill/README.md) preset with it.
+- [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
+  — a Claude Code plugin whose review agents `implement` runs in parallel.
+  Without it, `implement` uses `/code-review` or `/review` if available.
 
 ```bash
-# review — install from the fix branch. The upstream v1.0.1 tag fails to
-# install on spec-kit 1.0.x; see Troubleshooting below.
-git clone https://github.com/iddocohen/spec-kit-review -b fix/script-name-slugs
-specify extension add ./spec-kit-review --dev
-
+specify extension add checkpoint \
+  --from https://github.com/aaronrsun/spec-kit-checkpoint/archive/refs/tags/v1.0.0.zip
 specify extension add critique \
   --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
 ```
 
-Once upstream tags `v1.0.2`, the fork is no longer needed and `review` installs
-the same way as `critique`:
+In Claude Code:
 
-```bash
-specify extension add review \
-  --from https://github.com/ismaelJimenez/spec-kit-review/archive/refs/tags/v1.0.2.zip
+```text
+/plugin install pr-review-toolkit@claude-plugins-official
 ```
 
-Neither is a hard dependency. `prep`, `auto`, and `implement` resolve their
-quality gates at runtime and fall back to a reduced built-in critique or review
-subagent when a companion extension is missing. The fallback is always reported
-on the machine-readable status line (`CRITIQUE:` / `REVIEW:`) and in the run
-summary, so a degraded run is never silent. Install both for the full passes.
+When the critique or review provider is missing, `prep`, `auto`, and
+`implement` fall back to a reduced built-in critique or review subagent. The
+fallback is always reported on the machine-readable status line (`CRITIQUE:` /
+`REVIEW:`) and in the run summary, so a degraded run is never silent.
 
 ## Commands
 
@@ -237,42 +232,12 @@ hooks:
 
 ## Troubleshooting
 
-### `Validation Error: Invalid script name 'detect-changed-files.sh'`
-
-Installing the `review` companion extension fails on spec-kit **1.0.x**:
-
-```
-$ specify extension add review --from .../spec-kit-review/archive/refs/tags/v1.0.1.zip
-Validation Error: Invalid script name 'detect-changed-files.sh': must be lowercase alphanumeric with hyphens only
-```
-
-Upstream bug in `ismaelJimenez/spec-kit-review`: its `extension.yml` puts the
-file name in `provides.scripts[].name`, which spec-kit 1.0.0 began validating
-against `^[a-z0-9-]+$` (the path belongs in `file:`). Validation aborts before
-any command or hook is registered, so `speckit-review-run` is absent rather
-than broken.
-
-Tracked in opsmill/opsmill-speckit#16. Upstream fix:
-[issue](https://github.com/ismaelJimenez/spec-kit-review/issues/4),
-[PR](https://github.com/ismaelJimenez/spec-kit-review/pull/5).
-
-Until upstream tags v1.0.2, install from the fix branch:
-
-```bash
-git clone https://github.com/iddocohen/spec-kit-review -b fix/script-name-slugs
-specify extension add ./spec-kit-review --dev
-```
-
-Without it, `implement` and `auto` run their fallback reviewer and report
-`REVIEW: fallback`. That is a safety net with less depth than the extension,
-not an equivalent pass.
-
 ### `implement` or `auto` reports `REVIEW: none` / `CRITIQUE: none`
 
-The companion extension is missing **and** the harness offered no subagent
-dispatch, so no fallback was possible. `REVIEW: none` marks the run
-`INCOMPLETE` by design. Install the companion extension and re-run the gate
-over the same diff.
+No critique or review provider was available **and** the harness offered no
+subagent dispatch, so no fallback was possible. `REVIEW: none` marks the run
+`INCOMPLETE` by design. Install the missing companion and re-run the gate over
+the same diff.
 
 ## Provenance
 

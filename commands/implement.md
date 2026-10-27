@@ -34,23 +34,16 @@ Before any work begins:
 3. Read `tasks.md` end-to-end and identify the chunking boundaries (see "Chunking strategy" below). Build a numbered list of chunks with their task IDs.
 4. Verify the working tree is clean (or only contains expected prep artifacts). If it is dirty in unrelated ways: interactive → surface that and pause; autonomous parent → abort with `STATUS: BLOCKED` (reason: unexpectedly dirty working tree). Do not attempt to stash or clean it yourself.
 5. Note the current `HEAD` commit — you will diff against it for the review and report.
-6. **Resolve the review provider.** Decide how Phase 6 will review the change set and record the answer as `REVIEW_MODE`. Run this check from the repository root and read `REVIEW_MODE` off its output — do not decide from memory:
+6. **Resolve the review provider.** Decide how Phase 6 will review the change set and record the answer as `REVIEW_MODE`. Take the first row that applies, deciding from the subagent types and commands your harness actually lists, not from memory:
 
-   ```bash
-   if [ -d .specify/extensions/review ] || grep -q '"review"' .specify/extensions/.registry 2>/dev/null; then
-     echo "review extension: installed"
-   else
-     echo "review extension: missing"
-   fi
-   ```
+   | Reviewer available | `REVIEW_MODE` |
+   |--------------------|---------------|
+   | The `pr-review-toolkit` plugin: its agents (`pr-review-toolkit:code-reviewer`, `pr-review-toolkit:pr-test-analyzer`, …) are among the subagent types you can dispatch | `plugin` |
+   | A code review command: the `/code-review` skill, or the `/review` command | `command` |
+   | Neither, and you can dispatch clean-context subagents | `fallback` |
+   | Neither, and no subagent dispatch is available | `none` |
 
-   | Check output | `REVIEW_MODE` |
-   |--------------|---------------|
-   | `installed` | `extension` |
-   | `missing`, and you can dispatch clean-context subagents | `fallback` |
-   | `missing`, and no subagent dispatch is available | `none` |
-
-   Both signals are written by `specify extension add` itself: `.specify/extensions/review/` is the unpacked extension, and `.specify/extensions/.registry` is the installer's record of what registered successfully. Neither is harness-specific, and neither exists when the install aborts on manifest validation (see Troubleshooting in the README), which is the case this step exists to catch. Do **not** key the decision off `.claude/skills/speckit-review-run/` — that path only exists under Claude Code. Do not ask yourself whether you "have" the skill either: agents cannot reliably enumerate their own skills, and quietly improvising around a skill that was never installed is the exact failure this step prevents.
+   This is a starting point: if Phase 6 cannot use the provider, it moves to the next row and reports the mode that actually ran. The spec-kit `review` extension is not used: it does not install on spec-kit 1.x.
 
    A missing reviewer is **not** a stop-condition, in either invocation mode. The Phase 0 aborts above exist because a dirty tree or missing prep artifacts contaminate the `HEAD@start..HEAD@now` diff; a missing reviewer does not corrupt anything, it only lowers assurance, and Phase 6 has a defined fallback for it. Carry `REVIEW_MODE` forward to Phase 6, Phase 7 §5, and the status line.
 
@@ -94,11 +87,13 @@ Respect explicit dependencies in `tasks.md`. Sequential `[P]`-free tasks must st
 
 Once **all** chunks have completed (including any retries), review the full diff (`HEAD`-at-start..`HEAD`-now). How you *produce* the findings depends on the `REVIEW_MODE` resolved in Phase 0. What you *do* with them does not.
 
-**6a — `REVIEW_MODE: extension`.** Invoke the `speckit-review-run` skill once across the full diff.
+**6a — `REVIEW_MODE: plugin`.** Dispatch the six `pr-review-toolkit` agents in parallel, each in a clean context: `code-reviewer`, `pr-test-analyzer`, `silent-failure-hunter`, `type-design-analyzer`, `comment-analyzer` and `code-simplifier`. Brief each one with the repository root, the diff range (`HEAD`-at-start..`HEAD`-now), `spec.md` and `tasks.md` as the statement of intent, and the project context files resolved by the same rule as Phase 5. Ask each for **findings only**, without editing any file: a severity (`high` / `medium` / `low`), the file, the line where known, and a one-line summary.
 
-If that invocation fails — the skill is not found, or it errors out without returning findings — the extension is present on disk but not usable (files unpacked, command never registered). Do **not** continue as though the review happened. Downgrade to `REVIEW_MODE: fallback` and run 6b, or to `REVIEW_MODE: none` if no subagent dispatch is available, then record the downgrade and its cause in Phase 7 §5 and §6. The Phase 0 value is a starting point, not a commitment: the mode you report is the mode that actually ran.
+**6b — `REVIEW_MODE: command`.** Run the code review command (`/code-review`, else `/review`) on the change set `HEAD`-at-start..`HEAD`-now, and collect its findings in the same shape as 6a.
 
-**6b — `REVIEW_MODE: fallback`.** No usable review extension, so run the review yourself. Dispatch **one** clean-context review subagent using the same briefing protocol as Phase 5 (self-contained prompt, no inherited history, resolved absolute paths). Brief it with:
+If 6a or 6b cannot run — the agents or the command are not found, or they end without returning findings — move to the next mode and run it. Record the change and its cause in Phase 7 §5 and §6: the mode you report is the mode that actually ran.
+
+**6c — `REVIEW_MODE: fallback`.** No reviewer is available, so run the review yourself. Dispatch **one** clean-context review subagent using the same briefing protocol as Phase 5 (self-contained prompt, no inherited history, resolved absolute paths). Brief it with:
 
 - Absolute paths to the repository root and the spec directory.
 - The diff range (`HEAD`-at-start..`HEAD`-now), and the project context files resolved by the same rule as Phase 5 (`AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, the constitution). Pass the paths that actually exist; say so explicitly if none do.
@@ -106,11 +101,11 @@ If that invocation fails — the skill is not found, or it errors out without re
 - Instructions to cover these six aspects and nothing else: **code quality** (project guideline compliance, bugs, security), **comments** (accuracy, documentation completeness, comment rot), **tests** (behavioural coverage, critical gaps, test resilience), **error handling** (silent failures, catch blocks, error logging), **type design** (encapsulation, invariants, enforcement), **simplification** (clarity, unnecessary complexity, redundant abstractions).
 - The required return shape: a severity-rated finding list (`high` / `medium` / `low`), each finding carrying file, line where known, and a one-line summary. **Findings only** — the subagent must not fix anything, so that the fix decisions below stay with the orchestrator.
 
-This is a safety net, not a replacement. It will not match the extension's depth, and the report must say so rather than present it as an equivalent pass.
+This is a safety net, not a replacement. It does not match the depth of the plugin or the review command, and the report must say so rather than present it as an equivalent pass.
 
-**6c — `REVIEW_MODE: none`.** No review is possible. Proceed to Phase 7 with an empty finding list and carry `REVIEW_MODE: none` forward. Do **not** continue as though the change set had been reviewed, and do **not** substitute a quick unstructured read of the diff for a review and report it as one.
+**6d — `REVIEW_MODE: none`.** No review is possible. Proceed to Phase 7 with an empty finding list and carry `REVIEW_MODE: none` forward. Do **not** continue as though the change set had been reviewed, and do **not** substitute a quick unstructured read of the diff for a review and report it as one.
 
-**Finding handling is identical in 6a and 6b:**
+**Finding handling is identical in 6a, 6b and 6c:**
 
 - For findings rated **high severity or above**, fix them inline. Prefer fixing them yourself if the change is small and localised; dispatch a fresh clean-context subagent (same protocol as Phase 5) if the fix spans multiple files or needs significant code understanding.
 - For lower-severity findings, record them in the report (do not block).
@@ -140,19 +135,20 @@ Write a markdown report to `<spec-dir>/opsmill-implement-report.md` and also pri
    If no tests were added or modified by the whole run, write `n/a — no new or modified tests in this implementation` instead of the table and state it explicitly so reviewers can verify the claim against the diff.
 5. **Review findings** — MUST open with a `Review mode:` line, before the table, stating how the findings were produced:
 
-   - `Review mode: extension (speckit-review-run)`
-   - `Review mode: fallback (built-in reviewer, reduced depth — install the review extension for a full pass)`
+   - `Review mode: plugin (pr-review-toolkit)`
+   - `Review mode: command (/code-review or /review)`
+   - `Review mode: fallback (built-in reviewer, reduced depth — install the pr-review-toolkit plugin for a full pass)`
    - `Review mode: none — NO REVIEW WAS PERFORMED`
 
-   In `fallback` and `none` mode, follow that line with the install hint: `specify extension add review` (see the repository README if the install itself fails).
+   In `fallback` and `none` mode, follow that line with the install hint: `/plugin install pr-review-toolkit@claude-plugins-official` in Claude Code.
 
    Then the table of severity / file / one-line summary, marking which findings were fixed inline and which were deferred. In `none` mode write `n/a — no review performed` in place of the table.
-6. **Autonomous decisions** — any judgment calls the orchestrator made that the user might want to revisit (chunk splits, blocked-task handling, review-finding triage choices). A `REVIEW_MODE` other than `extension` MUST appear here, with the reason the extension was unavailable.
+6. **Autonomous decisions** — any judgment calls the orchestrator made that the user might want to revisit (chunk splits, blocked-task handling, review-finding triage choices). A `REVIEW_MODE` other than `plugin` or `command` MUST appear here, with the reason no reviewer was available.
 7. **Suggested next steps** — e.g. "open a PR", "rerun `speckit.opsmill.implement` to retry the 2 blocked tasks", "address the deferred review findings".
 
 **Blocking rule.** If §4 contains any `MISSING` row, the report header MUST mark the run `INCOMPLETE` and §7 MUST list "produce local-pass evidence for the listed tests" as the first next step. Do not declare the spec done while local-pass evidence is missing. (`deferred — local E2E not supported` rows do NOT trigger this rule, but they MUST be flagged in §6.)
 
-**Review blocking rule.** If `REVIEW_MODE` is `none`, the report header MUST mark the run `INCOMPLETE` and §7 MUST list "install the review extension and re-run the review over this diff" as the first next step. `REVIEW_MODE: fallback` does **not** trigger this rule, because a review did happen, but it MUST be flagged in §5 and §6.
+**Review blocking rule.** If `REVIEW_MODE` is `none`, the report header MUST mark the run `INCOMPLETE` and §7 MUST list "install the pr-review-toolkit plugin and re-run the review over this diff" as the first next step. `REVIEW_MODE: fallback` does **not** trigger this rule, because a review did happen, but it MUST be flagged in §5 and §6.
 
 `REVIEW: none` blocks where `CRITIQUE: none` in `speckit-opsmill-prep` does not, on purpose: an un-critiqued spec is still read by a human before any code exists, so the gap is visible and cheap to close, whereas an unreviewed diff is already-written code that nothing downstream re-checks. See the Completion section of `speckit-opsmill-prep` for the full rationale.
 
@@ -164,7 +160,7 @@ Print a 4-6 line summary mirroring the report header + outcome counts so the use
 
 **Machine-readable status line (REQUIRED).** The **final line** of your output MUST be exactly:
 
-`STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | REVIEW: <extension|fallback|none|n/a> | REASON: <short reason or n/a>`
+`STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | REVIEW: <plugin|command|fallback|none|n/a> | REASON: <short reason or n/a>`
 
 - `STATUS: DONE` — all chunks completed and §4 local-pass evidence has no `MISSING` rows.
 - `STATUS: INCOMPLETE` — the run finished but the report is marked `INCOMPLETE` (e.g. missing local-pass evidence, blocked tasks recorded, or `REVIEW: none`).
