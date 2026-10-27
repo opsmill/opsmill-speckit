@@ -63,8 +63,9 @@ GIT_BRANCH_NAME="user-auth-infp-460" "$script" --json "Add user authentication"
 
 - Always construct `GIT_BRANCH_NAME` as `<short-name>-<ticket-id>` — ticket ID is the suffix
 - Always include `--json` so output can be parsed reliably
-- Run this script exactly once per feature
+- Run this script exactly once per feature; a run that fails before creating the branch does not count
 - For single quotes in args, use escape syntax: `'I'\''m Groot'`
+- `create-new-feature.sh` fails on an apostrophe in the description (`xargs: unterminated quote`). If that happens, run it again with the apostrophes removed from the description; the branch name does not depend on them
 
 ## Output
 
