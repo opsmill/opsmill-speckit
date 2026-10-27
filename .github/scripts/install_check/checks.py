@@ -156,9 +156,8 @@ class ScriptsExist:
 class Override:
     """A command that a preset replaces holds the preset's text."""
 
-    # spec-kit rewrites these on install: placeholders such as $ARGUMENTS and
-    # {SCRIPT}, and project-rooted paths such as /memory/constitution.md, which
-    # become .specify/memory/constitution.md.
+    # spec-kit rewrites these on install: placeholders such as {SCRIPT}, and
+    # project-rooted paths such as /memory/, which become .specify/memory/.
     REWRITTEN: ClassVar[re.Pattern] = re.compile(
         r"[${}]|(?<![\w.-])/(?:memory|scripts|templates)/"
     )
