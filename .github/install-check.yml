@@ -1,3 +1,9 @@
-# Extensions that the presets need but that this repo does not ship.
+# Extensions that the presets need but that this repo does not ship. A URL
+# installs that archive; null installs the extension bundled with spec-kit.
 extensions:
+  # critique-opsmill overrides speckit.critique.run from this extension.
+  critique: "https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip"
+  # jira-branch overrides speckit.git.feature from this extension.
+  git: null
+  # reconcile-opsmill overrides speckit.reconcile.run from this extension.
   reconcile: "https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip"
