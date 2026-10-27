@@ -1,0 +1,67 @@
+presets/critique-opsmill/LICENSE
+  s_c27296f43eae57::t_8068ad38bb9ac0 1-21
+presets/critique-opsmill/commands/speckit.critique.run.md
+  s_c27296f43eae57::t_8068ad38bb9ac0 1-3,6-238
+  s_c27296f43eae57::t_d6c4da68510576 4-5
+presets/critique-opsmill/preset.yml
+  s_c27296f43eae57::t_f06ebd5f3c39f8 1-6,8-27
+  s_c27296f43eae57::t_720e313725b68f 7
+presets/critique-opsmill/README.md
+  s_c27296f43eae57::t_b1531acfa14d2a 1-2,4,6,8-11,12,13-15,17-19
+  s_c27296f43eae57::t_1e93c4eccdf4c0 5,7,16,20
+presets/jira-branch/commands/speckit.git.feature.md
+  s_c27296f43eae57::t_771c8f2a894798 1-4,6,8-45,49-50,53-57,60-65,67,69-74
+  s_c27296f43eae57::t_4b39846d4e405e 47
+  s_c27296f43eae57::t_d50652e09730b3 46,51-52,58-59,75-76
+  s_c27296f43eae57::t_d964b370615f11 66
+presets/jira-branch/preset.yml
+  s_c27296f43eae57::t_8507e3274a8631 1-27
+presets/jira-branch/README.md
+  s_c27296f43eae57::t_791e22ccf65b15 1-2,4,6-8,10-11,13-16
+  s_c27296f43eae57::t_471a28bf045742 3,12
+.github/install-check.yml
+  s_c27296f43eae57::t_a14d58442f7146 1-2,4-8
+.github/scripts/install_check/checks.py
+  s_c27296f43eae57::t_d8c14adf71af62 161-164,188
+.github/scripts/tests/install_check/test_checks.py
+  s_c27296f43eae57::t_7f444e9c2ea518 91
+.github/scripts/install_check/components.py
+  s_c27296f43eae57::t_a14d58442f7146 55,58,62-69
+.github/scripts/install_check/project.py
+  s_c27296f43eae57::t_a14d58442f7146 68-70,72,79-82
+  s_c27296f43eae57::t_9f014d4e1d801e 83
+.github/scripts/tests/install_check/test_components.py
+  s_c27296f43eae57::t_a14d58442f7146 1-3,7-8,25-42
+README.md
+  s_c27296f43eae57::t_c96b47435036c3 31,45,48,189,193
+  s_c27296f43eae57::t_e692aa15491008 49-50,188,190-192
+  s_c27296f43eae57::t_720e313725b68f 46-47,54-55
+  s_c27296f43eae57::t_96878f04675e96 60-62,85,87-88,90-94,97-98,103,105-106,109-112,234-237
+presets/CHANGELOG.md
+  s_c27296f43eae57::t_4cc38bb68ede03 8-10,18
+  s_c27296f43eae57::t_a1ae537d1e307b 11-17
+CHANGELOG.md
+  s_c27296f43eae57::t_3d953fa400cbfa 11-19
+commands/auto.md
+  s_c27296f43eae57::t_40e024d6a2295e 54,59,71
+commands/prep.md
+  s_c27296f43eae57::t_40e024d6a2295e 45
+commands/implement.md
+  s_c27296f43eae57::t_40e024d6a2295e 37,39-44,46,90-92,94,96,104,106,108,138-140,143,146,151,163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c82048a7133a10bc7773371ea4dd5993d9a22ad8",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
