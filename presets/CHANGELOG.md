@@ -5,7 +5,9 @@ Release history for the `presets/` directory, taken as a unit.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2026-10-27
+
+Released in tag `v1.4.0`.
 
 ### Added
 - **`critique-opsmill`** (`1.0.0`) — overrides `speckit.critique.run` from

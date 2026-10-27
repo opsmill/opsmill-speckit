@@ -71,7 +71,7 @@ Install a tagged release, never `main`. Releases are listed in
 
 ```bash
 specify extension add opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.3.2.zip
+  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.4.0.zip
 ```
 
 The URL is not in a spec-kit catalog, so `specify` asks you to confirm the
@@ -115,6 +115,25 @@ When the critique or review provider is missing, `prep`, `auto`, and
 `implement` fall back to a reduced built-in critique or review subagent. The
 fallback is always reported on the machine-readable status line (`CRITIQUE:` /
 `REVIEW:`) and in the run summary, so a degraded run is never silent.
+
+## Upgrading spec-kit to 1.2 or later
+
+From `v1.4.0`, the workflow runs on spec-kit 1.2 and later. In a repo that
+uses an older spec-kit:
+
+1. Remove the `review` extension, which does not install on spec-kit 1.x:
+   `specify extension remove review`.
+2. Upgrade the CLI:
+   `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@vX.Y.Z`,
+   then `specify integration upgrade claude`.
+3. Reinstall `opsmill` from the `v1.4.0` tag (see [Install](#install)):
+   `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
+4. Install the [companions](#companion-extensions): `checkpoint`, `critique`
+   with the `critique-opsmill` preset, and the `pr-review-toolkit` plugin.
+5. If the repo has the `infrahub` preset, replace it with
+   [`jira-branch`](presets/jira-branch/README.md).
+6. Each developer makes PyYAML available to the Python that spec-kit's scripts
+   run (see [Requires](#requires)).
 
 ## Commands
 
@@ -164,7 +183,7 @@ Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
 preset, not the extension. Install separately:
 
 ```bash
-git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
+git clone -b v1.4.0 https://github.com/opsmill/opsmill-speckit
 specify preset add --dev opsmill-speckit/presets/taskstoissues-jira
 ```
 
@@ -183,7 +202,7 @@ present in the consumer repo), then the preset:
 specify extension add reconcile \
   --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
 
-git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
+git clone -b v1.4.0 https://github.com/opsmill/opsmill-speckit
 specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
 ```
 
