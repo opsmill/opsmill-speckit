@@ -1,0 +1,20 @@
+presets/jira-branch/commands/speckit.git.feature.md
+  s_c27296f43eae57::t_1961f3f493a59c 48,51
+  s_c27296f43eae57::t_2bd0a8a07da686 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2cbb93ae30003b1c66490a54c83360e74805f025",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
