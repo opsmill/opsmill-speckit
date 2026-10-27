@@ -7,3 +7,10 @@ extensions:
   git: null
   # reconcile-opsmill overrides speckit.reconcile.run from this extension.
   reconcile: "https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip"
+
+# Python packages that spec-kit's scripts need on a developer machine, as listed
+# in the README. The check runs those scripts with a fresh Python that has only
+# these packages, so a requirement missing from this list fails the check.
+python_packages:
+  # spec-kit 1.2 reads preset manifests with PyYAML when it composes templates.
+  - pyyaml

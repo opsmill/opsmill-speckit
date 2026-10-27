@@ -5,9 +5,10 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from install_check.checks import Check
+from install_check.checks import Check, PlanSetup
 from install_check.components import Bundle, Extension, Preset, RemoteExtension
 from install_check.project import Project, Specify
+from install_check.python import ScriptPython
 from install_check.repo import Manifests, Snapshot, YamlFile
 
 
@@ -33,6 +34,9 @@ class Installation:
             # Checked last, so that a later install cannot undo an override unnoticed.
             for preset in presets:
                 self.report(preset.overrides(project))
+            packages = tuple(config.get("python_packages") or ())
+            python = ScriptPython(packages).create(Path(tmp) / "python")
+            self.report([PlanSetup(project, python)])
             for path in Manifests(src).bundles():
                 self.report(Bundle(path, src).install(project))
         return "every component installed and registered"

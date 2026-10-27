@@ -56,6 +56,9 @@ independently installable artifacts:
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
+- PyYAML for the Python that spec-kit's scripts run: `python3`, or the one set
+  in `SPECKIT_PYTHON_EXECUTABLE`. spec-kit needs it to read the presets'
+  manifests; without it, `/speckit.plan` cannot prepare `plan.md`.
 
 Optional: the [companion extensions](#companion-extensions) `critique` and
 `review`, which give `prep`, `auto`, and `implement` their full critique and
