@@ -156,6 +156,13 @@ class ScriptsExist:
 class Override:
     """A command that a preset replaces holds the preset's text."""
 
+    # spec-kit rewrites these on install: placeholders such as $ARGUMENTS and
+    # {SCRIPT}, and project-rooted paths such as /memory/constitution.md, which
+    # become .specify/memory/constitution.md.
+    REWRITTEN: ClassVar[re.Pattern] = re.compile(
+        r"[${}]|(?<![\w.-])/(?:memory|scripts|templates)/"
+    )
+
     project: Project
     preset_id: str
     command: str
@@ -180,9 +187,8 @@ class Override:
     def probes(self) -> list[str]:
         text = self.source.read_text()
         body = re.sub(r"\A---\n.*?\n---\n", "", text, flags=re.DOTALL)
-        # Lines with placeholders change on install, so they are skipped.
         return [
             line.strip()
             for line in body.splitlines()
-            if len(line.strip()) >= 30 and not re.search(r"[${}]", line)
+            if len(line.strip()) >= 30 and not self.REWRITTEN.search(line)
         ]

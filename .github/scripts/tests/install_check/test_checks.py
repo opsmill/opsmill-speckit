@@ -88,6 +88,7 @@ class TestOverride:
         "---\ndescription: a line in the front matter that is long enough\n---\n"
         "This is the first line of the preset's own text.\n"
         "Run {SCRIPT} with $ARGUMENTS, which spec-kit rewrites on install.\n"
+        "Read `/memory/constitution.md`, a path that spec-kit rewrites too.\n"
         "short line\n"
         "This is the second line of the preset's own text.\n"
     )
