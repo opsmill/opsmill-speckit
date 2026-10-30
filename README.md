@@ -124,7 +124,7 @@ uses an older spec-kit:
 1. Remove the `review` extension, which does not install on spec-kit 1.x:
    `specify extension remove review`.
 2. Upgrade the CLI:
-   `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@vX.Y.Z`,
+   `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v1.2.3`,
    then `specify integration upgrade claude`.
 3. Reinstall `opsmill` from the `v1.4.0` tag (see [Install](#install)):
    `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
