@@ -1,0 +1,29 @@
+---
+# yamllint disable rule:truthy
+# Run the unit tests of the CI scripts. Blocking on pull requests.
+name: "Unit tests"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: "Test the CI scripts"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 5
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+      - name: "Install UV"
+        uses: "astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78" # v7.6.0
+      - name: "Test the install check"
+        run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/install_check
