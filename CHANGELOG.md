@@ -5,15 +5,20 @@ Release history for the `opsmill` spec-kit extension (`extension.yml`).
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.4.0] - 2026-10-27
+
+The current workflow runs on spec-kit 1.2, and still on 0.8.0 and later.
+README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-or-later).
 
 ### Changed
+- `extension.version` bumped `1.3.2` → `1.4.0`.
 - `implement` reviews with the `pr-review-toolkit` Claude Code plugin when it is
   installed, else with `/code-review`, else with its built-in
   reviewer. The spec-kit `review` extension is no longer used: it does not
   install on spec-kit 1.x. The `REVIEW:` field of the status line now reads
   `plugin`, `command`, `fallback`, `none` or `n/a`, instead of `extension`,
-  `fallback`, `none` or `n/a`.
+  `fallback`, `none` or `n/a`. Shipped as a minor bump, as in 1.3.0, whose
+  consumer audit found `auto` (updated here) to be the only reader of it.
 - README: the `checkpoint` extension, which provides the
   `speckit-checkpoint-commit` skill that `prep`, `implement` and `auto` commit
   with, is listed with the other companions.
