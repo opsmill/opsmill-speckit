@@ -126,6 +126,10 @@ class Override:
         agent_file = AgentFile(self.project, self.command).path()
         installed = {line.strip() for line in agent_file.read_text().splitlines()}
         probes = self.probes()
+        if not probes:
+            raise CheckFailed(
+                f"{self.preset_id}: {self.command}: no line of the preset can be checked"
+            )
         missing = [line for line in probes if line not in installed]
         if missing:
             raise CheckFailed(

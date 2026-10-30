@@ -100,6 +100,12 @@ class TestOverride:
         ):
             self.override(project, tmp_path).verify()
 
+    def test_fails_when_no_line_can_be_checked(self, project, tmp_path):
+        source = write(tmp_path / "preset" / "plan.md", "Run {SCRIPT}\nshort line\n")
+        write(project.path / ".claude" / "commands" / "speckit.plan.md", "anything\n")
+        with pytest.raises(CheckFailed, match="no line of the preset can be checked"):
+            Override(project, "a", "speckit.plan", source).verify()
+
     def test_probes_skip_front_matter_rewritten_and_short_lines(
         self, project, tmp_path
     ):
