@@ -1,0 +1,19 @@
+commands/implement.md
+  s_ac0560dfab27c4::t_b99db613e9f6df 92,94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d0be2e8e000b147b69f29494631ac577e2351bb2",
+  "prompts": {},
+  "sessions": {
+    "s_ac0560dfab27c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95280456-ba52-4b3d-ac52-6a3f3ecb90ab",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
