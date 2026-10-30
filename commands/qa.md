@@ -1,8 +1,8 @@
 ---
 description: Produce a manual QA checklist that walks a human tester through verifying the just-implemented feature, written next to spec.md / plan.md in the active feature directory.
 scripts:
-  sh: scripts/bash/check-prerequisites.sh --json --paths-only
-  ps: scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
+  sh: ../../scripts/bash/check-prerequisites.sh --json --paths-only
+  ps: ../../scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ---
 
 ## User Input

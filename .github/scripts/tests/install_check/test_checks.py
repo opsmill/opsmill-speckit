@@ -3,7 +3,13 @@ import json
 import pytest
 from support import write
 
-from install_check.checks import HooksRegistered, Override, OwnFiles, Registered
+from install_check.checks import (
+    HooksRegistered,
+    Override,
+    OwnFiles,
+    Registered,
+    ScriptsExist,
+)
 from install_check.errors import CheckFailed
 
 
@@ -113,3 +119,54 @@ class TestOverride:
             "This is the first line of the preset's own text.",
             "This is the second line of the preset's own text.",
         ]
+
+
+class TestScriptsExist:
+    def skill(self, project, text: str) -> None:
+        write(
+            project.path
+            / ".claude"
+            / "skills"
+            / "speckit-opsmill-summary"
+            / "SKILL.md",
+            text,
+        )
+
+    def check(self, project) -> ScriptsExist:
+        return ScriptsExist(project, "opsmill", ("speckit.opsmill.summary",))
+
+    def test_fails_on_a_script_resolved_inside_the_extension(self, project):
+        self.skill(
+            project,
+            "Run `.specify/extensions/opsmill/scripts/bash/check-prerequisites.sh --json`.\n",
+        )
+        with pytest.raises(
+            CheckFailed,
+            match=r"do not exist: \.specify/extensions/opsmill/scripts/bash/check-prerequisites\.sh \(speckit\.opsmill\.summary\)",
+        ):
+            self.check(project).verify()
+
+    def test_fails_on_a_missing_script_outside_specify(self, project):
+        self.skill(project, "Run `scripts/bash/check-prerequisites.sh --json`.\n")
+        with pytest.raises(
+            CheckFailed, match=r"do not exist: scripts/bash/check-prerequisites\.sh"
+        ):
+            self.check(project).verify()
+
+    def test_fails_when_a_command_that_declares_scripts_runs_none(self, project):
+        self.skill(project, "Find the feature directory yourself.\n")
+        check = ScriptsExist(
+            project,
+            "opsmill",
+            ("speckit.opsmill.summary",),
+            ("speckit.opsmill.summary",),
+        )
+        with pytest.raises(CheckFailed, match="declares scripts but runs none"):
+            check.verify()
+
+    def test_fails_on_an_unresolved_placeholder(self, project):
+        self.skill(project, "Run `{SCRIPT}` from repo root.\n")
+        with pytest.raises(
+            CheckFailed, match=r"still holds the \{SCRIPT\} placeholder"
+        ):
+            self.check(project).verify()

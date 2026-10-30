@@ -1,5 +1,6 @@
 """What a repo ships: its manifests and its files."""
 
+import re
 import shutil
 import subprocess
 from collections.abc import Iterator
@@ -23,6 +24,19 @@ class YamlFile:
         if not self.path.exists():
             return {}
         return yaml.safe_load(self.path.read_text()) or {}
+
+
+@dataclass(frozen=True)
+class FrontMatter:
+    """The YAML front matter of a command file, empty when the file has none."""
+
+    path: Path
+
+    def content(self) -> dict:
+        if not self.path.exists():
+            return {}
+        match = re.match(r"\A---\n(.*?)\n---\n", self.path.read_text(), re.DOTALL)
+        return (yaml.safe_load(match.group(1)) or {}) if match else {}
 
 
 @dataclass(frozen=True)

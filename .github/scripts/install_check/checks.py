@@ -114,6 +114,45 @@ class OwnFiles:
 
 
 @dataclass(frozen=True)
+class ScriptsExist:
+    """Every script that a component's commands run exists in the project."""
+
+    # The project is initialized with --script sh, so commands run .sh scripts.
+    # Any path to one counts, wherever spec-kit resolves it.
+    SCRIPT: ClassVar[re.Pattern] = re.compile(r"/?(?:[\w.-]+/)+[\w.-]+\.sh\b")
+
+    project: Project
+    component_id: str
+    commands: tuple[str, ...]
+    # Commands whose source declares `scripts:`, so their installed text must
+    # run at least one script.
+    scripted: tuple[str, ...] = ()
+
+    def verify(self) -> str:
+        found, missing = set(), set()
+        for command in self.commands:
+            text = AgentFile(self.project, command).path().read_text()
+            if "{SCRIPT}" in text:
+                raise CheckFailed(
+                    f"{self.component_id}: {command} still holds the {{SCRIPT}} placeholder"
+                )
+            scripts = self.SCRIPT.findall(text)
+            if command in self.scripted and not scripts:
+                raise CheckFailed(
+                    f"{self.component_id}: {command} declares scripts but runs none once installed"
+                )
+            for script in scripts:
+                found.add(script)
+                if not (self.project.path / script).is_file():
+                    missing.add(f"{script} ({command})")
+        if missing:
+            raise CheckFailed(
+                f"{self.component_id}: commands run scripts that do not exist: {', '.join(sorted(missing))}"
+            )
+        return f"{self.component_id}: {len(found)} scripts found"
+
+
+@dataclass(frozen=True)
 class Override:
     """A command that a preset replaces holds the preset's text."""
 
