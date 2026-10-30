@@ -89,9 +89,9 @@ Once **all** chunks have completed (including any retries), review the full diff
 
 **6a — `REVIEW_MODE: plugin`.** Dispatch the six `pr-review-toolkit` agents in parallel, each in a clean context: `code-reviewer`, `pr-test-analyzer`, `silent-failure-hunter`, `type-design-analyzer`, `comment-analyzer` and `code-simplifier`. Brief each one with the repository root, the diff range (`HEAD`-at-start..`HEAD`-now), `spec.md` and `tasks.md` as the statement of intent, and the project context files resolved by the same rule as Phase 5. Ask each for **findings only**, without editing any file: a severity (`high` / `medium` / `low`), the file, the line where known, and a one-line summary.
 
-**6b — `REVIEW_MODE: command`.** Run the code review command (`/code-review`, else `/review`) on the change set `HEAD`-at-start..`HEAD`-now, and collect its findings in the same shape as 6a.
+**6b — `REVIEW_MODE: command`.** Run the code review command (`/code-review`, else `/review`) on the change set, given as a Git revision range (`<HEAD-at-start>..HEAD`). The command reviews in the background: wait for its findings before you go on, and collect them in the same shape as 6a.
 
-If 6a or 6b cannot run — the agents or the command are not found, or they end without returning findings — move to the next mode and run it. Record the change and its cause in Phase 7 §5 and §6: the mode you report is the mode that actually ran.
+If 6a or 6b cannot run — the agents or the command are not found, or they fail before they finish — move to the next mode and run it. A review that finishes with no findings has run: keep its mode and go on with nothing to fix. Record the change and its cause in Phase 7 §5 and §6: the mode you report is the mode that actually ran.
 
 **6c — `REVIEW_MODE: fallback`.** No reviewer is available, so run the review yourself. Dispatch **one** clean-context review subagent using the same briefing protocol as Phase 5 (self-contained prompt, no inherited history, resolved absolute paths). Brief it with:
 
