@@ -1,0 +1,53 @@
+.github/workflows/unit-tests.yml
+  s_f3df87e5b4ebd5::t_9f883fa43432d9 30-31
+commands/summary.md
+  s_c27296f43eae57::t_1ce01468673e8b 4-5
+commands/qa.md
+  s_c27296f43eae57::t_1ce01468673e8b 4-5
+.github/scripts/tests/install_check/test_installation.py
+  s_c27296f43eae57::t_cf982201288cca 15,26-29
+  s_c27296f43eae57::t_ee7c20d6724855 57-58
+.github/scripts/install_check/components.py
+  s_c27296f43eae57::t_cf982201288cca 81
+  s_c27296f43eae57::t_51127699b41264 13,35,42-43
+  s_f3df87e5b4ebd5::t_0570f48308dc21 83-88
+  s_c27296f43eae57::t_66307b7dbc6dc5 16,29-34,44,89-100
+.github/scripts/install_check/checks.py
+  s_c27296f43eae57::t_ba9a7b319703da 117-120,123-126,130-135,145-148,152-154
+  s_c27296f43eae57::t_51127699b41264 136-138,149-151
+  s_f3df87e5b4ebd5::t_8657e5a4f5de89 116
+  s_c27296f43eae57::t_66307b7dbc6dc5 121-122,127-129,139-144
+.github/scripts/tests/install_check/test_checks.py
+  s_c27296f43eae57::t_51127699b41264 6-12,122-148,167-172
+  s_c27296f43eae57::t_66307b7dbc6dc5 149-166
+CHANGELOG.md
+  s_c27296f43eae57::t_5e57e924e3d7f5 15-18
+.github/scripts/install_check/repo.py
+  s_c27296f43eae57::t_ee7c20d6724855 31,36-37
+  s_c27296f43eae57::t_66307b7dbc6dc5 3,29-30,32-35,38-39
+  s_c27296f43eae57::t_e847e60ed7a832 40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9b85ea2ad98f1cce14690605966ca0d6b04114af",
+  "prompts": {},
+  "sessions": {
+    "s_c27296f43eae57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "432f01c8-c27d-498a-a1ba-16c5709d37c8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_f3df87e5b4ebd5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5de7ec83-8c74-4a76-a42e-d52ff2b64303",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
