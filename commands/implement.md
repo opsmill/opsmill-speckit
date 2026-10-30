@@ -39,7 +39,7 @@ Before any work begins:
    | Reviewer available | `REVIEW_MODE` |
    |--------------------|---------------|
    | The `pr-review-toolkit` plugin: its agents (`pr-review-toolkit:code-reviewer`, `pr-review-toolkit:pr-test-analyzer`, …) are among the subagent types you can dispatch | `plugin` |
-   | A code review command: the `/code-review` skill, or the `/review` command | `command` |
+   | The `/review` command of Claude Code | `command` |
    | Neither, and you can dispatch clean-context subagents | `fallback` |
    | Neither, and no subagent dispatch is available | `none` |
 
@@ -89,7 +89,7 @@ Once **all** chunks have completed (including any retries), review the full diff
 
 **6a — `REVIEW_MODE: plugin`.** Dispatch the six `pr-review-toolkit` agents in parallel, each in a clean context: `code-reviewer`, `pr-test-analyzer`, `silent-failure-hunter`, `type-design-analyzer`, `comment-analyzer` and `code-simplifier`. Brief each one with the repository root, the diff range (`HEAD`-at-start..`HEAD`-now), `spec.md` and `tasks.md` as the statement of intent, and the project context files resolved by the same rule as Phase 5. Ask each for **findings only**, without editing any file: a severity (`high` / `medium` / `low`), the file, the line where known, and a one-line summary.
 
-**6b — `REVIEW_MODE: command`.** Run the code review command (`/code-review`, else `/review`) on the change set, given as a Git revision range (`<HEAD-at-start>..HEAD`). The command reviews in the background: wait for its findings before you go on, and collect them in the same shape as 6a.
+**6b — `REVIEW_MODE: command`.** Run `/review` on the change set, given as a Git revision range (`<HEAD-at-start>..HEAD`). The command reviews in the background: wait for its findings before you go on, and collect them in the same shape as 6a.
 
 If 6a or 6b cannot run — the agents or the command are not found, or they fail before they finish — move to the next mode and run it. A review that finishes with no findings has run: keep its mode and go on with nothing to fix. Record the change and its cause in Phase 7 §5 and §6: the mode you report is the mode that actually ran.
 
@@ -136,7 +136,7 @@ Write a markdown report to `<spec-dir>/opsmill-implement-report.md` and also pri
 5. **Review findings** — MUST open with a `Review mode:` line, before the table, stating how the findings were produced:
 
    - `Review mode: plugin (pr-review-toolkit)`
-   - `Review mode: command (/code-review or /review)`
+   - `Review mode: command (/review)`
    - `Review mode: fallback (built-in reviewer, reduced depth — install the pr-review-toolkit plugin for a full pass)`
    - `Review mode: none — NO REVIEW WAS PERFORMED`
 

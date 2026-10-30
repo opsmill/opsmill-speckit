@@ -9,7 +9,7 @@ and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ### Changed
 - `implement` reviews with the `pr-review-toolkit` Claude Code plugin when it is
-  installed, else with `/code-review` or `/review`, else with its built-in
+  installed, else with `/review`, else with its built-in
   reviewer. The spec-kit `review` extension is no longer used: it does not
   install on spec-kit 1.x. The `REVIEW:` field of the status line now reads
   `plugin`, `command`, `fallback`, `none` or `n/a`, instead of `extension`,

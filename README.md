@@ -94,7 +94,7 @@ The `prep`, `auto`, and `implement` commands rely on these companions:
   [`critique-opsmill`](presets/critique-opsmill/README.md) preset with it.
 - [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
   — a Claude Code plugin whose review agents `implement` runs in parallel.
-  Without it, `implement` uses `/code-review` or `/review` if available.
+  Without it, `implement` uses `/review` if available.
 
 ```bash
 specify extension add checkpoint \
