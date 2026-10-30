@@ -19,31 +19,35 @@ jobs:
     permissions:
       contents: read
       issues: write
-    env:
-      # Read access to every audited repo; GITHUB_TOKEN only reaches this repo.
-      AUDIT_TOKEN: ${{ secrets.SPECKIT_AUDIT_TOKEN }}
     steps:
       - name: "Check out repository code"
-        uses: "actions/checkout@v7"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
         with:
           # The report compares repos with the latest vX.Y.Z tag.
           fetch-depth: 0
-      - name: "Report a missing token"
-        if: env.AUDIT_TOKEN == ''
-        run: |
-          echo "Secret SPECKIT_AUDIT_TOKEN is not set: the audit cannot read other repos." >> "$GITHUB_STEP_SUMMARY"
-      - name: "Install UV"
-        if: env.AUDIT_TOKEN != ''
-        uses: "astral-sh/setup-uv@v7"
-      - name: "Audit the repos"
-        if: env.AUDIT_TOKEN != ''
+      - name: "Check the audit token"
+        id: "token"
         env:
-          GH_TOKEN: ${{ env.AUDIT_TOKEN }}
+          AUDIT_TOKEN: ${{ secrets.SPECKIT_AUDIT_TOKEN }}
+        run: |
+          if [ -n "$AUDIT_TOKEN" ]; then
+            echo "set=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Secret SPECKIT_AUDIT_TOKEN is not set: the audit cannot read other repos." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: "Install UV"
+        if: steps.token.outputs.set == 'true'
+        uses: "astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78" # v7.6.0
+      - name: "Audit the repos"
+        if: steps.token.outputs.set == 'true'
+        env:
+          # Read access to every audited repo; GITHUB_TOKEN only reaches this repo.
+          GH_TOKEN: ${{ secrets.SPECKIT_AUDIT_TOKEN }}
         run: |
           uv run -q .github/scripts/audit_repos.py > report.md
           cat report.md >> "$GITHUB_STEP_SUMMARY"
       - name: "Update the report issue"
-        if: env.AUDIT_TOKEN != ''
+        if: steps.token.outputs.set == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
