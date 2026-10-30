@@ -130,8 +130,10 @@ uses an older spec-kit:
    `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
 4. Install the [companions](#companion-extensions): `checkpoint`, `critique`
    with the `critique-opsmill` preset, and the `pr-review-toolkit` plugin.
-5. If the repo has the `infrahub` preset, replace it with
-   [`jira-branch`](presets/jira-branch/README.md).
+5. If the repo has the
+   [`infrahub` preset](https://github.com/opsmill/infrahub/tree/stable/dev/spec-kit/presets/infrahub)
+   copied from opsmill/infrahub, which checks branch names against Jira,
+   replace it with [`jira-branch`](presets/jira-branch/README.md).
 6. Each developer makes PyYAML available to the Python that spec-kit's scripts
    run (see [Requires](#requires)).
 
