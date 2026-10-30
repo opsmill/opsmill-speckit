@@ -15,7 +15,8 @@ and this collection adheres to [Semantic Versioning](https://semver.org/spec/v2.
 - **`jira-branch`** (`1.0.0`) — overrides `speckit.git.feature` so that a
   feature branch needs a JPD or Jira reference. Replaces the `infrahub` preset
   of opsmill/infrahub, which breaks on spec-kit 1.2: the git extension renamed
-  its branch script, and `FEATURE_NUM` holds the full branch name.
+  its branch script, and `FEATURE_NUM` holds the full branch name. It creates
+  the branch with `git checkout -b`, a command that permission rules can match.
 
 ## [1.1.0] - 2026-07-09
 

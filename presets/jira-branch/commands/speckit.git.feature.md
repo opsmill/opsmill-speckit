@@ -43,33 +43,21 @@ Generate a concise short name (2-4 words) from the feature description:
 
 ## Step 3: Create Branch
 
-Construct the branch name as `<short-name>-<ticket-id>` (e.g., `user-auth-infp-460`), then pass it as `GIT_BRANCH_NAME` to bypass the script's automatic numbering.
+Construct the branch name as `<short-name>-<ticket-id>` (e.g., `user-auth-infp-460`): the ticket ID is the suffix, and the name must be 244 bytes or fewer.
 
-List `.specify/extensions/git/scripts/bash/` to find the git extension's branch script: `create-new-feature-branch.sh`, or `create-new-feature.sh` in older versions of the extension. Run it by its full path, written out, not through a shell variable or `$(...)`, so that permission rules can match the command (`<branch-script>` below is the file name you found):
-
-```bash
-GIT_BRANCH_NAME="<short-name>-<ticket-id>" .specify/extensions/git/scripts/bash/<branch-script> --json "<feature description>"
-```
-
-Example:
+Create the branch and switch to it with one plain git command, written out, without an environment variable before it, so that permission rules can match it:
 
 ```bash
-GIT_BRANCH_NAME="user-auth-infp-460" .specify/extensions/git/scripts/bash/<branch-script> --json "Add user authentication"
+git checkout -b "<short-name>-<ticket-id>"
 ```
 
-**IMPORTANT**:
+If the branch already exists, do not switch to it and do not create another one: stop and tell the user.
 
-- Always construct `GIT_BRANCH_NAME` as `<short-name>-<ticket-id>` — ticket ID is the suffix
-- Always include `--json` so output can be parsed reliably
-- Run this script exactly once per feature; a run that fails before creating the branch does not count
-- For single quotes in args, use escape syntax: `'I'\''m Groot'`
-- `create-new-feature.sh` fails on an apostrophe in the description (`xargs: unterminated quote`). If that happens, run it again with the apostrophes removed from the description; the branch name does not depend on them
+The git extension's branch script is not used: it only takes an exact branch name through the `GIT_BRANCH_NAME` environment variable, which keeps permission rules from matching the command.
 
 ## Output
 
-The script outputs JSON with:
+Report, as JSON:
 
-- `BRANCH_NAME`: The branch name (e.g., `user-auth-infp-460`)
-- `FEATURE_NUM`: With `GIT_BRANCH_NAME` set, the script returns the full branch name here, not the ticket ID
-
-Report the ticket ID resolved in Step 1 (e.g., `infp-460`), not `FEATURE_NUM`.
+- `BRANCH_NAME`: the branch name (e.g., `user-auth-infp-460`)
+- `FEATURE_NUM`: the ticket ID resolved in Step 1 (e.g., `infp-460`)
