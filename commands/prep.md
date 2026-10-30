@@ -42,7 +42,7 @@ Invoke the `speckit-plan` skill.
 
 Run the dual-lens (Product + Engineering) critique against `spec.md` and `plan.md` before any tasks are generated.
 
-**Resolve the critique provider first.** Record the answer as `CRITIQUE_MODE`, the same way Phase 0 of `speckit-opsmill-implement` resolves `REVIEW_MODE`. Run this check from the repository root and read `CRITIQUE_MODE` off its output — do not decide from memory:
+**Resolve the critique provider first.** Record the answer as `CRITIQUE_MODE`. Run this check from the repository root and read `CRITIQUE_MODE` off its output — do not decide from memory:
 
 ```bash
 if [ -d .specify/extensions/critique ] || grep -q '"critique"' .specify/extensions/.registry 2>/dev/null; then

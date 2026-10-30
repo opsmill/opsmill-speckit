@@ -1,6 +1,9 @@
-# Extensions that the presets need but that this repo does not ship. A URL
-# installs that archive; null installs the extension bundled with spec-kit.
+# Extensions that our commands and presets need but that this repo does not
+# ship. A URL installs that archive; null installs the extension bundled with
+# spec-kit.
 extensions:
+  # prep, implement and auto commit with speckit-checkpoint-commit from this extension.
+  checkpoint: "https://github.com/aaronrsun/spec-kit-checkpoint/archive/refs/tags/v1.0.0.zip"
   # critique-opsmill overrides speckit.critique.run from this extension.
   critique: "https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip"
   # jira-branch overrides speckit.git.feature from this extension.

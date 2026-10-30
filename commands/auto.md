@@ -51,12 +51,12 @@ Invoke the `speckit-opsmill-implement` skill with the `SPEC_DIR` path from Phase
 
 **Read implement's status line.** `speckit-opsmill-implement` ends its output with a literal final line:
 
-`STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <...> | REVIEW: <extension|fallback|none|n/a> | REASON: <...>`
+`STATUS: <DONE|INCOMPLETE|BLOCKED> | SPEC_DIR: <...> | REVIEW: <plugin|command|fallback|none|n/a> | REASON: <...>`
 
 - `STATUS: BLOCKED` — a Phase 0 stop-condition aborted before any implementation (no report written). Surface the reason in the final summary; do not retry from this orchestrator.
 - `STATUS: INCOMPLETE` — blocked tasks, missing local-pass evidence, or `REVIEW: none`; capture that for the final summary. The user decides whether to re-run.
 - `STATUS: DONE` — all chunks completed with evidence.
-- Take **`REVIEW`** as the review coverage of the run. A missing review extension does not stop the implement phase: `REVIEW: fallback` means the sub-skill ran a reduced built-in review, `REVIEW: none` means no review happened at all and forces `STATUS: INCOMPLETE`. `REVIEW: n/a` is not a coverage claim either — it means implement aborted before Phase 0 resolved a provider, and it pairs with `STATUS: BLOCKED`. Never treat a completed implement phase as a reviewed change set without checking this field.
+- Take **`REVIEW`** as the review coverage of the run. A missing reviewer does not stop the implement phase: `REVIEW: plugin` and `REVIEW: command` are full reviews, `REVIEW: fallback` means the sub-skill ran a reduced built-in review, `REVIEW: none` means no review happened at all and forces `STATUS: INCOMPLETE`. `REVIEW: n/a` is not a coverage claim either — it means implement aborted before Phase 0 resolved a provider, and it pairs with `STATUS: BLOCKED`. Never treat a completed implement phase as a reviewed change set without checking this field.
 
 In every case, do **not** retry from this orchestrator.
 
@@ -68,7 +68,7 @@ After both phases are complete, provide a brief summary:
 - Whether the alignment check inside auto-prep required retries (and how many)
 - Number of tasks completed (from the auto-implement report)
 - Any review findings that were fixed inline vs. deferred
-- **Coverage of the quality gates (REQUIRED).** State the `CRITIQUE` value from Phase A and the `REVIEW` value from Phase B explicitly. If either is not `extension`, lead the summary with it, name the missing extension, and give the install command (`specify extension add critique` / `specify extension add review`). An autonomous run that quietly skipped a quality gate is the one outcome the user must never have to discover by opening a report file
+- **Coverage of the quality gates (REQUIRED).** State the `CRITIQUE` value from Phase A and the `REVIEW` value from Phase B explicitly. If `CRITIQUE` is not `extension`, or `REVIEW` is not `plugin` or `command`, lead the summary with it, name what is missing, and give the install command (`specify extension add critique` / `/plugin install pr-review-toolkit@claude-plugins-official`). An autonomous run that quietly skipped a quality gate is the one outcome the user must never have to discover by opening a report file
 - Any notable decisions you or the sub-skills made autonomously
 
 Do **not** open a PR, push, run extraction, or start a new feature. The user takes it from there — extraction (`/speckit.opsmill.extract`) is intentionally left as a manual follow-up so the user can review the implementation report first.
