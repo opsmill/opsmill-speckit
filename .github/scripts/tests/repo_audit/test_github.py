@@ -10,7 +10,7 @@ class FakeGraphQL:
     def query(self, query: str, **variables: str) -> dict:
         if "after" not in variables:
             nodes, info = (
-                [{"nameWithOwner": "o/a"}],
+                [{"nameWithOwner": "o/a", "url": "u"}],
                 {"hasNextPage": True, "endCursor": "c1"},
             )
         else:
@@ -30,4 +30,6 @@ class FakeGraphQL:
 
 
 def test_reads_every_page_of_repos():
-    assert [repo.name for repo in Organization("o", FakeGraphQL())] == ["o/b"]
+    assert [
+        (repo.name, repo.uses_speckit) for repo in Organization("o", FakeGraphQL())
+    ] == [("o/a", False), ("o/b", True)]

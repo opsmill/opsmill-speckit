@@ -44,7 +44,11 @@ class Report:
     def text(self) -> str:
         scoped = self.scoped()
         behind = [repo for repo in scoped if repo.behind(self.release)]
-        others = [repo for repo in self.repos if repo.name not in self.in_scope]
+        others = [
+            repo
+            for repo in self.repos
+            if repo.uses_speckit and repo.name not in self.in_scope
+        ]
         lines = [
             (
                 f"{len(behind)} of {len(scoped)} repos in scope are behind {self.release.tag}, "
@@ -69,9 +73,10 @@ class Report:
         return "\n".join(lines) + "\n"
 
     def scoped(self) -> list[RepoState]:
-        """The repos in scope, including those without Spec Kit."""
+        """The repos in scope; a repo the token cannot read is missing from the query."""
         by_name = {repo.name: repo for repo in self.repos}
         return [
-            by_name.get(name) or RepoState(name, f"https://github.com/{name}", None)
+            by_name.get(name)
+            or RepoState(name, f"https://github.com/{name}", None, readable=False)
             for name in self.in_scope
         ]

@@ -38,7 +38,7 @@ class Blob:
 
 @dataclass(frozen=True)
 class Organization:
-    """The non-archived repos of an organization that use Spec Kit."""
+    """The non-archived repos of an organization that the token can read."""
 
     FILES: ClassVar[dict[str, str]] = {
         "specify_dir": ".specify",
@@ -73,8 +73,7 @@ query($org: String!, $after: String) {{
                 "repositories"
             ]
             for node in page["nodes"]:
-                if node.get("specify_dir"):
-                    yield self.state(node)
+                yield self.state(node)
             if not page["pageInfo"]["hasNextPage"]:
                 return
             after = page["pageInfo"]["endCursor"]
@@ -88,4 +87,5 @@ query($org: String!, $after: String) {{
             speckit=Blob(node, "init_options").json().get("speckit_version"),
             extensions={k: str(v.get("version", "?")) for k, v in extensions.items()},
             presets={k: str(v.get("version", "?")) for k, v in presets.items()},
+            uses_speckit=bool(node.get("specify_dir")),
         )

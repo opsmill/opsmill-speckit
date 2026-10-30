@@ -31,9 +31,13 @@ class RepoState:
     speckit: str | None
     extensions: dict[str, str] = field(default_factory=dict)
     presets: dict[str, str] = field(default_factory=dict)
+    uses_speckit: bool = True
+    readable: bool = True
 
     def behind(self, release: Release) -> list[str]:
         """Why the repo is behind the release; empty when it is up to date."""
+        if not self.readable:
+            return ["not readable with the audit token"]
         reasons = []
         installed = self.extensions.get(EXTENSION_ID)
         if installed is None:
