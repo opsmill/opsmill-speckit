@@ -87,7 +87,13 @@ Respect explicit dependencies in `tasks.md`. Sequential `[P]`-free tasks must st
 
 Once **all** chunks have completed (including any retries), review the full diff (`HEAD`-at-start..`HEAD`-now). How you *produce* the findings depends on the `REVIEW_MODE` resolved in Phase 0. What you *do* with them does not.
 
-**6a — `REVIEW_MODE: plugin`.** Dispatch the six `pr-review-toolkit` agents in parallel, each in a clean context: `code-reviewer`, `pr-test-analyzer`, `silent-failure-hunter`, `type-design-analyzer`, `comment-analyzer` and `code-simplifier`. Brief each one with the repository root, the diff range (`HEAD`-at-start..`HEAD`-now), `spec.md` and `tasks.md` as the statement of intent, and the project context files resolved by the same rule as Phase 5. Ask each for **findings only**, without editing any file: a severity (`high` / `medium` / `low`), the file, the line where known, and a one-line summary.
+**6a — `REVIEW_MODE: plugin`.** Dispatch five `pr-review-toolkit` agents in parallel, each in a clean context: `code-reviewer`, `pr-test-analyzer`, `silent-failure-hunter`, `type-design-analyzer` and `comment-analyzer`. Brief each one with the repository root, the diff range (`HEAD`-at-start..`HEAD`-now), `spec.md` and `tasks.md` as the statement of intent, and the project context files resolved by the same rule as Phase 5. Ask each for **findings only**, without editing any file: a severity (`high` / `medium` / `low`), the file, the line where known, and a one-line summary.
+
+Once all five have returned, run `code-simplifier` alone, with the same briefing. It is built to edit code rather than report, so its edits are never kept:
+
+- Before it runs, check that the working tree is clean (`git status --porcelain` prints nothing). If it is not, skip `code-simplifier` and say so in the report.
+- After it ends, turn every change it made into a `low` finding: read them with `git diff` and `git status --porcelain`, one finding per simplification, with the file and line.
+- Then discard its changes: `git restore .` for edited files, and delete the files it created (listed as `??`). The working tree must be clean again before the finding handling below.
 
 **6b — `REVIEW_MODE: command`.** Run `/review` on the change set, given as a Git revision range (`<HEAD-at-start>..HEAD`). The command reviews in the background: wait for its findings before you go on, and collect them in the same shape as 6a.
 

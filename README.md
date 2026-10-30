@@ -93,7 +93,9 @@ The `prep`, `auto`, and `implement` commands rely on these companions:
   `speckit-critique-run` skill used by `prep` and `auto`. Install the
   [`critique-opsmill`](presets/critique-opsmill/README.md) preset with it.
 - [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
-  — a Claude Code plugin whose review agents `implement` runs in parallel.
+  — a Claude Code plugin whose review agents `implement` runs: five in
+  parallel, then `code-simplifier` alone, whose edits become findings and are
+  discarded.
   Without it, `implement` uses `/review` if available.
 
 ```bash
