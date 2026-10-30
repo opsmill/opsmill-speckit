@@ -1,0 +1,23 @@
+.github/workflows/install-latest.yml
+  s_ac0560dfab27c4::t_6515a4a8d2debd 23,25
+.github/workflows/install.yml
+  s_ac0560dfab27c4::t_d43caa0b2cfc21 26,28
+.github/workflows/unit-tests.yml
+  s_ac0560dfab27c4::t_92d1d04a569583 25,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ad41d22675bdf85efe825a1e714e4c7b835e120a",
+  "prompts": {},
+  "sessions": {
+    "s_ac0560dfab27c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95280456-ba52-4b3d-ac52-6a3f3ecb90ab",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
