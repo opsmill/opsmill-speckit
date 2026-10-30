@@ -96,7 +96,7 @@ The `prep`, `auto`, and `implement` commands rely on these companions:
   — a Claude Code plugin whose review agents `implement` runs: five in
   parallel, then `code-simplifier` alone, whose edits become findings and are
   discarded.
-  Without it, `implement` uses `/review` if available.
+  Without it, `implement` uses `/code-review` if available.
 
 ```bash
 specify extension add checkpoint \
