@@ -65,15 +65,21 @@ class Registry:
     path: Path
     kind: str
 
+    def has(self, component_id: str) -> bool:
+        return component_id in self.entries()
+
     def entry(self, component_id: str) -> dict:
-        entries = (
-            json.loads(self.path.read_text())[self.kind] if self.path.exists() else {}
-        )
+        entries = self.entries()
         if component_id not in entries:
             raise CheckFailed(
                 f"{component_id} is not in .specify/{self.kind}/.registry"
             )
         return entries[component_id]
+
+    def entries(self) -> dict:
+        if not self.path.exists():
+            return {}
+        return json.loads(self.path.read_text())[self.kind]
 
 
 @dataclass(frozen=True)

@@ -1,6 +1,8 @@
 """Checks on an installed project."""
 
+import os
 import re
+import subprocess
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -156,6 +158,12 @@ class ScriptsExist:
 class Override:
     """A command that a preset replaces holds the preset's text."""
 
+    # spec-kit rewrites these on install: placeholders such as {SCRIPT}, and
+    # project-rooted paths such as /memory/, which become .specify/memory/.
+    REWRITTEN: ClassVar[re.Pattern] = re.compile(
+        r"[${}]|(?<![\w.-])/(?:memory|scripts|templates)/"
+    )
+
     project: Project
     preset_id: str
     command: str
@@ -180,9 +188,49 @@ class Override:
     def probes(self) -> list[str]:
         text = self.source.read_text()
         body = re.sub(r"\A---\n.*?\n---\n", "", text, flags=re.DOTALL)
-        # Lines with placeholders change on install, so they are skipped.
         return [
             line.strip()
             for line in body.splitlines()
-            if len(line.strip()) >= 30 and not re.search(r"[${}]", line)
+            if len(line.strip()) >= 30 and not self.REWRITTEN.search(line)
         ]
+
+
+@dataclass(frozen=True)
+class PlanSetup:
+    """spec-kit's plan script runs with the installed presets.
+
+    The script reads every preset manifest to compose the plan template, with
+    the Python in SPECKIT_PYTHON_EXECUTABLE, else python3 from PATH. Both point
+    to the given Python, so that no other Python can hide a missing package.
+    """
+
+    FEATURE: ClassVar[str] = "001-install-check"
+
+    project: Project
+    python: Path
+
+    def verify(self) -> str:
+        feature = self.project.path / "specs" / self.FEATURE
+        feature.mkdir(parents=True)
+        (feature / "spec.md").write_text("# Install check\n")
+        (self.project.path / ".specify" / "feature.json").write_text(
+            f'{{"feature_directory": "specs/{self.FEATURE}"}}\n'
+        )
+        result = subprocess.run(
+            ["bash", ".specify/scripts/bash/setup-plan.sh", "--json"],
+            cwd=self.project.path,
+            env={
+                **os.environ,
+                "PATH": f"{self.python.parent}{os.pathsep}{os.environ.get('PATH', '')}",
+                "SPECIFY_FEATURE": self.FEATURE,
+                "SPECKIT_PYTHON_EXECUTABLE": str(self.python),
+            },
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0 or not (feature / "plan.md").is_file():
+            raise CheckFailed(
+                f"setup-plan.sh failed with the installed presets (exit {result.returncode}):\n{result.stdout}{result.stderr}"
+            )
+        return "setup-plan.sh composes the plan template with the installed presets"

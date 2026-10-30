@@ -52,13 +52,21 @@ class Extension:
 
 @dataclass(frozen=True)
 class RemoteExtension:
-    """An extension installed from a URL."""
+    """An extension the repo does not ship: from a URL, or bundled with spec-kit."""
 
     ext_id: str
-    url: str
+    url: str | None
 
     def install(self, project: Project) -> list[Check]:
-        project.run("extension", "add", self.ext_id, "--from", self.url, confirm=True)
+        # Some spec-kit releases install the bundled git extension on init.
+        if project.registry("extensions").has(self.ext_id):
+            return [Done(f"{self.ext_id} already installed")]
+        if self.url:
+            project.run(
+                "extension", "add", self.ext_id, "--from", self.url, confirm=True
+            )
+        else:
+            project.run("extension", "add", self.ext_id)
         return []
 
 
