@@ -128,8 +128,10 @@ uses an older spec-kit:
    then `specify integration upgrade claude`.
 3. Reinstall `opsmill` from the `v1.4.0` tag (see [Install](#install)):
    `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
-4. Install the [companions](#companion-extensions): `checkpoint`, `critique`
-   with the `critique-opsmill` preset, and the `pr-review-toolkit` plugin.
+4. Install the [companions](#companion-extensions) that the repo does not have
+   yet (`specify extension list` shows them): `checkpoint`, `critique`, and the
+   `pr-review-toolkit` plugin. Then add the `critique-opsmill` preset, also
+   when `critique` was already installed.
 5. If the repo has the
    [`infrahub` preset](https://github.com/opsmill/infrahub/tree/4d9fd0f0a469217aada697cb5ef306f7ef485f78/dev/spec-kit/presets/infrahub)
    copied from opsmill/infrahub, which checks branch names against Jira,
