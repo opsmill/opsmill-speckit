@@ -151,30 +151,55 @@ When the critique or review provider is missing, `prep`, `auto`, and
 fallback is always reported on the machine-readable status line (`CRITIQUE:` /
 `REVIEW:`) and in the run summary, so a degraded run is never silent.
 
-## Upgrading spec-kit to 1.2 or later
+## Upgrading from 1.4.1 or earlier
 
-From `v1.4.0`, the workflow runs on spec-kit 1.2 and later. In a repo that
-uses an older spec-kit:
+In a repo that installed opsmill-speckit 1.4.1 or earlier component by component:
 
-1. Remove the `review` extension, which does not install on spec-kit 1.x:
-   `specify extension remove review`.
-2. Upgrade the CLI:
-   `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v1.2.3`,
-   then `specify integration upgrade claude`.
-3. Reinstall `opsmill` from the `v1.4.0` tag (see [Install](#install)):
-   `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
-4. Install the [companions](#companion-extensions) that the repo does not have
-   yet (`specify extension list` shows them): `checkpoint`, `critique`, and the
-   `pr-review-toolkit` plugin. Then add the `critique-opsmill` preset, also
-   when `critique` was already installed.
-5. If the repo has the
+1. Remove the `review` extension if the repo has it. It does not install on
+   Spec Kit 1.x: `specify extension remove review`.
+2. Upgrade the CLI to Spec Kit 1.2.4 or later, for example with
+   `uv tool install specify-cli --force`, then run
+   `specify integration upgrade claude`.
+3. Remove the components of 1.4.1 or earlier that the repo has (`specify extension list` and
+   `specify preset list` show them). A component installed on its own at
+   another version does not satisfy a bundle's pin, and a bundle never takes
+   over a component installed on its own
+   ([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#install-a-bundle)):
+
+   ```bash
+   specify preset remove critique-opsmill
+   specify preset remove reconcile-opsmill
+   specify preset remove jira-branch
+   specify preset remove taskstoissues-jira
+   specify extension remove opsmill
+   specify extension remove critique
+   specify extension remove checkpoint
+   specify extension remove reconcile
+   ```
+
+   Also remove the
    [`infrahub` preset](https://github.com/opsmill/infrahub/tree/4d9fd0f0a469217aada697cb5ef306f7ef485f78/dev/spec-kit/presets/infrahub)
-   copied from opsmill/infrahub, which checks branch names against Jira,
-   replace it with [`jira-branch`](presets/jira-branch/README.md).
-6. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
+   copied from opsmill/infrahub, which `jira-branch` replaces:
+   `specify preset remove infrahub`.
+
+   A repo that will install `opsmill-jira` also removes the `git` extension
+   if older Spec Kit releases installed it with `specify init`:
+   `specify extension remove git`. Otherwise the bundle stops with "pins
+   extension 'git' to 1.0.1, but 1.0.0 is installed". The bundle installs `git`
+   again at the version it pins.
+
+   Removing `opsmill` also removes the hooks that the repo added for it in
+   `.specify/extensions.yml` (see [Hooks](#hooks-auto-fire-during-sdd)): copy
+   them before, and add them back after step 4.
+4. [Declare the opsmill catalogs](#1-declare-the-opsmill-catalogs-once-per-repo)
+   and [install one bundle](#2-install-one-bundle).
+5. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
    scripts at the project's Python environment. In a repo without a Python
    environment that provides PyYAML, each developer makes PyYAML available to
    the Python that spec-kit's scripts run instead (see [Requires](#requires)).
+
+To roll back, restore `.specify/` and `.claude/` from git and reinstall the
+previous Spec Kit CLI.
 
 ## Commands
 
