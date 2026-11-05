@@ -1,0 +1,23 @@
+catalog/bundle-catalog.json
+  s_492f9e6540eee7::t_b36f059d500aca 1-51
+catalog/extension-catalog.json
+  s_492f9e6540eee7::t_829b852314a13d 1-106
+catalog/preset-catalog.json
+  s_492f9e6540eee7::t_c2e1ddfd15a96a 1-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "902b8253ecac13e3b48986d2d372d4b57b293a1a",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
