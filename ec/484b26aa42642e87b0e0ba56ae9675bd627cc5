@@ -1,0 +1,19 @@
+.github/workflows/versions.yml
+  s_492f9e6540eee7::t_e07cc9d4289c95 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ec484b26aa42642e87b0e0ba56ae9675bd627cc5",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
