@@ -102,12 +102,12 @@ class OwnFiles:
             pattern = line.strip().rstrip("/")
             if not pattern or pattern.startswith(("#", "!")):
                 continue
-            # As in .gitignore, a pattern without "/" matches at any depth.
-            yield from (
-                self.installed.glob(pattern)
-                if "/" in pattern
-                else self.installed.rglob(pattern)
-            )
+            # As in .gitignore, a pattern with a "/" is anchored at the root,
+            # and a pattern without one matches at any depth.
+            if "/" in pattern:
+                yield from self.installed.glob(pattern.lstrip("/"))
+            else:
+                yield from self.installed.rglob(pattern)
 
     def patterns(self) -> list[str]:
         ignore = self.source / ".extensionignore"

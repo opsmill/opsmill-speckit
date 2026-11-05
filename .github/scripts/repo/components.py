@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar
 
-from repo.files import FrontMatter, YamlFile
+from repo.files import FrontMatter, Snapshot, YamlFile
 
 
 @dataclass(frozen=True)
@@ -39,6 +39,15 @@ class Component(ABC):
     def folder(self) -> Path:
         return self.manifest.parent
 
+    def files(self) -> dict[str, Path]:
+        """The files of its release zip, by name, with the manifest at the root."""
+        folder = self.folder.relative_to(self.root).as_posix() + "/"
+        return {
+            name.removeprefix(folder): self.root / name
+            for name in Snapshot(self.root).files()
+            if name.startswith(folder)
+        }
+
     def commands(self) -> list[dict]:
         """The commands it provides, each with a `name` and a `file` in its folder."""
         return []
@@ -57,6 +66,22 @@ class Extension(Component):
 
     kind = "extensions"
     key = "extension"
+    # The extension is the repo root minus these files, as when spec-kit
+    # installs it from a directory.
+    IGNORE: ClassVar[str] = ".extensionignore"
+
+    def files(self) -> dict[str, Path]:
+        snapshot = Snapshot(self.root)
+        ignored = (
+            set(snapshot.files(f"--exclude-from={self.IGNORE}", "--ignored"))
+            if (self.root / self.IGNORE).is_file()
+            else set()
+        )
+        return {
+            name: self.root / name
+            for name in snapshot.files()
+            if name not in ignored and name != self.IGNORE
+        }
 
     def commands(self) -> list[dict]:
         return list((self.content().get("provides") or {}).get("commands") or [])
@@ -79,7 +104,7 @@ class Preset(Component):
 
 
 class Bundle(Component):
-    """A bundle of the repo, in bundles/<id>/ or at the repo root."""
+    """A bundle of the repo, in bundles/<id>/."""
 
     kind = "bundles"
     key = "bundle"
@@ -104,7 +129,5 @@ class Components:
         return [Preset(self.root, path) for path in paths]
 
     def bundles(self) -> list[Bundle]:
-        paths = [self.root / "bundle.yml", *self.root.glob("bundles/*/bundle.yml")]
-        return [
-            Bundle(self.root, path) for path in sorted(p for p in paths if p.exists())
-        ]
+        paths = sorted(self.root.glob("bundles/*/bundle.yml"))
+        return [Bundle(self.root, path) for path in paths]
