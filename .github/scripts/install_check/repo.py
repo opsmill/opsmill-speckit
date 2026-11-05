@@ -4,12 +4,6 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
-from packaging.specifiers import SpecifierSet
-from packaging.version import Version
-
-from install_check.errors import CheckFailed
-from repo.files import YamlFile
-
 
 @dataclass(frozen=True)
 class Manifests:
@@ -31,31 +25,3 @@ class Manifests:
             for p in [self.root / "bundle.yml", *self.root.glob("bundles/*/bundle.yml")]
             if p.exists()
         )
-
-
-@dataclass(frozen=True)
-class SpeckitFloor:
-    """The oldest spec-kit version that every manifest accepts."""
-
-    manifests: Manifests
-
-    def version(self) -> Version:
-        bounds = [bound for path in self.manifests for bound in self.bounds(path)]
-        if not bounds:
-            raise CheckFailed("no manifest declares requires.speckit_version")
-        return max(bounds)
-
-    def bounds(self, path: Path) -> list[Version]:
-        spec = (YamlFile(path).content().get("requires") or {}).get("speckit_version")
-        if not spec:
-            return []
-        lower = [Version(s.version) for s in SpecifierSet(spec) if s.operator == ">="]
-        if not lower:
-            raise CheckFailed(
-                f"{path.relative_to(self.manifests.root)}: speckit_version {spec!r} has no inclusive lower bound; use >="
-            )
-        return lower
-
-    def tag(self) -> str:
-        """The version as a spec-kit release tag, X.Y.Z."""
-        return ".".join(str(part) for part in (*self.version().release, 0, 0)[:3])
