@@ -1,7 +1,6 @@
 """The files of a repo: YAML files, command front matter and release snapshots."""
 
 import re
-import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -39,30 +38,6 @@ class Snapshot:
     """The files a release archive of the repo would hold."""
 
     root: Path
-
-    def copy_to(self, dest: Path) -> Path:
-        files = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(self.root),
-                "ls-files",
-                "-z",
-                "--cached",
-                "--others",
-                "--exclude-standard",
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.split("\0")
-        for name in filter(None, files):
-            src = self.root / name
-            if src.is_file():
-                target = dest / name
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(src, target)
-        return dest
 
     def files(self, *options: str) -> list[str]:
         """Tracked and unignored files, as paths from the root; options narrow the list."""

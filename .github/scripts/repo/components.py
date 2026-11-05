@@ -127,6 +127,15 @@ class Bundle(Component):
             for kind in ("bundles", "extensions", "presets", "steps", "workflows")
         }
 
+    def references(self) -> list[tuple[str, dict]]:
+        """The bundles, extensions and presets it pins, each with its kind."""
+        provides = self.content().get("provides") or {}
+        return [
+            (kind, ref)
+            for kind in ("bundles", "extensions", "presets")
+            for ref in provides.get(kind) or []
+        ]
+
 
 @dataclass(frozen=True)
 class Components:

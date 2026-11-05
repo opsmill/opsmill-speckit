@@ -57,6 +57,29 @@ class Registered:
 
 
 @dataclass(frozen=True)
+class Pinned:
+    """A component the repo does not ship is installed at the version a bundle pins.
+
+    Without a source, spec-kit may install a newer patch release that it ships,
+    so any version counts.
+    """
+
+    project: Project
+    kind: str
+    component_id: str
+    version: str
+    exact: bool = True
+
+    def verify(self) -> str:
+        entry = self.project.registry(self.kind).entry(self.component_id)
+        if self.exact and str(entry.get("version")) != self.version:
+            raise CheckFailed(
+                f"{self.component_id}: registry has version {entry.get('version')}, a bundle pins {self.version}"
+            )
+        return f"{self.component_id} v{entry.get('version')} installed"
+
+
+@dataclass(frozen=True)
 class HooksRegistered:
     """Every hook an extension declares is registered."""
 
