@@ -1,0 +1,20 @@
+.github/scripts/install_check/components.py
+  s_492f9e6540eee7::t_6cd9292acb1f62 115-116
+  s_492f9e6540eee7::t_02cc7d16b34e9a 131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6f126a3af7d6cdc9a71be4cb73d54e782b1855b3",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
