@@ -1,0 +1,25 @@
+catalog/README.md
+  s_492f9e6540eee7::t_f551e752d805cb 1-33
+catalog/specify/bundle-catalogs.yml
+  s_492f9e6540eee7::t_3be242fef16081 1-8
+catalog/specify/extension-catalogs.yml
+  s_492f9e6540eee7::t_28afa4d0023d57 1-18
+catalog/specify/preset-catalogs.yml
+  s_492f9e6540eee7::t_ecbf2161dd0642 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "82c5c940da26429082bd4013b890e7c51d0e0740",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
