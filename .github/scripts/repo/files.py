@@ -63,3 +63,23 @@ class Snapshot:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, target)
         return dest
+
+    def files(self, *options: str) -> list[str]:
+        """Tracked and unignored files, as paths from the root; options narrow the list."""
+        names = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(self.root),
+                "ls-files",
+                "-z",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+                *options,
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.split("\0")
+        return sorted(name for name in names if name and (self.root / name).is_file())
