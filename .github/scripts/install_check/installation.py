@@ -9,7 +9,8 @@ from install_check.checks import Check, PlanSetup
 from install_check.components import Bundle, Extension, Preset, RemoteExtension
 from install_check.project import Project, Specify
 from install_check.python import ScriptPython
-from install_check.repo import Manifests, Snapshot, YamlFile
+from install_check.repo import Manifests
+from repo.files import Snapshot, YamlFile
 
 
 @dataclass(frozen=True)
