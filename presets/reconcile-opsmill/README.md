@@ -9,36 +9,11 @@ The preset exists so OpsMill can adapt the command body to its repo structure wi
 - **OpsMill compliance gate** — the CRITICAL-conflict check loads MUSTs from `dev/guidelines/` and decisions from `dev/adr/` in addition to `.specify/memory/constitution.md`.
 - **Jira-aware Next Step** — when `dev/jira.yml` exists, the Sync Impact Report notes the remediation tasks have no Jira issue yet and warns against wholesale re-runs of `/speckit.taskstoissues`.
 
-## Prerequisite: the `reconcile` extension
-
-Preset overrides of extension commands only register when the target extension is installed (`specify` checks for `.specify/extensions/reconcile/`). Install the upstream extension first:
-
-```bash
-specify extension add reconcile \
-  --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
-```
-
-If the extension is absent when the preset is added, the `speckit.reconcile.run` override is silently skipped, and nothing re-applies it when the extension arrives later — the preset reads as installed while the extension's own command body stays active. Install the extension first. To recover from a wrong-order install, re-register the preset once the extension is present:
-
-```bash
-specify preset remove reconcile-opsmill
-specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
-```
-
 ## Install
 
-```bash
-git clone -b v1.3.2 https://github.com/opsmill/opsmill-speckit
-specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
-```
+Installed by the `opsmill-sdd` bundle, which also installs the `reconcile` extension: see [Install](../../README.md#install) in the repo README.
 
-Or from an existing working tree:
-
-```bash
-specify preset add --dev ./presets/reconcile-opsmill
-```
-
-After install, the preset's files live at `.specify/presets/reconcile-opsmill/` in the consumer repo, and `/speckit.reconcile.run` resolves to this preset's command body instead of the extension's.
+After install, `/speckit.reconcile.run` resolves to this preset's command body instead of the extension's.
 
 ## Usage
 
