@@ -10,6 +10,7 @@ from pathlib import Path
 from packaging.version import Version
 
 from distribution.archives import build
+from distribution.catalogs import SOURCE, CatalogFile
 from install_check.errors import CheckFailed
 from repo.components import Components
 
@@ -63,3 +64,48 @@ class VersionRaised:
             ]
         )
         return f"{len(changed)} changed components and bundles have a higher version"
+
+
+@dataclass(frozen=True)
+class PinsMatch:
+    """Bundles pin the repo's current versions, and listed third-party versions.
+
+    Every extension and preset of the repo is in a bundle, since repos install
+    them only through bundles.
+    """
+
+    repo: Path
+
+    def verify(self) -> str:
+        components = Components(self.repo)
+        versions = {(c.kind, c.id): c.version for c in components}
+        errors, pinned = [], set()
+        for bundle in components.bundles():
+            for kind, ref in bundle.references():
+                key, version = (kind, str(ref["id"])), str(ref["version"])
+                pin = f"{bundle.id} pins {key[1]} {version}"
+                if key in versions:
+                    pinned.add(key)
+                    if version != versions[key]:
+                        errors.append(f"{pin}, its manifest has {versions[key]}")
+                    if ref.get("source") != SOURCE:
+                        errors.append(f"{pin} without source: {SOURCE}")
+                # Spec Kit resolves a pin from another catalog, or without a
+                # source, itself.
+                elif ref.get("source") == SOURCE and version not in self.listed(
+                    kind, key[1]
+                ):
+                    errors.append(f"{pin}, which catalog/ does not list")
+        errors += [
+            f"{component_id} is in no bundle"
+            for kind, component_id in versions
+            if kind != "bundles" and (kind, component_id) not in pinned
+        ]
+        fail_on(errors)
+        return f"bundles pin {len(pinned)} components and bundles at their versions"
+
+    def listed(self, kind: str, component_id: str) -> set[str]:
+        entry = CatalogFile(self.repo / "catalog", kind).entries().get(component_id)
+        if not entry:
+            return set()
+        return {str(entry["version"]), *(entry.get("releases") or {})}

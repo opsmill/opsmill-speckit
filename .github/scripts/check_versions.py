@@ -11,7 +11,7 @@ Usage:
 import sys
 from pathlib import Path
 
-from distribution.versions import VersionRaised
+from distribution.versions import PinsMatch, VersionRaised
 from install_check.errors import CheckFailed
 
 
@@ -21,7 +21,10 @@ def main() -> int:
         print(__doc__, file=sys.stderr)
         return 2
     failed = False
-    for check in (VersionRaised(repo, sys.argv[1]),):
+    for check in (
+        VersionRaised(repo, sys.argv[1]),
+        PinsMatch(repo),
+    ):
         try:
             print(f"ok  {check.verify()}")
         except CheckFailed as error:
