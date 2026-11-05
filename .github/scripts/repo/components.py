@@ -1,6 +1,6 @@
 """The components that a repo ships: its extension, its presets and its bundles."""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,6 +52,10 @@ class Component(ABC):
         """The commands it provides, each with a `name` and a `file` in its folder."""
         return []
 
+    @abstractmethod
+    def counts(self) -> dict[str, int]:
+        """What it provides, counted as its catalog entry lists it."""
+
     def scripted(self) -> tuple[str, ...]:
         """The commands whose file declares scripts in its front matter."""
         return tuple(
@@ -89,6 +93,9 @@ class Extension(Component):
     def hooks(self) -> dict:
         return self.content().get("hooks") or {}
 
+    def counts(self) -> dict[str, int]:
+        return {"commands": len(self.commands()), "hooks": len(self.hooks())}
+
 
 class Preset(Component):
     """A preset of the repo, in presets/<id>/."""
@@ -102,12 +109,23 @@ class Preset(Component):
     def commands(self) -> list[dict]:
         return [t for t in self.templates() if t.get("type") == "command"]
 
+    def counts(self) -> dict[str, int]:
+        commands = len(self.commands())
+        return {"commands": commands, "templates": len(self.templates()) - commands}
+
 
 class Bundle(Component):
     """A bundle of the repo, in bundles/<id>/."""
 
     kind = "bundles"
     key = "bundle"
+
+    def counts(self) -> dict[str, int]:
+        provides = self.content().get("provides") or {}
+        return {
+            kind: len(provides.get(kind) or [])
+            for kind in ("bundles", "extensions", "presets", "steps", "workflows")
+        }
 
 
 @dataclass(frozen=True)
