@@ -1,0 +1,23 @@
+.github/scripts/build_release.py
+  s_492f9e6540eee7::t_b83db64e84de27 5,9-12,15,17,20,30-34
+.github/scripts/distribution/catalogs.py
+  s_492f9e6540eee7::t_c40f1434c10cca 1-170
+.github/scripts/tests/distribution/test_catalog_history.py
+  s_492f9e6540eee7::t_2c5c3f8debb981 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8795a25534f578765984defd353ff65837dead4a",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
