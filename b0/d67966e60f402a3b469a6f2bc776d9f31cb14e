@@ -1,0 +1,25 @@
+bundles/opsmill-jira/README.md
+  s_492f9e6540eee7::t_e0d1e097de5d35 1-13
+bundles/opsmill-jira/bundle.yml
+  s_492f9e6540eee7::t_dc34b72aec1f01 1-38
+bundles/opsmill-sdd/README.md
+  s_492f9e6540eee7::t_1759d66a8824f5 1-12
+bundles/opsmill-sdd/bundle.yml
+  s_492f9e6540eee7::t_423dc213805c25 1-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b0d67966e60f402a3b469a6f2bc776d9f31cb14e",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
