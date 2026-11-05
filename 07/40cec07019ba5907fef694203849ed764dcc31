@@ -1,0 +1,35 @@
+.github/scripts/build_release.py
+  s_492f9e6540eee7::t_4897a2e0904876 1-31
+.github/scripts/repo/components.py
+  s_492f9e6540eee7::t_4897a2e0904876 9,42-50,69-84
+.github/scripts/distribution/__init__.py
+  s_492f9e6540eee7::t_4897a2e0904876 1
+.extensionignore
+  s_492f9e6540eee7::t_4897a2e0904876 1,3-7
+.github/scripts/tests/distribution/test_zips.py
+  s_492f9e6540eee7::t_4897a2e0904876 1-31
+.github/workflows/unit-tests.yml
+  s_492f9e6540eee7::t_4897a2e0904876 32-33
+.github/scripts/tests/repo/test_repo.py
+  s_492f9e6540eee7::t_4897a2e0904876 20,29
+.github/scripts/repo/files.py
+  s_492f9e6540eee7::t_4897a2e0904876 66-85
+.github/scripts/distribution/archives.py
+  s_492f9e6540eee7::t_4897a2e0904876 1-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0740cec07019ba5907fef694203849ed764dcc31",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
