@@ -1,0 +1,41 @@
+---
+# yamllint disable rule:truthy
+# Check that a pull request raises the version of each component and bundle it
+# changes, that bundles pin the current versions, and that catalog/ lists the
+# zips the release will publish. Blocking on pull requests.
+#
+# No paths filter: a required check skipped by a filter blocks every pull
+# request that does not match it.
+name: "Versions"
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  versions:
+    name: "Check versions, pins and catalogs"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 5
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+        with:
+          # The checkout is the merge of the pull request into the base branch.
+          # Depth 2 fetches both its parents, so HEAD^1 is the base it was built
+          # on.
+          fetch-depth: 2
+      - name: "Install UV"
+        uses: "astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78" # v7.6.0
+      - name: "Check versions against the base branch"
+        run: |
+          if ! git rev-parse --verify --quiet HEAD^2 >/dev/null; then
+            echo "::error::HEAD is not the merge commit of the pull request"
+            exit 1
+          fi
+          uv run .github/scripts/check_versions.py HEAD^1
