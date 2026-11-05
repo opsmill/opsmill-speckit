@@ -1,0 +1,106 @@
+.github/scripts/tests/install_check/test_installation.py
+  s_492f9e6540eee7::t_2528e8890953ce 15-18,25-26,33-36,52-54,57,65-69,80
+.github/scripts/tests/install_check/test_components.py
+  s_492f9e6540eee7::t_8d64151a1a65ec 3-4,20,23-41
+presets/critique-opsmill/preset.yml
+  s_492f9e6540eee7::t_ef8f8680c1112e 6,13
+.github/scripts/install_check/repo.py
+  s_492f9e6540eee7::t_e6949b1c749cda 97-99,109,115
+catalog/specify/preset-catalogs.yml
+  s_492f9e6540eee7::t_17ef350a38c83f 1-7,9-18
+  s_492f9e6540eee7::t_6326daf70d5de2 8
+bundles/opsmill-jira/README.md
+  s_492f9e6540eee7::t_1eb4d112bc2c5d 1-8,11-13
+  s_492f9e6540eee7::t_e4fa0e137607ab 9-10
+.github/scripts/tests/distribution/test_catalog_history.py
+  s_492f9e6540eee7::t_1b621712994a1e 1-37
+  s_492f9e6540eee7::t_dbc11db5687be3 38-54
+.github/scripts/install_check/installation.py
+  s_492f9e6540eee7::t_6e098ecf3aee75 8-9,11,14,19-23,30,34-43,57
+.github/scripts/install_check/catalogs.py
+  s_492f9e6540eee7::t_f28cde9fca6439 1-68
+presets/reconcile-opsmill/preset.yml
+  s_492f9e6540eee7::t_ef8f8680c1112e 6,13
+.github/scripts/install_check/checks.py
+  s_492f9e6540eee7::t_379e04b6b8f511 59,61,75,79
+  s_492f9e6540eee7::t_7745491fe2b8f1 60,62-74,76-78,80-81
+.github/scripts/distribution/components.py
+  s_492f9e6540eee7::t_8f3d4c36b196dc 1-59,65-111
+  s_492f9e6540eee7::t_76c1f096788f1a 60-64
+presets/jira-branch/preset.yml
+  s_492f9e6540eee7::t_ef8f8680c1112e 6,13
+.github/scripts/tests/distribution/test_zips.py
+  s_492f9e6540eee7::t_1b621712994a1e 1-30
+catalog/preset-catalog.json
+  s_492f9e6540eee7::t_dbc11db5687be3 3
+  s_492f9e6540eee7::t_6b1f00533b5725 1-2,4-105
+bundles/opsmill-jira/bundle.yml
+  s_492f9e6540eee7::t_e4fa0e137607ab 23-25
+  s_492f9e6540eee7::t_1ee532cd634098 1-22,26-38
+.github/workflows/unit-tests.yml
+  s_492f9e6540eee7::t_c5ac3ee6a1c4a9 30-31
+.github/scripts/build_release.py
+  s_492f9e6540eee7::t_9dbf8b90dd5a2b 28
+  s_492f9e6540eee7::t_feb9ef992af892 1-27,29-42
+.extensionignore
+  s_492f9e6540eee7::t_1eb4d112bc2c5d 1,3-7
+catalog/README.md
+  s_492f9e6540eee7::t_5b3d4cd25578af 1-33
+presets/taskstoissues-jira/preset.yml
+  s_492f9e6540eee7::t_ef8f8680c1112e 6,13
+catalog/extension-catalog.json
+  s_492f9e6540eee7::t_dbc11db5687be3 3
+  s_492f9e6540eee7::t_6b1f00533b5725 1-2,4-106
+.github/scripts/distribution/catalogs.py
+  s_492f9e6540eee7::t_569312e2849f64 5
+  s_492f9e6540eee7::t_38b67d68511cba 77
+  s_492f9e6540eee7::t_dbc11db5687be3 116
+  s_492f9e6540eee7::t_201af9b8bce290 142-145,156-158,162,164-170
+  s_492f9e6540eee7::t_45eee587f8ac58 1-4,6-11,14-24,27-76,78-115,117-141,146-155,159-161,163
+  s_492f9e6540eee7::t_8293da9600bfd6 12-13,25-26
+catalog/specify/extension-catalogs.yml
+  s_492f9e6540eee7::t_6326daf70d5de2 8
+  s_492f9e6540eee7::t_17ef350a38c83f 1-7,9-18
+.github/scripts/tests/install_check/test_repo.py
+  s_492f9e6540eee7::t_8bf8a653c58ee4 39,48
+.github/scripts/distribution/__init__.py
+  s_492f9e6540eee7::t_c1dffa62116c16 1
+bundles/opsmill-sdd/bundle.yml
+  s_492f9e6540eee7::t_1ee532cd634098 1-45
+bundles/opsmill-sdd/README.md
+  s_492f9e6540eee7::t_1eb4d112bc2c5d 1-12
+extension.yml
+  s_492f9e6540eee7::t_ef8f8680c1112e 6,14
+catalog/specify/bundle-catalogs.yml
+  s_492f9e6540eee7::t_17ef350a38c83f 1-8
+catalog/bundle-catalog.json
+  s_492f9e6540eee7::t_6b1f00533b5725 1-2,4-15,17-51
+  s_492f9e6540eee7::t_dbc11db5687be3 3,16
+.github/scripts/install_check/components.py
+  s_492f9e6540eee7::t_5c0f84c22381d7 1,12,16,18,23,27,56,60,98,103-106,108-119,121-125,128-164
+  s_492f9e6540eee7::t_49fa32fd4ddd3b 120,126-127
+presets/critique-opsmill/README.md
+  s_492f9e6540eee7::t_32f01058ea7ca6 7
+presets/jira-branch/README.md
+  s_492f9e6540eee7::t_d5eede8edef784 9
+presets/reconcile-opsmill/README.md
+  s_492f9e6540eee7::t_8b9f1a7bcce1f9 14,16
+presets/taskstoissues-jira/README.md
+  s_492f9e6540eee7::t_c18ca332e9220f 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5fbcc7f1abdc3cc45a876047bf2222349dbb6f02",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
