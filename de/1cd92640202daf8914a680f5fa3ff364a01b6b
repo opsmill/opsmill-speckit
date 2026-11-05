@@ -1,0 +1,19 @@
+CHANGELOG.md
+  s_492f9e6540eee7::t_ce1e2e99efe449 1,3-5,7-14,18-27,29,31,47,51-67,70-78,83,91,96-104,111,116-124,149,167-175,190,194,200-245,248-255,272,277,285-324,327-333,350,361
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "de1cd92640202daf8914a680f5fa3ff364a01b6b",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
