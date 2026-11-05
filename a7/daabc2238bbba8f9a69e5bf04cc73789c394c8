@@ -1,0 +1,25 @@
+presets/critique-opsmill/README.md
+  s_492f9e6540eee7::t_391ef5840c4927 7
+presets/jira-branch/README.md
+  s_492f9e6540eee7::t_a140b54a1208a5 9
+presets/reconcile-opsmill/README.md
+  s_492f9e6540eee7::t_5983687624b68b 14,16
+presets/taskstoissues-jira/README.md
+  s_492f9e6540eee7::t_c78c33ffe5c065 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7daabc2238bbba8f9a69e5bf04cc73789c394c8",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
