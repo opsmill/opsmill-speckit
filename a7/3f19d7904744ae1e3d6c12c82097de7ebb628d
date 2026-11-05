@@ -1,0 +1,23 @@
+.github/scripts/check_versions.py
+  s_492f9e6540eee7::t_bcb24bf621d39b 1-36
+.github/scripts/distribution/versions.py
+  s_492f9e6540eee7::t_97f118c1b2b870 1-64
+.github/scripts/tests/distribution/test_versions.py
+  s_492f9e6540eee7::t_e10387448eb1d9 1-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a73f19d7904744ae1e3d6c12c82097de7ebb628d",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
