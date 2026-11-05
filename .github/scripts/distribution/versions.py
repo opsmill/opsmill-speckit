@@ -109,3 +109,30 @@ class PinsMatch:
         if not entry:
             return set()
         return {str(entry["version"]), *(entry.get("releases") or {})}
+
+
+@dataclass(frozen=True)
+class CatalogMatches:
+    """A version that catalog/ lists for a component of the repo has the zip built now."""
+
+    repo: Path
+
+    def verify(self) -> str:
+        with tempfile.TemporaryDirectory() as tmp:
+            built = zips(self.repo, Path(tmp))
+        errors, listed = [], 0
+        for (kind, component_id), (version, sha) in built.items():
+            entry = CatalogFile(self.repo / "catalog", kind).entries().get(component_id)
+            if not entry:
+                continue
+            records = {str(entry["version"]): entry, **(entry.get("releases") or {})}
+            if version not in records:
+                continue
+            listed += 1
+            if records[version].get("sha256") != sha:
+                errors.append(
+                    f"catalog/ lists {component_id} {version} with another zip: raise its version, "
+                    "or run build_release.py catalog for the release that is not published yet"
+                )
+        fail_on(errors)
+        return f"{listed} versions listed in catalog/ match their zips"

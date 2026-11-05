@@ -1,9 +1,10 @@
+import json
 import subprocess
 
 import pytest
 from support import write
 
-from distribution.versions import PinsMatch, VersionRaised
+from distribution.versions import CatalogMatches, PinsMatch, VersionRaised
 from install_check.errors import CheckFailed
 
 PRESET = "preset: {id: p, version: 1.0.0}\n"
@@ -58,3 +59,14 @@ class TestPinsMatch:
         write(repo / "bundles" / "b" / "bundle.yml", BUNDLE % "1.0.0")
         with pytest.raises(CheckFailed, match="^x is in no bundle$"):
             PinsMatch(repo).verify()
+
+
+class TestCatalogMatches:
+    def test_fails_when_a_listed_version_has_another_zip(self, repo):
+        entry = {"id": "p", "version": "1.0.0", "sha256": "0" * 64}
+        write(
+            repo / "catalog" / "preset-catalog.json",
+            json.dumps({"presets": {"p": entry}}),
+        )
+        with pytest.raises(CheckFailed, match="lists p 1.0.0 with another zip"):
+            CatalogMatches(repo).verify()
