@@ -13,13 +13,99 @@ Before 1.5.0 there were no bundles: each tag released the extension at the
 tag's version, and the presets shared one collection version, 1.0.0 in
 `v1.1.0`, 1.1.0 in `v1.2.0` and 1.2.0 in `v1.4.0`.
 
+## [1.5.0] - Unreleased
+
+Repos install opsmill-speckit through two bundles, from the opsmill catalogs.
+Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. README:
+[Install](README.md#install) and [Upgrading from 1.4.1 or earlier](README.md#upgrading-from-141-or-earlier).
+
+| Bundle or component | Kind | Version | Source |
+|---|---|---|---|
+| `opsmill-sdd` | bundle | 1.0.0 | opsmill-speckit |
+| `opsmill-jira` | bundle, includes `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill` | extension | 1.5.0 | opsmill-speckit |
+| `critique-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `jira-branch` | preset | 1.5.0 | opsmill-speckit |
+| `reconcile-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `taskstoissues-jira` | preset | 1.5.0 | opsmill-speckit |
+| `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
+| `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
+| `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
+| `git` | extension, in `opsmill-jira` | 1.0.1 | ships with Spec Kit |
+
+### opsmill-sdd 1.0.0
+
+#### Added
+- First version, for every repo: the `opsmill` extension, `checkpoint`,
+  `critique` with `critique-opsmill`, and `reconcile` with `reconcile-opsmill`.
+
+### opsmill-jira 1.0.0
+
+#### Added
+- First version, for repos that track their work in Jira: `opsmill-sdd`, plus
+  `jira-branch`, `taskstoissues-jira`, and the `git` extension whose
+  `before_specify` hook runs the command that `jira-branch` replaces. Spec Kit
+  1.2.4 no longer installs `git` on `specify init`.
+- Spec Kit installs a newer patch release of `git` that it ships in place of
+  the pinned 1.0.1, with a warning. A Spec Kit release that ships `git` 1.1 or
+  later needs a new version of this bundle.
+
+### opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from the zip `opsmill-1.5.0.zip` of the
+  GitHub Release, instead of the archive of a tag.
+- `.extensionignore` also leaves out `bundles/`, `catalog/`, `README.md` and
+  `CHANGELOG.md`, so a change to the repo documentation does not change the
+  extension.
+
+### critique-opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from its own zip in the catalog.
+
+### jira-branch 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through `opsmill-jira`, from its own zip in the catalog.
+
+### reconcile-opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from its own zip in the catalog.
+- The bundles pin `reconcile` 1.3.1 instead of commit `886f1dd`, which the
+  README of 1.4.1 and earlier installed. On Spec Kit 1.2.4, the install check in CI installs
+  `reconcile` 1.3.1 and checks that this preset replaces its
+  `speckit.reconcile.run`. Whether the upstream
+  changes since `886f1dd` belong in the preset's text is not checked yet.
+
+### taskstoissues-jira 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through `opsmill-jira`, from its own zip in the catalog.
+
 ## [1.4.1] - 2026-11-06
+
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.4.1 |
+| `critique-opsmill` | preset | 1.0.0 |
+| `jira-branch` | preset | 1.0.0 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.4.1
 
 The extension ships the agent hooks that point spec-kit's scripts at the
 project's Python environment, which provides PyYAML. A repo no longer copies
-them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
+them. README: [Agent hooks for PyYAML](https://github.com/opsmill/opsmill-speckit/blob/v1.4.1/README.md#agent-hooks-for-pyyaml).
 
-### Added
+#### Added
 - `scripts/bash/python-env.sh`: a Claude Code session start hook that sets
   `SPECKIT_PYTHON_EXECUTABLE` and `SPECKIT_PYTHON` to the project's Python
   environment when it can import PyYAML.
@@ -38,7 +124,7 @@ them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
 - CI: the install check runs both hooks in the installed project, and unit
   tests cover the Codex hook's command matching.
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.4.0` → `1.4.1`.
 - README: step 6 of the spec-kit 1.2 upgrade adds the hooks to the repo.
 
