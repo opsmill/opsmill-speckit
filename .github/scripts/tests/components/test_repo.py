@@ -2,7 +2,18 @@ import subprocess
 
 from support import write
 
+from repo.components import Components
 from repo.files import Snapshot
+
+
+class TestComponents:
+    def test_finds_bundles_at_the_root_and_in_bundles(self, tmp_path):
+        write(tmp_path / "bundles" / "x" / "bundle.yml", "")
+        write(tmp_path / "bundle.yml", "")
+        assert [bundle.manifest for bundle in Components(tmp_path).bundles()] == [
+            tmp_path / "bundle.yml",
+            tmp_path / "bundles" / "x" / "bundle.yml",
+        ]
 
 
 class TestSnapshot:
