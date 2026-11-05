@@ -13,7 +13,7 @@ from install_check.checks import (
     ScriptsExist,
 )
 from install_check.project import Project
-from install_check.repo import FrontMatter, YamlFile
+from repo.files import FrontMatter, YamlFile
 
 
 @dataclass(frozen=True)
