@@ -1,0 +1,27 @@
+.github/scripts/tests/hooks/test_route_codex.py
+  s_49a51a4d0c7bfa::t_0cec38be46ea8c 1-112
+.github/workflows/unit-tests.yml
+  s_49a51a4d0c7bfa::t_973dd89b76626d 32-33
+scripts/bash/python-run.sh
+  s_49a51a4d0c7bfa::t_3d455f90924d5e 1-37
+scripts/bash/route-codex.sh
+  s_49a51a4d0c7bfa::t_b6a98e2adf5629 1-3
+scripts/python/route_codex.py
+  s_49a51a4d0c7bfa::t_6f2968b8be7153 1-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "341e77803692a4f46c9ea31183d496d27e48f8e8",
+  "prompts": {},
+  "sessions": {
+    "s_49a51a4d0c7bfa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e7d51f1-c81d-40a7-9a00-6ff7ac07a921",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
