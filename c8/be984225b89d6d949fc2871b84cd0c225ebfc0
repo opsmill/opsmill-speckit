@@ -1,0 +1,26 @@
+.github/workflows/unit-tests.yml
+  s_e2176ce2fba659::t_f3afb27bb3d6d6 32-33
+.github/scripts/tests/hooks/test_route_codex.py
+  s_e2176ce2fba659::t_871a673e6a9c05 1-63
+.github/scripts/install_check/installation.py
+  s_e2176ce2fba659::t_063f4db8f76dda 8,39
+.github/scripts/install_check/checks.py
+  s_e2176ce2fba659::t_063f4db8f76dda 3,238-310,312-319
+  s_e2176ce2fba659::t_788222c335d9da 311
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c8be984225b89d6d949fc2871b84cd0c225ebfc0",
+  "prompts": {},
+  "sessions": {
+    "s_e2176ce2fba659": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "99127975-a76f-4076-b6b1-bf6678ebabae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
