@@ -42,8 +42,10 @@ class RepoState:
         installed = self.extensions.get(EXTENSION_ID)
         if installed is None:
             reasons.append(f"`{EXTENSION_ID}` not installed")
-        elif InstalledVersion(installed).older_than(release.version):
-            reasons.append(f"`{EXTENSION_ID}` {installed}, latest is {release.version}")
+        elif InstalledVersion(installed).older_than(release.extension):
+            reasons.append(
+                f"`{EXTENSION_ID}` {installed}, latest is {release.extension}"
+            )
         if self.speckit is None:
             reasons.append("Spec Kit version not recorded")
         elif InstalledVersion(self.speckit).older_than(release.min_speckit):
