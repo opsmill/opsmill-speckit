@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import ClassVar
 
 from distribution.archives import Archive
+from install_check.errors import CheckFailed
 from repo.components import Component
 
 REPOSITORY = "https://github.com/opsmill/opsmill-speckit"
@@ -165,3 +166,32 @@ class Catalogs:
                 key: current[key] for key in Record.RELEASE_FIELDS if key in current
             }
         return {**record, "releases": releases} if releases else record
+
+    def assets(
+        self, archives: dict[Component, Archive], location: Location
+    ) -> list[Archive]:
+        """The zips that the catalogs list under a location, each with its recorded sha256.
+
+        These are the zips that the GitHub Release at that location must hold.
+        """
+        built = {archive.path.name: archive for archive in archives.values()}
+        assets, errors = [], []
+        for kind in CatalogFile.NAMES:
+            for entry in CatalogFile(self.folder, kind).entries().values():
+                for record in (entry, *(entry.get("releases") or {}).values()):
+                    url = str(record.get("download_url") or record.get("url") or "")
+                    if not url.startswith(location.archives):
+                        continue
+                    name = url.removeprefix(location.archives)
+                    archive = built.get(name)
+                    if archive is None:
+                        errors.append(f"{name}: no zip of this commit has that name")
+                    elif archive.sha256() != record.get("sha256"):
+                        errors.append(f"{name}: its sha256 is not the one in catalog/")
+                    else:
+                        assets.append(archive)
+        if errors:
+            raise CheckFailed("\n".join(errors))
+        if not assets:
+            raise CheckFailed(f"catalog/ lists no zip under {location.archives}")
+        return assets
