@@ -58,7 +58,7 @@ class Registered:
 
 @dataclass(frozen=True)
 class Pinned:
-    """A component the repo does not ship is installed at the version a bundle pins.
+    """A component is installed at the version a bundle pins.
 
     Without a source, spec-kit may install a newer patch release that it ships,
     so any version counts.
@@ -77,6 +77,18 @@ class Pinned:
                 f"{self.component_id}: registry has version {entry.get('version')}, a bundle pins {self.version}"
             )
         return f"{self.component_id} v{entry.get('version')} installed"
+
+
+@dataclass(frozen=True)
+class WorkflowLoads:
+    """Spec Kit loads an installed workflow and its steps."""
+
+    project: Project
+    workflow_id: str
+
+    def verify(self) -> str:
+        self.project.run("workflow", "info", self.workflow_id)
+        return f"{self.workflow_id}: spec-kit loads the workflow"
 
 
 @dataclass(frozen=True)
