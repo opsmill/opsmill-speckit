@@ -1,3 +1,11 @@
+.github/scripts/build_release.py
+  s_492f9e6540eee7::t_4d4d39f6076258 5,9-12,15,18,22,42-58,65-69
+.github/scripts/tests/distribution/test_catalog_history.py
+  s_492f9e6540eee7::t_4d4d39f6076258 1-56
+.github/scripts/distribution/catalogs.py
+  s_492f9e6540eee7::t_4d4d39f6076258 1-155
+.github/scripts/repo/components.py
+  s_492f9e6540eee7::t_4d4d39f6076258 55-58,96-98,112-115,123-129
 ---
 {
   "schema_version": "authorship/3.0.0",
