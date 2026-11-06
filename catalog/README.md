@@ -40,24 +40,24 @@ The third-party entries are written by hand: copy the `download_url` of the
 upstream tag archive and the `sha256` of that archive, and pin the same version
 in the bundles.
 
-## Publish a release by hand
+## Publish a release
 
-In the release pull request, replace `Unreleased` with the release date in the
-`CHANGELOG.md` entry. After the release pull request is merged:
+In the release pull request, also replace `Unreleased` with the release date in
+the `CHANGELOG.md` entry. After the release pull request is merged, publish the
+GitHub Release `vX.Y.Z` on `main`, with the release's `CHANGELOG.md` entry as
+notes.
 
-1. Check out the merge commit of the release pull request, create the tag
-   `vX.Y.Z` on it and push it.
-2. Build the zips outside the checkout:
+The [Release workflow](../.github/workflows/release.yml) then runs on the
+tagged commit:
 
-   ```bash
-   dist=$(mktemp -d)
-   uv run .github/scripts/build_release.py zips "$dist"
-   ```
+1. It builds the zips with
+   `uv run .github/scripts/build_release.py assets X.Y.Z DIR`.
+2. It checks that each zip whose URL in `catalog/` points to `vX.Y.Z` has the
+   recorded `sha256`.
+3. It attaches those zips to the release.
 
-3. Create the GitHub Release `vX.Y.Z` with the zips in `$dist` whose
-   `download_url` in `catalog/` points to `vX.Y.Z`, and the release's
-   `CHANGELOG.md` entry as notes.
-
-A zip built from another commit has another `sha256`, and Spec Kit refuses to
-install it. `build_release.py` refuses a working tree with changes or untracked
-files, whose zips no commit can rebuild.
+If a zip is missing or has another `sha256`, the workflow fails and attaches
+nothing, since Spec Kit would refuse to install that zip. This happens when a
+pull request merged after the release pull request changed a component.
+`build_release.py` also refuses a working tree with changes or untracked files,
+whose zips no commit can rebuild.

@@ -5,8 +5,9 @@
 """Build this repo's release zips and list them in catalog/.
 
 Usage:
-    uv run .github/scripts/build_release.py zips DIR         # one zip per component and bundle
-    uv run .github/scripts/build_release.py catalog VERSION  # list them in catalog/ for release VERSION
+    uv run .github/scripts/build_release.py zips DIR              # one zip per component and bundle
+    uv run .github/scripts/build_release.py catalog VERSION       # list them in catalog/ for release VERSION
+    uv run .github/scripts/build_release.py assets VERSION DIR    # the zips that release VERSION holds
 
 The zips are the same bytes for the same files, so the catalog records the
 sha256 of the zips that the release of the same commit publishes.
@@ -20,6 +21,7 @@ from pathlib import Path
 
 from distribution.archives import build
 from distribution.catalogs import Catalogs, Location
+from install_check.errors import CheckFailed
 from repo.components import Components
 
 
@@ -58,7 +60,7 @@ def published(repo: Path) -> tuple[str, ...]:
 
 def main() -> int:
     repo = Path(__file__).resolve().parents[2]
-    command, argument = (sys.argv[1:] + [None, None])[:2]
+    command, argument, dest = (sys.argv[1:] + [None, None, None])[:3]
     if command == "zips" and argument:
         for archive in build(Components(clean(repo)), Path(argument)).values():
             print(f"{archive.path.name}  {archive.sha256()}")
@@ -69,6 +71,19 @@ def main() -> int:
                 archives, Location.release(argument), published(repo)
             )
         print(f"catalog/ lists the zips of release v{argument}")
+    elif (
+        command == "assets" and dest and re.fullmatch(r"\d+\.\d+\.\d+", argument or "")
+    ):
+        archives = build(Components(clean(repo)), Path(dest))
+        try:
+            assets = Catalogs(repo / "catalog").assets(
+                archives, Location.release(argument)
+            )
+        except CheckFailed as error:
+            print(f"FAIL: {error}", file=sys.stderr)
+            return 1
+        for archive in assets:
+            print(archive.path)
     else:
         print(__doc__, file=sys.stderr)
         return 2
