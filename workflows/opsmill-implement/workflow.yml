@@ -1,0 +1,31 @@
+schema_version: "1.0"
+workflow:
+  id: "opsmill-implement"
+  name: "OpsMill implementation"
+  version: "1.0.0"
+  author: "opsmill"
+  description: "Runs speckit.opsmill.implement on a spec directory that prep made ready: implement, review and final report."
+
+requires:
+  speckit_version: ">=1.2.4"
+  integrations:
+    any:
+      - "claude"
+
+inputs:
+  spec_dir:
+    type: string
+    required: true
+    prompt: "Spec directory to implement, for example specs/001-feature"
+  integration:
+    type: string
+    default: "auto"
+    prompt: "Integration to use ('auto' uses the project's integration)"
+
+steps:
+  # With an explicit spec directory, implement never pauses for the user.
+  - id: implement
+    command: speckit.opsmill.implement
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec_dir }}"

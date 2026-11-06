@@ -53,7 +53,7 @@ every component at an exact version:
 
 | Bundle | For | Installs |
 |---|---|---|
-| [`opsmill-sdd`](bundles/opsmill-sdd/README.md) | every repo | `opsmill`, `checkpoint`, `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill` |
+| [`opsmill-sdd`](bundles/opsmill-sdd/README.md) | every repo | `opsmill`, `checkpoint`, `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill`, and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto` |
 | [`opsmill-jira`](bundles/opsmill-jira/README.md) | repos that track their work in Jira | everything in `opsmill-sdd`, plus `jira-branch`, `taskstoissues-jira` and the `git` extension |
 
 `checkpoint`, `critique` and `reconcile` are third-party extensions, pinned in
@@ -201,6 +201,44 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
 
 To roll back, restore `.specify/` and `.claude/` from git and reinstall the
 previous Spec Kit CLI.
+
+## Workflows
+
+`opsmill-sdd` installs three Spec Kit workflows, which run the `prep` and
+`implement` commands as workflow steps
+([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/workflows.md)):
+
+- `opsmill-prep` runs `speckit.opsmill.prep`.
+- `opsmill-implement` runs `speckit.opsmill.implement` on a spec directory.
+- `opsmill-auto` runs `opsmill-prep`, then `opsmill-implement` on the new spec
+  when prep ended with `STATUS: READY`. Otherwise it stops with an error.
+
+```bash
+specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
+```
+
+Spec Kit runs each step with `claude -p`, without an interactive session, so
+Claude Code can only use the tools it is allowed beforehand:
+
+- Claude Code ignores the `permissions.allow` list of `.claude/settings.json`
+  in a folder that it was never opened in. Open Claude Code once in the repo
+  and accept the trust dialog.
+- Instead, pass the tools for one run in
+  `SPECKIT_INTEGRATION_CLAUDE_EXTRA_ARGS`, for example
+  `--allowedTools Read Edit Write Glob Grep Skill Task TodoWrite 'Bash(git:*)'`.
+  `prep` and `implement` run `git status`, `git add` and `git commit`.
+- A hook that rewrites shell commands before Claude Code checks them changes
+  what to allow. With the rtk hook, `git status` runs as `rtk git status`, so
+  also allow `'Bash(rtk:*)'`.
+- A tool that is not allowed is refused, and the command reports what it could
+  not do. Allow the commands that the repo's tests need.
+
+Spec Kit keeps each run in `.specify/workflows/runs/<run-id>/`, including the
+output of the prep step. `specify workflow status <run-id>` shows a run, and
+`specify workflow resume <run-id>` resumes a failed one.
+
+Add `.specify/workflows/runs/` to the repo's `.gitignore`, so that the commits
+that `prep` and `implement` make leave the run state out.
 
 ## Commands
 
