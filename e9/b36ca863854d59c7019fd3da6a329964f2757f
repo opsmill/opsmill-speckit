@@ -1,0 +1,20 @@
+catalog/bundle-catalog.json
+  h_bd00275aefc321 3,5
+catalog/extension-catalog.json
+  h_bd00275aefc321 3
+catalog/preset-catalog.json
+  h_bd00275aefc321 3,5
+catalog/workflow-catalog.json
+  h_bd00275aefc321 3,5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e9b36ca863854d59c7019fd3da6a329964f2757f",
+  "prompts": {},
+  "humans": {
+    "h_bd00275aefc321": {
+      "author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
