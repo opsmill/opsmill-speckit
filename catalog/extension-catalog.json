@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-06T00:25:00Z",
+  "updated_at": "2026-11-06T14:13:38Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/extension-catalog.json",
   "extensions": {
     "checkpoint": {
@@ -46,6 +46,36 @@
         "docs",
         "review",
         "planning"
+      ]
+    },
+    "opsmill": {
+      "id": "opsmill",
+      "name": "OpsMill Speckit Workflow",
+      "version": "1.5.0",
+      "description": "OpsMill house spec-kit commands: autonomous end-to-end workflow (auto/prep/implement), knowledge extraction, session retrospective, session summary, and QA checklist.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "Apache-2.0",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-1.5.0.zip",
+      "sha256": "28f7ce081edc02ec6c3c7b81ab286674503be189ba4055db0a89da570558219c",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "commands": 7,
+        "hooks": 1
+      },
+      "tags": [
+        "opsmill",
+        "extract",
+        "retrospect",
+        "summary",
+        "qa",
+        "workflow",
+        "auto",
+        "prep",
+        "implement",
+        "autonomous"
       ]
     },
     "reconcile": {

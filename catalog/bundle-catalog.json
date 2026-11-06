@@ -1,6 +1,51 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-05T08:42:33Z",
+  "updated_at": "2026-11-06T14:13:38Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/bundle-catalog.json",
-  "bundles": {}
+  "bundles": {
+    "opsmill-jira": {
+      "id": "opsmill-jira",
+      "name": "OpsMill spec-driven development with Jira",
+      "version": "1.0.0",
+      "role": "developer",
+      "description": "opsmill-sdd, with feature branches named after a Jira ticket and tasks turned into Jira issues.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "Apache-2.0",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-jira-1.0.0.zip",
+      "sha256": "16bf6264f25705c2e3a1491aa30dd59733f4a32fcb5b80be296e9fdddb155881",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "bundles": 1,
+        "extensions": 1,
+        "presets": 2,
+        "steps": 0,
+        "workflows": 0
+      }
+    },
+    "opsmill-sdd": {
+      "id": "opsmill-sdd",
+      "name": "OpsMill spec-driven development",
+      "version": "1.0.0",
+      "role": "developer",
+      "description": "The OpsMill workflow commands and Spec Kit workflows, with the critique, checkpoint and reconcile extensions they use.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "Apache-2.0",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-sdd-1.0.0.zip",
+      "sha256": "1701bce77569429c58f5129604d45d9858ee9bc301bfc84883694b317c6b33fb",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "bundles": 0,
+        "extensions": 4,
+        "presets": 2,
+        "steps": 0,
+        "workflows": 3
+      }
+    }
+  }
 }
