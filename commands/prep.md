@@ -158,7 +158,7 @@ After all five phases are complete, provide a brief summary:
 
 - Feature name and spec directory
 - Number of tasks generated in `tasks.md`
-- Any critique findings that were addressed inline, and the `CRITIQUE_MODE` used. State a `fallback` or `none` mode plainly, with the install hint `specify extension add critique`
+- Any critique findings that were addressed inline, and the `CRITIQUE_MODE` used. State a `fallback` or `none` mode plainly, with the install hint `specify bundle install opsmill-sdd`
 - **Alignment check status** — verdict, source PRD reference, number of remediation passes used (if any), and any unresolved drift
 - Any notable decisions you made autonomously
 
