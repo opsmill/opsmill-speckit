@@ -1,0 +1,34 @@
+.github/scripts/tests/hooks/test_route_codex.py
+  s_e2176ce2fba659::t_67f6b311f8612b 38,52
+  s_e2176ce2fba659::t_871a673e6a9c05 1-37,39-51,53-65
+  s_e2176ce2fba659::t_97a5f2f28db5bc 66-68
+  s_e2176ce2fba659::t_93df5b52bb5e8c 69-107
+.github/scripts/install_check/installation.py
+  s_e2176ce2fba659::t_063f4db8f76dda 8,39
+  s_e2176ce2fba659::t_e0903665da3be5 40
+.github/workflows/unit-tests.yml
+  s_e2176ce2fba659::t_927cf1e47cf9ea 33
+  s_e2176ce2fba659::t_f3afb27bb3d6d6 32
+.github/scripts/install_check/checks.py
+  s_e2176ce2fba659::t_788222c335d9da 311
+  s_e2176ce2fba659::t_063f4db8f76dda 3,238-310,312-319
+  s_e2176ce2fba659::t_52f114a909432a 320-325
+.github/scripts/tests/hooks/test_python_hooks.py
+  s_e2176ce2fba659::t_6274bc42ad9a7d 1-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "75beffc138993c37520e20c06e44741cd622fc27",
+  "prompts": {},
+  "sessions": {
+    "s_e2176ce2fba659": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "99127975-a76f-4076-b6b1-bf6678ebabae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
