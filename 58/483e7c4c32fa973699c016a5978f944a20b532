@@ -1,0 +1,28 @@
+.github/scripts/tests/distribution/test_release_assets.py
+  s_492f9e6540eee7::t_6907c691b33e3c 1-21
+.github/scripts/build_release.py
+  s_492f9e6540eee7::t_c5cb01f0b007ad 8-10,24,46,55-67
+.github/scripts/distribution/catalogs.py
+  s_492f9e6540eee7::t_c5cb01f0b007ad 10,166-194
+.github/workflows/release.yml
+  s_492f9e6540eee7::t_59946d1dd9fdc4 1-34
+catalog/README.md
+  s_492f9e6540eee7::t_a5fb15af15e721 37-56
+  s_492f9e6540eee7::t_87d1b66c8f6a9f 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58483e7c4c32fa973699c016a5978f944a20b532",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

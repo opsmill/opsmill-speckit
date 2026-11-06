@@ -1,0 +1,40 @@
+catalog/extension-catalog.json
+  s_492f9e6540eee7::t_549d1d318e6da2 3,51-78
+  s_492f9e6540eee7::t_dfa22368589179 79-80
+presets/critique-opsmill/preset.yml
+  s_492f9e6540eee7::t_8ea697f9d5547f 6
+presets/reconcile-opsmill/preset.yml
+  s_492f9e6540eee7::t_09c19ebf5060bd 6
+catalog/workflow-catalog.json
+  s_492f9e6540eee7::t_549d1d318e6da2 3,5-60
+catalog/preset-catalog.json
+  s_492f9e6540eee7::t_549d1d318e6da2 3,5-104
+extension.yml
+  s_492f9e6540eee7::t_d2d2da2e99faab 6
+bundles/opsmill-jira/bundle.yml
+  s_492f9e6540eee7::t_8f99b3459d8e1d 7,20,30,35
+presets/taskstoissues-jira/preset.yml
+  s_492f9e6540eee7::t_6c4765ba80ba84 6
+bundles/opsmill-sdd/bundle.yml
+  s_492f9e6540eee7::t_57a699462912c1 6,21,36,42
+presets/jira-branch/preset.yml
+  s_492f9e6540eee7::t_0289739c61b787 6
+catalog/bundle-catalog.json
+  s_492f9e6540eee7::t_549d1d318e6da2 3,5-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eb69686028a4091b1fa103aee721f57e414a65f5",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
