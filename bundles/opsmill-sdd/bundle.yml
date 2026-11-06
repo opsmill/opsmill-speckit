@@ -3,9 +3,9 @@ schema_version: "1.0"
 bundle:
   id: "opsmill-sdd"
   name: "OpsMill spec-driven development"
-  version: "0.0.0"
+  version: "0.1.0"
   role: "developer"
-  description: "The OpsMill workflow commands, with the critique, checkpoint and reconcile extensions they use."
+  description: "The OpsMill workflow commands and Spec Kit workflows, with the critique, checkpoint and reconcile extensions they use."
   author: "opsmill"
   repository: "https://github.com/opsmill/opsmill-speckit"
   license: "Apache-2.0"
@@ -43,3 +43,15 @@ provides:
       source: "opsmill"
       priority: 10
       strategy: "replace"
+  # Run with `specify workflow run opsmill-auto`; each step runs one of the
+  # opsmill commands above.
+  workflows:
+    - id: "opsmill-prep"
+      version: "1.0.0"
+      source: "opsmill"
+    - id: "opsmill-implement"
+      version: "1.0.0"
+      source: "opsmill"
+    - id: "opsmill-auto"
+      version: "1.0.0"
+      source: "opsmill"

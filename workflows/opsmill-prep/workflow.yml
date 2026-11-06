@@ -1,0 +1,36 @@
+schema_version: "1.0"
+workflow:
+  id: "opsmill-prep"
+  name: "OpsMill preparation"
+  version: "1.0.0"
+  author: "opsmill"
+  description: "Runs speckit.opsmill.prep: specify, plan, critique and tasks, with every decision made autonomously."
+
+requires:
+  speckit_version: ">=1.2.4"
+  integrations:
+    any:
+      - "claude"
+
+inputs:
+  spec:
+    type: string
+    required: true
+    prompt: "Describe the feature, or give the URL of the ticket or PRD"
+  integration:
+    type: string
+    default: "auto"
+    prompt: "Integration to use ('auto' uses the project's integration)"
+
+steps:
+  # Captured so that `ready` can read prep's final status line.
+  - id: prep
+    command: speckit.opsmill.prep
+    integration: "{{ inputs.integration }}"
+    capture: true
+    input:
+      args: "{{ inputs.spec }}"
+
+outputs:
+  ready:
+    value: "{{ steps.prep.output.stdout | contains('STATUS: READY') }}"
