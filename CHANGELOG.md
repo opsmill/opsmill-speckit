@@ -5,6 +5,33 @@ Release history for the `opsmill` spec-kit extension (`extension.yml`).
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-11-06
+
+The extension ships the agent hooks that point spec-kit's scripts at the
+project's Python environment, which provides PyYAML. A repo no longer copies
+them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
+
+### Added
+- `scripts/bash/python-env.sh`: a Claude Code session start hook that sets
+  `SPECKIT_PYTHON_EXECUTABLE` and `SPECKIT_PYTHON` to the project's Python
+  environment when it can import PyYAML.
+- `scripts/bash/route-codex.sh` and `scripts/python/route_codex.py`: a Codex
+  hook that runs `setup-plan.sh`, `setup-tasks.sh`, `resolve-template.sh` and
+  spec-kit's own `create-new-feature.sh` through `scripts/bash/python-run.sh`,
+  which sets the same variables. The copies in opsmill/infrahub#11376
+  rerouted only the first two: `/speckit-constitution` runs
+  `resolve-template.sh`, and agents fall back to `create-new-feature.sh` when
+  the git extension cannot create the branch.
+  The hook rewrites only a command that is exactly one call of these
+  scripts in the current repository, because Codex runs a rewritten command
+  without asking for approval.
+- CI: the install check runs both hooks in the installed project, and unit
+  tests cover the Codex hook's command matching.
+
+### Changed
+- `extension.version` bumped `1.4.0` → `1.4.1`.
+- README: step 6 of the spec-kit 1.2 upgrade adds the hooks to the repo.
+
 ## [1.4.0] - 2026-10-27
 
 The current workflow runs on spec-kit 1.2, and still on 0.8.0 and later.
