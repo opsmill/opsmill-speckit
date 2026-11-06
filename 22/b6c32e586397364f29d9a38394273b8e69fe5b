@@ -1,0 +1,32 @@
+scripts/bash/route-codex.sh
+  s_e2176ce2fba659::t_a994b37e34e73d 1-3
+extension.yml
+  s_e2176ce2fba659::t_8bd9fa20c86b9f 6
+scripts/bash/python-env.sh
+  s_e2176ce2fba659::t_d8991ba4658163 1-24
+scripts/python/route_codex.py
+  s_e2176ce2fba659::t_dfbfdd833cceb4 1-47
+scripts/bash/python-run.sh
+  s_e2176ce2fba659::t_0e6b12ceaa4534 1-38
+README.md
+  s_e2176ce2fba659::t_dff4d24e8223f1 61-63,141-144,262-328
+  s_e2176ce2fba659::t_80c0ce98e97af6 329
+CHANGELOG.md
+  s_e2176ce2fba659::t_6b1864c2ee59f8 8-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "22b6c32e586397364f29d9a38394273b8e69fe5b",
+  "prompts": {},
+  "sessions": {
+    "s_e2176ce2fba659": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "99127975-a76f-4076-b6b1-bf6678ebabae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
