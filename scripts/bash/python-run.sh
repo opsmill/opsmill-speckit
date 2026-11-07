@@ -15,9 +15,15 @@ case "$venv" in
     /*) ;;
     *) venv="$repo_root/$venv" ;;
 esac
+# A linked worktree might have no environment of its own, so the main checkout's is tried last.
+main_venv=
+common=$(git -C "$repo_root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || common=
+case "$common" in
+    */.git) main_venv="${common%/.git}/${UV_PROJECT_ENVIRONMENT:-.venv}" ;;
+esac
 
 # Without an interpreter that has PyYAML, the command runs unchanged and Spec Kit falls back to python3 from the PATH.
-for python in "${SPECKIT_PYTHON_EXECUTABLE:-}" "${SPECKIT_PYTHON:-}" "$venv/bin/python"; do
+for python in "${SPECKIT_PYTHON_EXECUTABLE:-}" "${SPECKIT_PYTHON:-}" "$venv/bin/python" "${main_venv:+$main_venv/bin/python}"; do
     case "$python" in
         "") continue ;;
         */*) ;;

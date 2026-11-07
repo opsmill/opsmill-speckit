@@ -268,6 +268,8 @@ another interpreter. Until spec-kit stops needing PyYAML in these scripts
 ([github/spec-kit#4674](https://github.com/github/spec-kit/pull/4674)), the
 extension ships hooks that point them at the project's Python environment:
 `.venv`, or the directory in `UV_PROJECT_ENVIRONMENT`.
+In a linked git worktree that has no such environment, the hooks use the
+main checkout's.
 
 | Script in `.specify/extensions/opsmill/scripts/` | Agent | What it does |
 |---|---|---|

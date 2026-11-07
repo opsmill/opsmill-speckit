@@ -25,6 +25,8 @@ them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
   The hook rewrites only a command that is exactly one call of these
   scripts in the current repository, because Codex runs a rewritten command
   without asking for approval.
+- Both hooks use the main checkout's environment in a linked git worktree
+  that has none of its own.
 - CI: the install check runs both hooks in the installed project, and unit
   tests cover the Codex hook's command matching.
 

@@ -15,8 +15,16 @@ case "$venv" in
 esac
 python="$venv/bin/python"
 
-[ -x "$python" ] || exit 0
-"$python" -c 'import yaml' >/dev/null 2>&1 || exit 0
+# A linked worktree might have no environment of its own, so the main checkout's is used instead.
+# The Spec Kit scripts only need PyYAML from it.
+if ! "$python" -c 'import yaml' >/dev/null 2>&1; then
+    common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
+    case "$common" in
+        */.git) python="${common%/.git}/${UV_PROJECT_ENVIRONMENT:-.venv}/bin/python" ;;
+        *) exit 0 ;;
+    esac
+    "$python" -c 'import yaml' >/dev/null 2>&1 || exit 0
+fi
 
 # The file is sourced as shell code, so the path is single-quoted to keep spaces, quotes and $ literal.
 quoted="'$(printf '%s' "$python" | sed "s/'/'\\\\''/g")'"
