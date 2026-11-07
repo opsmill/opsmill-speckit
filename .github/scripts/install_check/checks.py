@@ -1,5 +1,6 @@
 """Checks on an installed project."""
 
+import json
 import os
 import re
 import subprocess
@@ -234,3 +235,90 @@ class PlanSetup:
                 f"setup-plan.sh failed with the installed presets (exit {result.returncode}):\n{result.stdout}{result.stderr}"
             )
         return "setup-plan.sh composes the plan template with the installed presets"
+
+
+@dataclass(frozen=True)
+class PythonHooks:
+    """The agent hooks shipped by the opsmill extension point spec-kit at the project's Python.
+
+    Runs after PlanSetup, which leaves a feature directory with a spec. The given
+    Python stands for the project's environment: UV_PROJECT_ENVIRONMENT points at it.
+    """
+
+    SCRIPTS: ClassVar[Path] = Path(".specify/extensions/opsmill/scripts/bash")
+
+    project: Project
+    python: Path
+
+    def verify(self) -> str:
+        self.session_start()
+        self.codex_route()
+        return "opsmill hooks run spec-kit's scripts with the project's Python"
+
+    def env(self) -> dict[str, str]:
+        env = {
+            key: value
+            for key, value in os.environ.items()
+            if key not in ("SPECKIT_PYTHON_EXECUTABLE", "SPECKIT_PYTHON")
+        }
+        env["UV_PROJECT_ENVIRONMENT"] = str(self.python.parent.parent)
+        return env
+
+    def session_start(self) -> None:
+        env_file = self.project.path / ".claude-env"
+        env_file.write_text("")
+        result = subprocess.run(
+            [str(self.project.path / self.SCRIPTS / "python-env.sh")],
+            cwd=self.project.path,
+            env={
+                **self.env(),
+                "CLAUDE_ENV_FILE": str(env_file),
+                "CLAUDE_PROJECT_DIR": str(self.project.path),
+            },
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        sourced = subprocess.run(
+            ["sh", "-c", '. "$1" && printf %s "$SPECKIT_PYTHON_EXECUTABLE"', "sh", str(env_file)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0 or sourced.stdout != str(self.python):
+            raise CheckFailed(
+                f"python-env.sh did not export the project's Python (exit {result.returncode}):\n"
+                f"{env_file.read_text()}{result.stderr}"
+            )
+
+    def codex_route(self) -> None:
+        command = "bash .specify/scripts/bash/setup-plan.sh --json"
+        hook_input = {"tool_name": "Bash", "tool_input": {"command": command}}
+        result = subprocess.run(
+            [str(self.project.path / self.SCRIPTS / "route-codex.sh")],
+            cwd=self.project.path,
+            input=json.dumps(hook_input),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        try:
+            routed = json.loads(result.stdout)["hookSpecificOutput"]["updatedInput"]["command"]
+        except (ValueError, KeyError, TypeError):
+            raise CheckFailed(
+                f"route-codex.sh did not reroute setup-plan.sh (exit {result.returncode}):\n{result.stdout}{result.stderr}"
+            ) from None
+        plan = next((self.project.path / "specs").glob("*/plan.md"))
+        plan.unlink()
+        run = subprocess.run(
+            ["bash", "-c", routed],
+            cwd=self.project.path,
+            env={**self.env(), "SPECIFY_FEATURE": plan.parent.name},
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if run.returncode != 0 or not plan.is_file():
+            raise CheckFailed(
+                f"setup-plan.sh failed through python-run.sh (exit {run.returncode}):\n{run.stdout}{run.stderr}"
+            )

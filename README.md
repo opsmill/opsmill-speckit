@@ -58,7 +58,9 @@ independently installable artifacts:
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
 - PyYAML for the Python that spec-kit's scripts run: `python3`, or the one set
   in `SPECKIT_PYTHON_EXECUTABLE`. spec-kit needs it to read the presets'
-  manifests; without it, `/speckit.plan` cannot prepare `plan.md`.
+  manifests; without it, `/speckit.plan` cannot prepare `plan.md`. In a repo
+  whose Python environment provides PyYAML, the extension's
+  [agent hooks](#agent-hooks-for-pyyaml) point spec-kit at that environment.
 
 Recommended: the [companions](#companion-extensions) `checkpoint`, `critique`
 and the `pr-review-toolkit` Claude Code plugin, which give `prep`, `auto`, and
@@ -136,8 +138,10 @@ uses an older spec-kit:
    [`infrahub` preset](https://github.com/opsmill/infrahub/tree/4d9fd0f0a469217aada697cb5ef306f7ef485f78/dev/spec-kit/presets/infrahub)
    copied from opsmill/infrahub, which checks branch names against Jira,
    replace it with [`jira-branch`](presets/jira-branch/README.md).
-6. Each developer makes PyYAML available to the Python that spec-kit's scripts
-   run (see [Requires](#requires)).
+6. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
+   scripts at the project's Python environment. In a repo without a Python
+   environment that provides PyYAML, each developer makes PyYAML available to
+   the Python that spec-kit's scripts run instead (see [Requires](#requires)).
 
 ## Commands
 
@@ -254,6 +258,80 @@ hooks:
       optional: true
       prompt: "Create QA testing checklist?"
 ```
+
+## Agent hooks for PyYAML
+
+spec-kit 1.2 reads the presets' manifests with PyYAML in `setup-plan.sh`,
+`setup-tasks.sh`, `resolve-template.sh` and its own `create-new-feature.sh`. These scripts run `python3` from
+the PATH, which often lacks PyYAML, unless `SPECKIT_PYTHON_EXECUTABLE` names
+another interpreter. Until spec-kit stops needing PyYAML in these scripts
+([github/spec-kit#4674](https://github.com/github/spec-kit/pull/4674)), the
+extension ships hooks that point them at the project's Python environment:
+`.venv`, or the directory in `UV_PROJECT_ENVIRONMENT`.
+In a linked git worktree that has no such environment, the hooks use the
+main checkout's.
+
+| Script in `.specify/extensions/opsmill/scripts/` | Agent | What it does |
+|---|---|---|
+| `bash/python-env.sh` | Claude Code, at session start | Sets `SPECKIT_PYTHON_EXECUTABLE` and `SPECKIT_PYTHON` for the session, when the environment can import PyYAML. Does nothing otherwise. |
+| `bash/route-codex.sh` | Codex, before each shell command | Runs a command that is exactly one call of the four scripts above, from the repository root or by its absolute path, through `bash/python-run.sh`, which sets the same variables for that command. Leaves other commands unchanged. |
+
+A repo adds them once. The next `opsmill` upgrade updates the scripts, and
+the entries below keep pointing at them.
+
+`.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.specify/extensions/opsmill/scripts/bash/python-env.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`.codex/hooks.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c '\"$(git rev-parse --show-toplevel)\"/.specify/extensions/opsmill/scripts/bash/route-codex.sh'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Codex runs project hooks only after each developer trusts them.
+
+Codex runs a rewritten command without asking for approval. So the Codex hook
+leaves a compound command unchanged, such as `cd specs && ../.specify/...` or
+`OUT=$(...)`, and that command runs with `python3` from the PATH.
+
+The extension does not declare these hooks as spec-kit `events:`, which would
+write the Claude Code entry automatically. spec-kit writes such an entry with
+the interpreter found when the extension is installed: `.venv/bin/python`, as
+a path relative to the directory the agent starts in, when a `.venv` exists.
+That entry fails for a developer without a `.venv`, or who starts the agent
+in a subdirectory. spec-kit writes Codex entries only in repos that install
+its Codex integration.
 
 ## Troubleshooting
 
