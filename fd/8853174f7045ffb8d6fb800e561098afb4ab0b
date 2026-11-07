@@ -1,0 +1,37 @@
+.extensionignore
+  s_492f9e6540eee7::t_777d776ec84477 1,3
+.github/scripts/distribution/catalogs.py
+  s_492f9e6540eee7::t_e08176701df488 39,61-63,65-70,83,157-158
+.github/scripts/install_check/checks.py
+  s_492f9e6540eee7::t_10afa431113fe0 61,82-93
+.github/scripts/install_check/components.py
+  s_492f9e6540eee7::t_2e55509bbe649c 14,18,72-85,101,109-110
+.github/scripts/install_check/project.py
+  s_492f9e6540eee7::t_d5ff208ea0d1ed 54-58
+.github/scripts/repo/components.py
+  s_492f9e6540eee7::t_8afca83fc1edc6 1,20-21,57-61,124-142,157,161,175,185-188
+README.md
+  s_492f9e6540eee7::t_de15a5b0f2c4dd 85,89,95-97,108-110
+catalog/README.md
+  s_492f9e6540eee7::t_01f08de637845d 10,13-14
+catalog/specify/workflow-catalogs.yml
+  s_492f9e6540eee7::t_bf4f08e6035fe8 1-18
+catalog/workflow-catalog.json
+  s_492f9e6540eee7::t_a5953c5fa24e78 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fd8853174f7045ffb8d6fb800e561098afb4ab0b",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
