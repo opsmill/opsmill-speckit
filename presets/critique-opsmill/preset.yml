@@ -3,7 +3,7 @@ schema_version: "1.0"
 preset:
   id: "critique-opsmill"
   name: "Critique (OpsMill)"
-  version: "1.0.0"
+  version: "1.5.0"
   description: "Override speckit.critique.run (arunt14/spec-kit-critique extension) with its script path fixed."
   author: "opsmill"
   repository: "https://github.com/opsmill/opsmill-speckit"

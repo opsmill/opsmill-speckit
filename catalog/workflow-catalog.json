@@ -1,6 +1,61 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-05T10:37:32Z",
+  "updated_at": "2026-11-12T23:39:32Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/workflow-catalog.json",
-  "workflows": {}
+  "workflows": {
+    "opsmill-auto": {
+      "id": "opsmill-auto",
+      "name": "OpsMill end to end",
+      "version": "1.0.0",
+      "description": "Runs the opsmill-prep workflow, then the opsmill-implement workflow when prep ends READY.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-auto-1.0.0.zip",
+      "sha256": "86474ecd6ed001892268fefbd7d624b06179fd871b3d75fa71760ee761a38aee",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    },
+    "opsmill-implement": {
+      "id": "opsmill-implement",
+      "name": "OpsMill implementation",
+      "version": "1.0.0",
+      "description": "Runs speckit.opsmill.implement on a spec directory that prep made ready: implement, review and final report.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-implement-1.0.0.zip",
+      "sha256": "bb4d9f253ff5088dde67bc0b81c54bf4d323ee52ff11ac7b19fa8790a064d2bc",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    },
+    "opsmill-prep": {
+      "id": "opsmill-prep",
+      "name": "OpsMill preparation",
+      "version": "1.0.0",
+      "description": "Runs speckit.opsmill.prep: specify, plan, critique and tasks, with every decision made autonomously.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-prep-1.0.0.zip",
+      "sha256": "a28e2a5965cf94f1ee84d1fa5c62d1b9cd2c32868628d2513660b5d60772657f",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    }
+  }
 }
