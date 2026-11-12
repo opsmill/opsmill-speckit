@@ -1,4 +1,4 @@
-"""How the install check installs each component, and the checks to run on it."""
+"""Components of an installed bundle and the checks to run on them."""
 
 from dataclasses import dataclass
 
@@ -8,24 +8,20 @@ from install_check.checks import (
     HooksRegistered,
     Override,
     OwnFiles,
+    Pinned,
     Registered,
     ScriptsExist,
 )
+from install_check.errors import CheckFailed
 from install_check.project import Project
-from repo.components import Bundle, Extension, Preset
+from repo.components import Bundle, Components, Extension, Preset
 
 
 @dataclass(frozen=True)
 class ExtensionInstall:
-    """The repo's extension, installed from a local directory."""
+    """The repo's extension in an installed project."""
 
     extension: Extension
-
-    def install(self, project: Project) -> list[Check]:
-        # Reading the manifest first fails at once on a malformed extension.yml.
-        checks = self.checks(project)
-        project.run("extension", "add", "--dev", str(self.extension.folder))
-        return checks
 
     def checks(self, project: Project) -> list[Check]:
         extension = self.extension
@@ -44,34 +40,10 @@ class ExtensionInstall:
 
 
 @dataclass(frozen=True)
-class RemoteExtension:
-    """An extension the repo does not ship: from a URL, or bundled with spec-kit."""
-
-    ext_id: str
-    url: str | None
-
-    def install(self, project: Project) -> list[Check]:
-        # Some spec-kit releases install the bundled git extension on init.
-        if project.registry("extensions").has(self.ext_id):
-            return [Done(f"{self.ext_id} already installed")]
-        if self.url:
-            project.run(
-                "extension", "add", self.ext_id, "--from", self.url, confirm=True
-            )
-        else:
-            project.run("extension", "add", self.ext_id)
-        return []
-
-
-@dataclass(frozen=True)
 class PresetInstall:
-    """A preset of the repo, installed from its folder."""
+    """A preset of the repo in an installed project."""
 
     preset: Preset
-
-    def install(self, project: Project) -> list[Check]:
-        project.run("preset", "add", "--dev", str(self.preset.folder))
-        return self.checks(project)
 
     def checks(self, project: Project) -> list[Check]:
         preset = self.preset
@@ -98,11 +70,60 @@ class PresetInstall:
 
 @dataclass(frozen=True)
 class BundleInstall:
-    """A bundle of the repo, installed from its manifest."""
+    """A bundle of the repo, installed by ID through the catalogs."""
 
     bundle: Bundle
 
     def install(self, project: Project) -> list[Check]:
-        project.run("bundle", "install", str(self.bundle.manifest))
-        manifest = self.bundle.manifest.relative_to(self.bundle.root)
-        return [Done(f"bundle {manifest} installed")]
+        project.run("bundle", "install", self.bundle.id)
+        return [Done(f"bundle {self.bundle.id} installed")]
+
+    def checks(self, project: Project) -> list[Check]:
+        """What the bundle installs, with the repo's preset overrides checked last."""
+        repo = Components(self.bundle.root)
+        extension = repo.extension()
+        presets = {preset.id: PresetInstall(preset) for preset in repo.presets()}
+        references = self.references()
+        checks: list[Check] = []
+        for kind, ref in references:
+            if kind == "extensions" and ref["id"] == extension.id:
+                checks.extend(ExtensionInstall(extension).checks(project))
+            elif kind == "presets" and ref["id"] in presets:
+                checks.extend(presets[ref["id"]].checks(project))
+            else:
+                checks.append(
+                    Pinned(
+                        project,
+                        kind,
+                        ref["id"],
+                        str(ref["version"]),
+                        bool(ref.get("source")),
+                    )
+                )
+        for kind, ref in references:
+            if kind == "presets" and ref["id"] in presets:
+                checks.extend(presets[ref["id"]].overrides(project))
+        return checks
+
+    def references(self, seen: tuple[str, ...] = ()) -> list[tuple[str, dict]]:
+        """The extensions and presets it installs, those of referenced bundles first."""
+        if self.bundle.id in seen:
+            raise CheckFailed(
+                f"bundle {self.bundle.id} references itself: {' -> '.join(seen)}"
+            )
+        refs: list[tuple[str, dict]] = []
+        for kind, ref in self.bundle.references():
+            if kind == "bundles":
+                referenced = BundleInstall(self.find(ref["id"]))
+                refs.extend(referenced.references((*seen, self.bundle.id)))
+            else:
+                refs.append((kind, ref))
+        return refs
+
+    def find(self, bundle_id: str) -> Bundle:
+        for bundle in Components(self.bundle.root).bundles():
+            if bundle.id == bundle_id:
+                return bundle
+        raise CheckFailed(
+            f"bundle {self.bundle.id} references {bundle_id}, which the repo does not ship"
+        )

@@ -1,0 +1,38 @@
+# Schema 1.1 lets a bundle reference other bundles.
+schema_version: "1.1"
+
+bundle:
+  id: "opsmill-jira"
+  name: "OpsMill spec-driven development with Jira"
+  version: "0.0.0"
+  role: "developer"
+  description: "opsmill-sdd, with feature branches named after a Jira ticket and tasks turned into Jira issues."
+  author: "opsmill"
+  repository: "https://github.com/opsmill/opsmill-speckit"
+  license: "Apache-2.0"
+
+requires:
+  speckit_version: ">=1.2.4"
+
+provides:
+  bundles:
+    - id: "opsmill-sdd"
+      version: "0.0.0"
+      source: "opsmill"
+  extensions:
+    # Its before_specify hook runs speckit.git.feature, which jira-branch
+    # replaces. It ships with Spec Kit, which installs its own newer patch
+    # release in place of this pin.
+    - id: "git"
+      version: "1.0.1"
+  presets:
+    - id: "jira-branch"
+      version: "1.0.0"
+      source: "opsmill"
+      priority: 10
+      strategy: "replace"
+    - id: "taskstoissues-jira"
+      version: "1.0.0"
+      source: "opsmill"
+      priority: 10
+      strategy: "replace"
