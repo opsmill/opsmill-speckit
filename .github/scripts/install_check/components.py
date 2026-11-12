@@ -11,10 +11,11 @@ from install_check.checks import (
     Pinned,
     Registered,
     ScriptsExist,
+    WorkflowLoads,
 )
 from install_check.errors import CheckFailed
 from install_check.project import Project
-from repo.components import Bundle, Components, Extension, Preset
+from repo.components import Bundle, Components, Extension, Preset, Workflow
 
 
 @dataclass(frozen=True)
@@ -69,6 +70,20 @@ class PresetInstall:
 
 
 @dataclass(frozen=True)
+class WorkflowInstall:
+    """A workflow of the repo in an installed project."""
+
+    workflow: Workflow
+
+    def checks(self, project: Project) -> list[Check]:
+        workflow = self.workflow
+        return [
+            Pinned(project, "workflows", workflow.id, workflow.version),
+            WorkflowLoads(project, workflow.id),
+        ]
+
+
+@dataclass(frozen=True)
 class BundleInstall:
     """A bundle of the repo, installed by ID through the catalogs."""
 
@@ -83,6 +98,7 @@ class BundleInstall:
         repo = Components(self.bundle.root)
         extension = repo.extension()
         presets = {preset.id: PresetInstall(preset) for preset in repo.presets()}
+        workflows = {w.id: WorkflowInstall(w) for w in repo.workflows()}
         references = self.references()
         checks: list[Check] = []
         for kind, ref in references:
@@ -90,6 +106,8 @@ class BundleInstall:
                 checks.extend(ExtensionInstall(extension).checks(project))
             elif kind == "presets" and ref["id"] in presets:
                 checks.extend(presets[ref["id"]].checks(project))
+            elif kind == "workflows" and ref["id"] in workflows:
+                checks.extend(workflows[ref["id"]].checks(project))
             else:
                 checks.append(
                     Pinned(
