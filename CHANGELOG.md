@@ -28,6 +28,9 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 | `jira-branch` | preset | 1.5.0 | opsmill-speckit |
 | `reconcile-opsmill` | preset | 1.5.0 | opsmill-speckit |
 | `taskstoissues-jira` | preset | 1.5.0 | opsmill-speckit |
+| `opsmill-prep` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill-implement` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill-auto` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
 | `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
 | `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
 | `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
@@ -37,7 +40,8 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 
 #### Added
 - First version, for every repo: the `opsmill` extension, `checkpoint`,
-  `critique` with `critique-opsmill`, and `reconcile` with `reconcile-opsmill`.
+  `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill`,
+  and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto`.
 
 ### opsmill-jira 1.0.0
 
@@ -49,6 +53,24 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 - Spec Kit installs a newer patch release of `git` that it ships in place of
   the pinned 1.0.1, with a warning. A Spec Kit release that ships `git` 1.1 or
   later needs a new version of this bundle.
+
+### opsmill-prep 1.0.0
+
+#### Added
+- Spec Kit workflow that runs `speckit.opsmill.prep` as one step, and reports
+  whether prep ended with `STATUS: READY`.
+
+### opsmill-implement 1.0.0
+
+#### Added
+- Spec Kit workflow that runs `speckit.opsmill.implement` on a spec directory.
+
+### opsmill-auto 1.0.0
+
+#### Added
+- Spec Kit workflow that runs `opsmill-prep`, then `opsmill-implement` on the
+  new spec when prep ended with `STATUS: READY`. See
+  [Workflows](README.md#workflows).
 
 ### opsmill 1.5.0
 
