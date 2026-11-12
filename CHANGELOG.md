@@ -1,17 +1,111 @@
-# Changelog — extension `opsmill`
+# Changelog
 
-Release history for the `opsmill` spec-kit extension (`extension.yml`).
+One entry per release of opsmill-speckit, tagged `vX.Y.Z`. Each entry starts
+with a table of every bundle and component and the version that the release
+holds, then has one section per bundle or component that changed.
 
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this artifact adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Each bundle and component has its own version, in its manifest
+(`bundle.yml`, `extension.yml`, `preset.yml`), and follows
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html). The format of
+each section follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+Before 1.5.0 there were no bundles: each tag released the extension at the
+tag's version, and the presets shared one collection version, 1.0.0 in
+`v1.1.0`, 1.1.0 in `v1.2.0` and 1.2.0 in `v1.4.0`.
+
+## [1.5.0] - Unreleased
+
+Repos install opsmill-speckit through two bundles, from the opsmill catalogs.
+Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. README:
+[Install](README.md#install) and [Upgrading from 1.4.1 or earlier](README.md#upgrading-from-141-or-earlier).
+
+| Bundle or component | Kind | Version | Source |
+|---|---|---|---|
+| `opsmill-sdd` | bundle | 1.0.0 | opsmill-speckit |
+| `opsmill-jira` | bundle, includes `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill` | extension | 1.5.0 | opsmill-speckit |
+| `critique-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `jira-branch` | preset | 1.5.0 | opsmill-speckit |
+| `reconcile-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `taskstoissues-jira` | preset | 1.5.0 | opsmill-speckit |
+| `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
+| `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
+| `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
+| `git` | extension, in `opsmill-jira` | 1.0.1 | ships with Spec Kit |
+
+### opsmill-sdd 1.0.0
+
+#### Added
+- First version, for every repo: the `opsmill` extension, `checkpoint`,
+  `critique` with `critique-opsmill`, and `reconcile` with `reconcile-opsmill`.
+
+### opsmill-jira 1.0.0
+
+#### Added
+- First version, for repos that track their work in Jira: `opsmill-sdd`, plus
+  `jira-branch`, `taskstoissues-jira`, and the `git` extension whose
+  `before_specify` hook runs the command that `jira-branch` replaces. Spec Kit
+  1.2.4 no longer installs `git` on `specify init`.
+- Spec Kit installs a newer patch release of `git` that it ships in place of
+  the pinned 1.0.1, with a warning. A Spec Kit release that ships `git` 1.1 or
+  later needs a new version of this bundle.
+
+### opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from the zip `opsmill-1.5.0.zip` of the
+  GitHub Release, instead of the archive of a tag.
+- `.extensionignore` also leaves out `bundles/`, `catalog/`, `README.md` and
+  `CHANGELOG.md`, so a change to the repo documentation does not change the
+  extension.
+
+### critique-opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from its own zip in the catalog.
+
+### jira-branch 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through `opsmill-jira`, from its own zip in the catalog.
+
+### reconcile-opsmill 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through the bundles, from its own zip in the catalog.
+- The bundles pin `reconcile` 1.3.1 instead of commit `886f1dd`, which the
+  README of 1.4.1 and earlier installed. On Spec Kit 1.2.4, the install check in CI installs
+  `reconcile` 1.3.1 and checks that this preset replaces its
+  `speckit.reconcile.run`. Whether the upstream
+  changes since `886f1dd` belong in the preset's text is not checked yet.
+
+### taskstoissues-jira 1.5.0
+
+#### Changed
+- Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
+- Installed through `opsmill-jira`, from its own zip in the catalog.
 
 ## [1.4.1] - 2026-11-06
 
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.4.1 |
+| `critique-opsmill` | preset | 1.0.0 |
+| `jira-branch` | preset | 1.0.0 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.4.1
+
 The extension ships the agent hooks that point spec-kit's scripts at the
 project's Python environment, which provides PyYAML. A repo no longer copies
-them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
+them. README: [Agent hooks for PyYAML](https://github.com/opsmill/opsmill-speckit/blob/v1.4.1/README.md#agent-hooks-for-pyyaml).
 
-### Added
+#### Added
 - `scripts/bash/python-env.sh`: a Claude Code session start hook that sets
   `SPECKIT_PYTHON_EXECUTABLE` and `SPECKIT_PYTHON` to the project's Python
   environment when it can import PyYAML.
@@ -30,16 +124,26 @@ them. README: [Agent hooks for PyYAML](README.md#agent-hooks-for-pyyaml).
 - CI: the install check runs both hooks in the installed project, and unit
   tests cover the Codex hook's command matching.
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.4.0` → `1.4.1`.
 - README: step 6 of the spec-kit 1.2 upgrade adds the hooks to the repo.
 
 ## [1.4.0] - 2026-10-27
 
-The current workflow runs on spec-kit 1.2, and still on 0.8.0 and later.
-README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-or-later).
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.4.0 |
+| `critique-opsmill` | preset | 1.0.0 |
+| `jira-branch` | preset | 1.0.0 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
 
-### Changed
+### opsmill 1.4.0
+
+The current workflow runs on spec-kit 1.2, and still on 0.8.0 and later.
+README: [Upgrading spec-kit to 1.2 or later](https://github.com/opsmill/opsmill-speckit/blob/v1.4.0/README.md#upgrading-spec-kit-to-12-or-later).
+
+#### Changed
 - `extension.version` bumped `1.3.2` → `1.4.0`.
 - `implement` reviews with the `pr-review-toolkit` Claude Code plugin when it is
   installed, else with `/code-review`, else with its built-in
@@ -55,18 +159,43 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   and, for a `--dev` install from a clone, its git history are not copied into
   `.specify/extensions/opsmill/`.
 
-### Fixed
+#### Fixed
 - `summary` and `qa` find `check-prerequisites.sh` again on Spec Kit 1.2, which
   resolves a command's script path from the extension directory.
 
+### critique-opsmill 1.0.0
+
+#### Added
+- **`critique-opsmill`** (`1.0.0`) — overrides `speckit.critique.run` from
+  the spec-kit-critique extension, whose command cannot find its script on
+  spec-kit 1.2. Upstream `run.md` at `v1.0.0`, with `../../scripts/` paths
+  and the path where the extension installs its report template.
+
+### jira-branch 1.0.0
+
+#### Added
+- **`jira-branch`** (`1.0.0`) — overrides `speckit.git.feature` so that a
+  feature branch needs a JPD or Jira reference. Replaces the `infrahub` preset
+  of opsmill/infrahub, which breaks on spec-kit 1.2: the git extension renamed
+  its branch script, and `FEATURE_NUM` holds the full branch name. It creates
+  the branch with `git checkout -b`, a command that permission rules can match.
+
 ## [1.3.2] - 2026-10-23
 
-### Added
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.3.2 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.3.2
+
+#### Added
 - `.extensionignore` excludes `presets/` from the installed extension. A tag
   archive holds the whole repo, so `specify extension add` copied the presets
   into `.specify/extensions/opsmill/`, where spec-kit never reads them.
 
-### Fixed
+#### Fixed
 - README: installs pin a release tag instead of `main`. The preset installs
   used `specify preset add --from … --subdir`, an option no spec-kit release
   has; they now install with `--dev` from a clone of the tag.
@@ -74,24 +203,40 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   to an optional section, since `prep`, `auto`, and `implement` fall back to a
   built-in pass without them.
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.3.1` → `1.3.2`.
 
 ## [1.3.1] - 2026-10-23
 
-### Fixed
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.3.1 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.3.1
+
+#### Fixed
 - `extract`: knowledge and guideline source markers now point to the archived
   spec path (`specs/archive/<spec-name>`), matching the ADR rule, so references
   no longer break after Phase 4 archives the spec. The Knowledge updates
   section gains a "create a new one if needed" branch, for parity with
   Guidelines updates (opsmill/opsmill-speckit#10).
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.3.0` → `1.3.1`.
 
 ## [1.3.0] - 2026-09-12
 
-### Added
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.3.0 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.3.0
+
+#### Added
 - **Companion-extension fallbacks.** `implement` Phase 0 now resolves a
   review provider (`REVIEW_MODE`), and `prep` Phase 3 resolves a critique
   provider (`CRITIQUE_MODE`), by running a literal shell check for
@@ -116,7 +261,7 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   Troubleshooting section covering the upstream `review` install failure on
   spec-kit 1.0.x (opsmill/opsmill-speckit#16) and the `REVIEW: none` state.
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.2.0` → `1.3.0` (opsmill/opsmill-speckit#17).
 - **Status-line contract — field order changed.** `prep` now emits a `CRITIQUE:`
   field and `implement` a `REVIEW:` field, both inserted **before** `REASON:`:
@@ -134,7 +279,15 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
 
 ## [1.2.0] - 2026-08-19
 
-### Added
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.2.0 |
+| `reconcile-opsmill` | preset | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.2.0
+
+#### Added
 - `speckit.opsmill.qa` — produces a manual QA checklist at
   `FEATURE_DIR/qa-checklist.md` that walks a human tester through
   verifying the just-implemented feature (scope, prerequisites, setup,
@@ -149,19 +302,72 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   `implement` invoke, are listed under Requires with install commands
   (opsmill/opsmill-speckit#9).
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.1.0` → `1.2.0`.
 - `extension.description` updated to cover the QA checklist command.
 
-### Fixed
+#### Fixed
 - `retrospect`: the issue-creation skill reference follows the skill renames
   in opsmill-skills, first `create-issue` → `creating-issues`
   (opsmill/opsmill-speckit#8), then `creating-issues` →
   `opsmill-dev-creating-issues` (opsmill/opsmill-speckit#11).
 
+### reconcile-opsmill 1.1.0
+
+#### Added
+- **`reconcile-opsmill`** (preset version `1.1.0`) — first release, versioned to the preset collection (there is no released `1.0.0`).
+  Spec-kit preset (`schema_version: "1.0"`,
+  `requires.speckit_version: ">=0.8.0"`) that declares one command
+  override under `provides.templates`: `type: command`,
+  `name: speckit.reconcile.run`,
+  `file: commands/speckit.reconcile.run.md`,
+  `replaces: speckit.reconcile.run` (default `replace` strategy).
+  Installable independently via:
+
+  ```bash
+  git clone https://github.com/opsmill/opsmill-speckit
+  specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
+  ```
+
+  Overrides `speckit.reconcile.run` — the drift-fixing command of the
+  [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
+  extension — so OpsMill can adapt the command body to its repo
+  structure without forking the upstream extension. The override only
+  registers when the `reconcile` extension is installed in the
+  consumer repo (`.specify/extensions/reconcile/`).
+
+  OpsMill adaptations over the upstream body (one commit each in the
+  preset's git history):
+  - Remediation tasks placed in `## Phase <N>:` blocks (new
+    `## Phase <max+1>: Remediation — Gap Report` when no phase fits)
+    instead of upstream's `## Remediation: Gaps` heading, which the
+    `taskstoissues-jira` fan-out would silently skip.
+  - `[P]` restored to the core spec-kit meaning ("can run in
+    parallel") instead of upstream's priority/urgency flag.
+  - Compliance gate additionally loads MUSTs from `dev/guidelines/`
+    and decisions from `dev/adr/` alongside
+    `.specify/memory/constitution.md`.
+  - Sync Impact Report's Next Step is Jira-aware when `dev/jira.yml`
+    exists, warning against wholesale `/speckit.taskstoissues`
+    re-runs.
+
+#### Provenance
+`reconcile-opsmill` derives from the upstream `commands/reconcile.md`
+(stn1slv/spec-kit-reconcile @ `886f1dd`): the verbatim lift is this
+preset's baseline commit in git history, and the first released version
+is `1.1.0`, carrying the OpsMill adaptations listed above. Upstream is MIT-licensed by Stanislav
+Deviatov; the license ships in `reconcile-opsmill/LICENSE`.
+
 ## [1.1.0] - 2026-06-19
 
-### Added
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.1.0 |
+| `taskstoissues-jira` | preset | 1.0.0 |
+
+### opsmill 1.1.0
+
+#### Added
 - Three autonomous-workflow commands (authored from scratch, not lifts):
   - `speckit.opsmill.auto` — runs the full pipeline end-to-end (prep +
     implement) autonomously, stopping before extract.
@@ -178,12 +384,12 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
 - `tags` gains `auto`, `prep`, `implement`, `autonomous` for registry
   discoverability.
 
-### Removed
+#### Removed
 - The `after_implement` → `speckit.opsmill.extract` hook. Extract is now an
   explicit manual follow-up the user runs after reviewing the implementation
   report; `auto` deliberately stops before it.
 
-### Changed
+#### Changed
 - `extension.version` bumped `1.0.0` → `1.1.0`.
 - `extension.description` updated to cover the autonomous end-to-end workflow.
 - `extract` writes ADRs in the MADR layout used by infrahub and infrahub-mcp:
@@ -191,9 +397,55 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   `adr-NNN-title.md`) and heading `# N. <Title>` (previously `# ADR-NNN:`)
   (opsmill/opsmill-speckit#6).
 
+### taskstoissues-jira 1.0.0
+
+#### Added
+- **`taskstoissues-jira`** (preset version `1.0.0`) — initial release of
+  the collection's first preset. Spec-kit preset
+  (`schema_version: "1.0"`, `requires.speckit_version: ">=0.8.0"`) that
+  declares one command override under `provides.templates`:
+  `type: command`, `name: speckit.taskstoissues`,
+  `file: commands/speckit.taskstoissues.md`,
+  `replaces: speckit.taskstoissues` (default `replace` strategy).
+  Installable independently via:
+
+  ```bash
+  specify preset add taskstoissues-jira \
+    --from https://github.com/opsmill/opsmill-speckit/archive/refs/heads/main.zip \
+    --subdir presets/taskstoissues-jira
+  ```
+
+  Overrides the native `/speckit.taskstoissues` to fan `tasks.md` out
+  into Jira issues under a single Epic — one issue per `## Phase N:`
+  block, with `Blocks` links derived from `T<NNN>` mentions
+  (transitively reduced). Talks to Atlassian through the Atlassian MCP.
+  Project config lives at `dev/jira.yml` in the consumer repo; the
+  assignee is the user authenticated to the Atlassian MCP (resolved via
+  `atlassianUserInfo`). See
+  [`taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md) for the
+  full configuration model and behavior.
+
+#### Provenance
+`taskstoissues-jira` is ported from the Infrahub preset in
+[opsmill/infrahub#9208](https://github.com/opsmill/infrahub/pull/9208).
+Generalized for cross-repo reuse:
+- Project key + Epic key regex driven by `default_project_key` from
+  config rather than hardcoded `IFC`.
+- Custom field IDs reduced to placeholders (`customfield_XXXXX`);
+  operator resolves real IDs via `getJiraIssueTypeMetaWithFields`.
+- Preset id renamed from `infrahub` to `taskstoissues-jira` so the
+  install path reads as a portable Jira-flavored override of
+  `speckit.taskstoissues` rather than a single-product preset.
+
 ## [1.0.0] - 2026-05-11
 
-### Added
+| Component | Kind | Version |
+|---|---|---|
+| `opsmill` | extension | 1.0.0 |
+
+### opsmill 1.0.0
+
+#### Added
 - Initial release. Single spec-kit extension (`id: opsmill`,
   `schema_version: "1.0"`, `requires.speckit_version: ">=0.8.0"`) providing:
   - `speckit.opsmill.extract` — knowledge / guidelines / ADR extraction
@@ -210,7 +462,7 @@ README: [Upgrading spec-kit to 1.2 or later](README.md#upgrading-spec-kit-to-12-
   - `after_taskstoissues` → `speckit.opsmill.summary`
   Both `optional: true`; users are prompted before each fires.
 
-### Provenance
+#### Provenance
 Command bodies are lifted from `opsmill/styrmin/.specify/extensions/`:
 - `commands/extract.md` from `extract/commands/extract.md`. Single edit:
   line 255 self-reference `speckit.extract` rewritten to
@@ -221,7 +473,7 @@ Command bodies are lifted from `opsmill/styrmin/.specify/extensions/`:
   edit: line 62 self-reference `/speckit.summary.run` rewritten to
   `/speckit.opsmill.summary`.
 
-## Smoke test — 2026-05-11T18:05:00Z
+#### Smoke test, 2026-05-11T18:05:00Z
 
 - ZIP install: PASS — Created `/tmp/opsmill-speckit-smoke/opsmill-speckit-v1.0.0.zip` from committed HEAD; contents verified (1185 bytes extension.yml, all three command files).
 - Three commands discovered: PASS — `specify extension list` output shows "OpsMill Speckit Workflow (v1.0.0)" with 3 commands enabled:
