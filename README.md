@@ -26,9 +26,11 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
      next to `spec.md` / `plan.md` so a human tester can verify the
      just-implemented feature step-by-step.
 
-   The extension also holds three commands that the `opsmill-prep` workflow
-   runs as phases: `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align`
-   and `speckit.opsmill.prep-realign`.
+   The extension also holds the commands that the workflows run as phases:
+   `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
+   `speckit.opsmill.prep-realign` for `opsmill-prep`, and
+   `speckit.opsmill.implement-chunk`, `speckit.opsmill.implement-review` and
+   `speckit.opsmill.implement-report` for `opsmill-implement`.
 
 2. **Presets** — drop-in overrides for spec-kit commands (native or
    extension-provided). Four ship:
@@ -145,8 +147,8 @@ specify preset add --dev /path/to/opsmill-speckit/presets/<preset-id>
 [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
 is a Claude Code plugin whose review agents `implement` runs: five in
 parallel, then `code-simplifier` alone, whose edits become findings and are
-discarded. Without it, `implement` uses `/code-review` if available. In Claude
-Code:
+discarded. Without it, `implement` uses `/code-review` at the `medium` effort
+level if available. In Claude Code:
 
 ```text
 /plugin install pr-review-toolkit@claude-plugins-official
@@ -221,7 +223,14 @@ previous Spec Kit CLI.
   - The whole pass is repeated while the check finds significant drift between
     the spec and the request, with two remediation passes at most.
   - At a limit, the run stops with an error.
-- `opsmill-implement` runs `speckit.opsmill.implement` on a spec directory.
+- `opsmill-implement` implements a spec directory in one step per phase: one
+  step per chunk of `tasks.md`, each in its own agent process, then one review
+  and one report.
+  - It stops before the first chunk when `spec.md`, `plan.md` or `tasks.md` is
+    missing, or when the working tree has uncommitted changes.
+  - The chunk step is repeated while `tasks.md` has unticked tasks and the
+    last chunk ticked at least one, with twenty chunks at most.
+  - The run ends with an error unless the report ends with `STATUS: DONE`.
 - `opsmill-auto` runs `opsmill-prep`, then `opsmill-implement` on the new spec
   when `opsmill-prep` completed. Otherwise it stops with an error.
 

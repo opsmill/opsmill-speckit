@@ -68,7 +68,15 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 ### opsmill-implement 1.0.0
 
 #### Added
-- Spec Kit workflow that runs `speckit.opsmill.implement` on a spec directory.
+- Spec Kit workflow that implements a spec directory in one step per phase:
+  one step per chunk of `tasks.md`, each in its own agent process, then one
+  review and one report.
+- The workflow stops before the first chunk when `spec.md`, `plan.md` or
+  `tasks.md` is missing, or when the working tree has uncommitted changes.
+- It repeats the chunk step while `tasks.md` has unticked tasks and the last
+  chunk ticked at least one, with twenty chunks at most. It ends with an error
+  unless the report ends with `STATUS: DONE`. See
+  [Workflows](README.md#workflows).
 
 ### opsmill-auto 1.0.0
 
@@ -83,6 +91,10 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 - `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
   `speckit.opsmill.prep-realign`: the phases of the `opsmill-prep` workflow
   that Spec Kit has no command for. The workflow runs them.
+- `speckit.opsmill.implement-chunk`, `speckit.opsmill.implement-review` and
+  `speckit.opsmill.implement-report`: the phases of the `opsmill-implement`
+  workflow. The review phase runs `/code-review` at the `medium` effort level
+  when the `pr-review-toolkit` plugin is not installed.
 
 #### Changed
 - `speckit.opsmill.prep` starts the `opsmill-prep` workflow, tells which phase
