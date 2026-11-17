@@ -101,6 +101,15 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   starts and reports the result of the run. It no longer runs the phases
   itself: the workflow file states their order and their limits. Its final
   `STATUS:` line keeps the same format.
+- `speckit.opsmill.implement` and `speckit.opsmill.auto` start the
+  `opsmill-implement` and `opsmill-auto` workflows in the same way. The final
+  `STATUS:` line of `implement` keeps the same format.
+- `implement` implements each chunk in its own agent process instead of a
+  subagent, and no longer pauses for the user: it ends with `STATUS: BLOCKED`
+  when the spec directory is not ready or the working tree has uncommitted
+  changes.
+- `implement` stops implementing when a chunk completes no task, instead of
+  moving on to the next chunk. The review and the report still run.
 - Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
 - Installed through the bundles, from the zip `opsmill-1.5.0.zip` of the
   GitHub Release, instead of the archive of a tag.

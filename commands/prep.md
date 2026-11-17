@@ -53,6 +53,8 @@ Watch the output of the command for the lines that match this pattern, and for n
 
 In Claude Code, that is the `Monitor` tool on the output file of the background command, with `grep -E --line-buffered` and this pattern. Do not add words such as `error` or `failed` to the pattern: the phases write them in their own text, and each match would interrupt you for nothing.
 
+The watch can end before the run does: in Claude Code, a `Monitor` expires after 10 minutes. Start it again from the lines that you have not reported yet, and do not tell the user: it is not a phase of the run.
+
 Each line that the pattern lets through, except the `Status:` line, is the start of a phase. Tell the user which phase started, in one short line:
 
 | Step in the output | Phase |
@@ -71,25 +73,13 @@ A step of a repeated pass carries the pass number, for example `design:critique:
 
 ### 4. Report the result
 
-Read the state of the run:
+Read the result of the run:
 
 ```bash
-python3 - <<'EOF'
-import json, pathlib
-states = pathlib.Path(".specify/workflows/runs").glob("*/state.json")
-state = json.loads(max(states, key=lambda path: path.stat().st_mtime).read_text())
-print("run", state["run_id"], state["status"])
-for name, result in state["step_results"].items():
-    output = result.get("output") or {}
-    lines = str(output.get("stdout") or "").strip().splitlines()
-    if lines and lines[-1].startswith(("CRITIQUE_VERDICT:", "ALIGNMENT:")):
-        print(name, "->", lines[-1])
-    if str(output.get("stderr") or "").startswith("BLOCKED:"):
-        print(str(output["stderr"]).strip())
-if state.get("error"):
-    print("failed at step", state.get("current_step_id"), "->", state["error"])
-EOF
+python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
 ```
+
+It prints the status of the run, how many times each phase started, the verdict line of each critique and alignment check, and the reason of a run that stopped.
 
 - **`completed`**: the spec is ready to implement.
 - **`failed`, with a `BLOCKED:` line**: the workflow reached one of its limits. Quote that line.
@@ -110,7 +100,7 @@ Then give a brief summary, from the files of the feature directory recorded in `
 `STATUS: <READY|BLOCKED> | SPEC_DIR: <absolute spec-dir path> | CRITIQUE: <extension|fallback|none|n/a> | REASON: <short reason or n/a>`
 
 - `STATUS: READY` — the workflow completed: the critique accepted the design, and the alignment check found no significant drift. Only in this state is the spec safe to implement.
-- `STATUS: BLOCKED` — the workflow stopped on one of its limits, or a phase could not complete. This is the failure signal that `speckit-opsmill-auto` checks before it starts the implementation.
+- `STATUS: BLOCKED` — the workflow stopped on one of its limits, or a phase could not complete. This is the failure signal for a script or an agent that reads this output.
 - `SPEC_DIR` MUST be the absolute path to the spec directory.
 - `CRITIQUE` is the mode on the last `CRITIQUE_VERDICT` line. Use `n/a` only when the run stopped before the critique.
 

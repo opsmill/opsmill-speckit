@@ -4,15 +4,16 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
 
 1. **Extension `opsmill`** — seven workflow commands under the `opsmill`
    namespace:
-   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
-     implement) autonomously, making all decisions without pausing. Stops
-     before extract.
+   - `/speckit.opsmill.auto` — start the `opsmill-auto` workflow, which runs
+     the full pipeline end-to-end (prep + implement) autonomously, making all
+     decisions without pausing, then report its result. Stops before extract.
    - `/speckit.opsmill.prep` — start the `opsmill-prep` workflow, which runs
      the preparation phases (specify → plan → critique → tasks → spec/ask
      alignment check) autonomously, then report its result. Stops before
      implementation.
-   - `/speckit.opsmill.implement` — run the implementation + review tail from an
-     existing `tasks.md` in clean-context subagents, then emit a final report.
+   - `/speckit.opsmill.implement` — start the `opsmill-implement` workflow,
+     which implements an existing `tasks.md` chunk by chunk, reviews the
+     result and writes a final report, then report its result.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -238,9 +239,10 @@ previous Spec Kit CLI.
 specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
 ```
 
-In a Claude Code session, `/speckit.opsmill.prep` starts `opsmill-prep` with
-`specify workflow run`, tells which phase starts, and reports the result of
-the run.
+In a Claude Code session, `/speckit.opsmill.prep`, `/speckit.opsmill.implement`
+and `/speckit.opsmill.auto` each start their workflow with
+`specify workflow run`, tell which phase starts, and report the result of the
+run.
 
 Spec Kit runs each step with `claude -p`, without an interactive session, so
 Claude Code can only use the tools it is allowed beforehand:

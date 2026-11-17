@@ -139,3 +139,9 @@ outputs:
     value: "{{ true }}"
   spec-dir:
     value: "{{ steps.spec_dir.output.stdout }}"
+  # What the last critique and the last alignment check reported, for a
+  # workflow that runs this one as a step.
+  critique:
+    value: "{{ steps.critique.output.stdout }}"
+  alignment:
+    value: "{{ steps.align.output.stdout }}"
