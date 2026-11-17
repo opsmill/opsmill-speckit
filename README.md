@@ -7,9 +7,10 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
    - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
      implement) autonomously, making all decisions without pausing. Stops
      before extract.
-   - `/speckit.opsmill.prep` — run the preparation phases
-     (specify → plan → critique → tasks → spec/ask alignment check)
-     autonomously, stopping before implementation.
+   - `/speckit.opsmill.prep` — start the `opsmill-prep` workflow, which runs
+     the preparation phases (specify → plan → critique → tasks → spec/ask
+     alignment check) autonomously, then report its result. Stops before
+     implementation.
    - `/speckit.opsmill.implement` — run the implementation + review tail from an
      existing `tasks.md` in clean-context subagents, then emit a final report.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
@@ -227,6 +228,10 @@ previous Spec Kit CLI.
 ```bash
 specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
 ```
+
+In a Claude Code session, `/speckit.opsmill.prep` starts `opsmill-prep` with
+`specify workflow run`, tells which phase starts, and reports the result of
+the run.
 
 Spec Kit runs each step with `claude -p`, without an interactive session, so
 Claude Code can only use the tools it is allowed beforehand:

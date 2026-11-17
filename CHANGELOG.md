@@ -85,6 +85,10 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   that Spec Kit has no command for. The workflow runs them.
 
 #### Changed
+- `speckit.opsmill.prep` starts the `opsmill-prep` workflow, tells which phase
+  starts and reports the result of the run. It no longer runs the phases
+  itself: the workflow file states their order and their limits. Its final
+  `STATUS:` line keeps the same format.
 - Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
 - Installed through the bundles, from the zip `opsmill-1.5.0.zip` of the
   GitHub Release, instead of the archive of a tag.

@@ -34,7 +34,7 @@ provides:
       description: "Run the speckit workflow end-to-end (prep + implement) autonomously. Stops before extract; run that manually."
     - name: "speckit.opsmill.prep"
       file: "commands/prep.md"
-      description: "Run the speckit preparation phases end-to-end (specify → plan → critique → tasks → alignment), stopping before implementation."
+      description: "Prepare a feature for implementation by running the opsmill-prep workflow (specify → plan → critique → tasks → alignment), stopping before implementation."
     - name: "speckit.opsmill.prep-critique"
       file: "commands/prep-critique.md"
       description: "Phase of the opsmill-prep workflow: critique spec.md and plan.md, and report the verdict."

@@ -28,7 +28,7 @@ Run them back-to-back, making all decisions autonomously. Do not stop to ask the
 Invoke the `speckit-opsmill-prep` skill with the user's feature description (`$ARGUMENTS`) verbatim.
 
 - This covers Specify → Plan → Critique → Tasks **and** the trailing spec/ask alignment check.
-- The sub-skill commits its own artifacts after each phase via `speckit-checkpoint-commit`.
+- The `opsmill-prep` workflow, which the sub-skill starts, commits the artifacts after each phase.
 - If the alignment check inside prep loops (re-running plan/critique/tasks to fix spec drift), let it run to completion. Do not interfere.
 
 **Read prep's status line.** `speckit-opsmill-prep` ends its output with a literal final line:
