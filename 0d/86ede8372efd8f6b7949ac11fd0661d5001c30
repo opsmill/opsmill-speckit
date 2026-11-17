@@ -1,0 +1,33 @@
+commands/implement.md
+  s_492f9e6540eee7::t_4231bfe1b8ad73 2,11,15,17,19,21,23-25,27,29,31,33,35-37,39,41,43,45,47,49-51,53,55,57-61,63,65,67,69-71,73,75-78,80,86-87,89,91
+scripts/python/workflow_result.py
+  s_492f9e6540eee7::t_3fd6b496ab5819 30-32,50-54,78-80,88,90-92,99-101,104-107
+  s_492f9e6540eee7::t_ff27b8721eebd0 49,55
+  s_492f9e6540eee7::t_ba0b01702fdd8b 1-29,33-48,56-77,81-87,89,93-98,102-103,108-119
+commands/auto.md
+  s_492f9e6540eee7::t_9f544a9fc7722d 2,11,15,17,19,21,23-34,36-38,40,42,44,46,48,50-54,56,58-69,71,73,75,77-81,83,85-88,90,93-97,99
+extension.yml
+  s_492f9e6540eee7::t_c9e339d24e37bd 34,58
+commands/prep.md
+  s_492f9e6540eee7::t_ede19526f73ee8 74,77,80
+  s_492f9e6540eee7::t_6c8cfbe11ba6f1 101
+  s_492f9e6540eee7::t_485ad30a3d4170 81
+workflows/opsmill-prep/workflow.yml
+  s_492f9e6540eee7::t_ff27b8721eebd0 142-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0d86ede8372efd8f6b7949ac11fd0661d5001c30",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
