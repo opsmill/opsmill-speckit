@@ -1,0 +1,37 @@
+CHANGELOG.md
+  s_492f9e6540eee7::t_48e9c047434da9 71-79
+  s_492f9e6540eee7::t_4bf44d2865452c 94-97
+workflows/opsmill-implement/workflow.yml
+  s_492f9e6540eee7::t_c534f476ea4f56 7,26-78,80-81,83-102
+  s_492f9e6540eee7::t_ff27b8721eebd0 103-105
+commands/implement-chunk.md
+  s_492f9e6540eee7::t_48912cbedb97fc 1-63
+extension.yml
+  s_492f9e6540eee7::t_6fe40bbd77c184 55
+  s_492f9e6540eee7::t_45e27639fd9cce 47-54
+commands/implement-report.md
+  s_492f9e6540eee7::t_3ae53128c1f7cc 1-66
+README.md
+  s_492f9e6540eee7::t_5f32e0b28c6b6b 226-233
+  s_492f9e6540eee7::t_55e0bf3b75f631 29-33
+  s_492f9e6540eee7::t_f3825ebc4c2734 150-151
+commands/implement-review.md
+  s_492f9e6540eee7::t_c38d3d4726fa7f 1-43,45-78
+  s_492f9e6540eee7::t_fcacc8b6c26407 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3dfafec36cd067dd740f2d35d6744d92d2eacf94",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
