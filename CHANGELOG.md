@@ -57,8 +57,13 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 ### opsmill-prep 1.0.0
 
 #### Added
-- Spec Kit workflow that runs `speckit.opsmill.prep` as one step, and reports
-  whether prep ended with `STATUS: READY`.
+- Spec Kit workflow that prepares a feature in one step per phase: specify,
+  plan, critique, tasks, then a check of the spec against the request. The
+  workflow commits after each phase.
+- The workflow repeats plan and critique while the critique verdict is
+  `RETHINK`, three passes at most. It repeats the whole pass while the check
+  finds significant drift, with two remediation passes at most. At a limit,
+  the run stops with an error. See [Workflows](README.md#workflows).
 
 ### opsmill-implement 1.0.0
 
@@ -69,10 +74,15 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 
 #### Added
 - Spec Kit workflow that runs `opsmill-prep`, then `opsmill-implement` on the
-  new spec when prep ended with `STATUS: READY`. See
+  new spec when `opsmill-prep` completed. See
   [Workflows](README.md#workflows).
 
 ### opsmill 1.5.0
+
+#### Added
+- `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
+  `speckit.opsmill.prep-realign`: the phases of the `opsmill-prep` workflow
+  that Spec Kit has no command for. The workflow runs them.
 
 #### Changed
 - Requires Spec Kit 1.2.4 or later, instead of 0.8.0.

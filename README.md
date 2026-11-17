@@ -25,6 +25,10 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
      next to `spec.md` / `plan.md` so a human tester can verify the
      just-implemented feature step-by-step.
 
+   The extension also holds three commands that the `opsmill-prep` workflow
+   runs as phases: `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align`
+   and `speckit.opsmill.prep-realign`.
+
 2. **Presets** — drop-in overrides for spec-kit commands (native or
    extension-provided). Four ship:
    - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
@@ -204,14 +208,21 @@ previous Spec Kit CLI.
 
 ## Workflows
 
-`opsmill-sdd` installs three Spec Kit workflows, which run the `prep` and
-`implement` commands as workflow steps
+`opsmill-sdd` installs three Spec Kit workflows
 ([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/workflows.md)):
 
-- `opsmill-prep` runs `speckit.opsmill.prep`.
+- `opsmill-prep` prepares a feature in one step per phase: specify, plan,
+  critique, tasks, then a check of the spec against the request. It commits
+  after each phase. The workflow file states when a phase is repeated, and how
+  often:
+  - Plan and critique are repeated while the critique verdict is `RETHINK`,
+    three passes at most.
+  - The whole pass is repeated while the check finds significant drift between
+    the spec and the request, with two remediation passes at most.
+  - At a limit, the run stops with an error.
 - `opsmill-implement` runs `speckit.opsmill.implement` on a spec directory.
 - `opsmill-auto` runs `opsmill-prep`, then `opsmill-implement` on the new spec
-  when prep ended with `STATUS: READY`. Otherwise it stops with an error.
+  when `opsmill-prep` completed. Otherwise it stops with an error.
 
 ```bash
 specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
@@ -226,7 +237,8 @@ Claude Code can only use the tools it is allowed beforehand:
 - Instead, pass the tools for one run in
   `SPECKIT_INTEGRATION_CLAUDE_EXTRA_ARGS`, for example
   `--allowedTools Read Edit Write Glob Grep Skill Task TodoWrite 'Bash(git:*)'`.
-  `prep` and `implement` run `git status`, `git add` and `git commit`.
+  The steps run `git` commands, and `implement` commits with `git add` and
+  `git commit`.
 - A hook that rewrites shell commands before Claude Code checks them changes
   what to allow. With the rtk hook, `git status` runs as `rtk git status`, so
   also allow `'Bash(rtk:*)'`.
@@ -234,11 +246,11 @@ Claude Code can only use the tools it is allowed beforehand:
   not do. Allow the commands that the repo's tests need.
 
 Spec Kit keeps each run in `.specify/workflows/runs/<run-id>/`, including the
-output of the prep step. `specify workflow status <run-id>` shows a run, and
+verdicts of the critique and of the alignment check. `specify workflow status <run-id>` shows a run, and
 `specify workflow resume <run-id>` resumes a failed one.
 
 Add `.specify/workflows/runs/` to the repo's `.gitignore`, so that the commits
-that `prep` and `implement` make leave the run state out.
+that the workflows make leave the run state out.
 
 ## Commands
 

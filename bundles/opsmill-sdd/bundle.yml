@@ -18,7 +18,7 @@ requires:
 provides:
   extensions:
     - id: "opsmill"
-      version: "1.4.1"
+      version: "1.5.0"
       source: "opsmill"
     # prep, implement and auto commit with speckit-checkpoint-commit from this extension.
     - id: "checkpoint"

@@ -4,7 +4,7 @@ workflow:
   name: "OpsMill preparation"
   version: "1.0.0"
   author: "opsmill"
-  description: "Runs speckit.opsmill.prep: specify, plan, critique and tasks, with every decision made autonomously."
+  description: "Prepares a feature for implementation: specify, plan and critique, tasks, then an alignment check against the request. Each phase is one step, and the workflow sets when a phase is repeated and how often."
 
 requires:
   speckit_version: ">=1.2.4"
@@ -23,15 +23,119 @@ inputs:
     prompt: "Integration to use ('auto' uses the project's integration)"
 
 steps:
-  # Captured so that `ready` can read prep's final status line.
-  - id: prep
-    command: speckit.opsmill.prep
-    integration: "{{ inputs.integration }}"
-    capture: true
-    input:
-      args: "{{ inputs.spec }}"
+  # One preparation pass: spec, plan and critique, tasks, alignment check.
+  # The pass is repeated while the alignment check finds that the spec drifted
+  # from the request: the first pass, then two remediation passes at most.
+  # Each phase is followed by a commit of what it wrote.
+  - id: pass
+    type: do-while
+    max_iterations: 3
+    condition: "{{ not (steps.critique.output.stdout | contains('CRITIQUE_VERDICT: RETHINK')) and (steps.align.output.stdout | default('') | contains('ALIGNMENT: SIGNIFICANT_DRIFT')) }}"
+    steps:
+      # The first pass writes spec.md from the request. A remediation pass
+      # corrects spec.md from the findings of the alignment check.
+      - id: spec
+        type: if
+        condition: "{{ steps.align.output.stdout | default('') | contains('ALIGNMENT: SIGNIFICANT_DRIFT') }}"
+        then:
+          - id: realign
+            command: speckit.opsmill.prep-realign
+            integration: "{{ inputs.integration }}"
+            input:
+              args: "{{ inputs.spec }}"
+        else:
+          # Left alone, specify ends on its open questions and leaves them
+          # in the spec, so the request carries the instruction to decide.
+          - id: specify
+            command: speckit.specify
+            integration: "{{ inputs.integration }}"
+            input:
+              args: "{{ inputs.spec }}\n\nNobody can answer a question during this run. Decide every open point yourself, record each decision in the Assumptions section, and leave no clarification marker in the spec."
+      - id: commit-spec
+        type: shell
+        run: "git add -A && (git diff --cached --quiet || git commit -q -m 'specify: write the spec')"
+
+      # Plan, then critique. Repeated while the critique verdict is RETHINK,
+      # three times at most.
+      - id: design
+        type: do-while
+        max_iterations: 3
+        condition: "{{ steps.critique.output.stdout | contains('CRITIQUE_VERDICT: RETHINK') }}"
+        steps:
+          # After a RETHINK, the plan is reworked from the critique report.
+          - id: plan-or-rework
+            type: if
+            condition: "{{ steps.critique.output.stdout | default('') | contains('CRITIQUE_VERDICT: RETHINK') }}"
+            then:
+              - id: replan
+                command: speckit.plan
+                integration: "{{ inputs.integration }}"
+                input:
+                  args: "The latest critique report in the feature directory rejected the current design. Rework the plan to resolve its findings. Correct spec.md first when the report says that the spec itself is the problem."
+            else:
+              - id: plan
+                command: speckit.plan
+                integration: "{{ inputs.integration }}"
+          - id: commit-plan
+            type: shell
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'plan: write the implementation plan')"
+          - id: critique
+            command: speckit.opsmill.prep-critique
+            integration: "{{ inputs.integration }}"
+            capture: true
+            timeout: 1800
+          - id: commit-critique
+            type: shell
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'critique: review the spec and the plan')"
+
+      # Tasks and the alignment check need a design that the critique accepts.
+      - id: accepted
+        type: if
+        condition: "{{ not (steps.critique.output.stdout | contains('CRITIQUE_VERDICT: RETHINK')) }}"
+        then:
+          - id: tasks
+            command: speckit.tasks
+            integration: "{{ inputs.integration }}"
+          - id: commit-tasks
+            type: shell
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'tasks: generate the tasks')"
+          - id: align
+            command: speckit.opsmill.prep-align
+            integration: "{{ inputs.integration }}"
+            capture: true
+            timeout: 1800
+            input:
+              args: "{{ inputs.spec }}"
+          - id: commit-align
+            type: shell
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'alignment: check the spec against the request')"
+
+  # The run stops here, with an error, when the spec is not safe to implement.
+  - id: design-rejected
+    type: if
+    condition: "{{ steps.critique.output.stdout | contains('CRITIQUE_VERDICT: RETHINK') }}"
+    then:
+      - id: stop-on-design
+        type: shell
+        run: "echo 'BLOCKED: the critique still asks for a rethink after 3 plan and critique passes' >&2; exit 1"
+
+  - id: drift-unresolved
+    type: if
+    condition: "{{ steps.align.output.stdout | default('') | contains('ALIGNMENT: SIGNIFICANT_DRIFT') }}"
+    then:
+      - id: stop-on-drift
+        type: shell
+        run: "echo 'BLOCKED: the spec still drifts from the request after 2 remediation passes' >&2; exit 1"
+
+  # The feature directory that specify recorded for the spec.
+  - id: spec_dir
+    type: shell
+    run: "python3 -c \"import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')\""
 
 outputs:
+  # Reached only when the critique accepted the design and the alignment check
+  # found no significant drift: the spec is safe to implement.
   ready:
-    # The status line, not a mention of READY elsewhere in prep's summary.
-    value: "{{ steps.prep.output.stdout | contains('STATUS: READY | SPEC_DIR:') }}"
+    value: "{{ true }}"
+  spec-dir:
+    value: "{{ steps.spec_dir.output.stdout }}"
