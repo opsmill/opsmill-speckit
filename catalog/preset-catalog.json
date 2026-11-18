@@ -1,6 +1,105 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-05T10:37:32Z",
+  "updated_at": "2026-11-06T14:13:38Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/preset-catalog.json",
-  "presets": {}
+  "presets": {
+    "critique-opsmill": {
+      "id": "critique-opsmill",
+      "name": "Critique (OpsMill)",
+      "version": "1.5.0",
+      "description": "Override speckit.critique.run (arunt14/spec-kit-critique extension) with its script path fixed.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "MIT",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/critique-opsmill-1.5.0.zip",
+      "sha256": "74ef47fad368ee8571a42958a067296b6fcd8a09a1043a60976b2f4c41be6db0",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "commands": 1,
+        "templates": 0
+      },
+      "tags": [
+        "critique",
+        "review",
+        "planning",
+        "opsmill"
+      ]
+    },
+    "jira-branch": {
+      "id": "jira-branch",
+      "name": "Jira branch",
+      "version": "1.5.0",
+      "description": "Override speckit.git.feature so that a feature branch is created only with a Jira or JPD ticket reference, as <short-name>-<ticket-id>.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "Apache-2.0",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/jira-branch-1.5.0.zip",
+      "sha256": "03639bf29ccc02c71ac93eba7a1a9287110f6e0c5904efcb4c31f1b8071ce804",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "commands": 1,
+        "templates": 0
+      },
+      "tags": [
+        "jira",
+        "branching",
+        "git",
+        "opsmill"
+      ]
+    },
+    "reconcile-opsmill": {
+      "id": "reconcile-opsmill",
+      "name": "Reconcile (OpsMill)",
+      "version": "1.5.0",
+      "description": "Override speckit.reconcile.run (stn1slv/spec-kit-reconcile extension) with the OpsMill-maintained command body.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "MIT",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/reconcile-opsmill-1.5.0.zip",
+      "sha256": "addb84a0032e06f5196b21b96b5afd834d5f6e6096b5b851eeaf7a1d5dbb3c73",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "commands": 1,
+        "templates": 0
+      },
+      "tags": [
+        "reconcile",
+        "drift",
+        "remediation",
+        "workflow",
+        "opsmill"
+      ]
+    },
+    "taskstoissues-jira": {
+      "id": "taskstoissues-jira",
+      "name": "Tasks-to-Issues (Jira)",
+      "version": "1.5.0",
+      "description": "Override speckit.taskstoissues to fan tasks.md out into Jira issues under a single Epic (one issue per phase) via the Atlassian MCP.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "license": "Apache-2.0",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/taskstoissues-jira-1.5.0.zip",
+      "sha256": "6d1cfb1489fdf5ff8c59a000f492c94e722a7ba72ddb6fdadcfdac8619216653",
+      "requires": {
+        "speckit_version": ">=1.2.4"
+      },
+      "provides": {
+        "commands": 1,
+        "templates": 0
+      },
+      "tags": [
+        "taskstoissues",
+        "jira",
+        "atlassian",
+        "workflow",
+        "opsmill"
+      ]
+    }
+  }
 }

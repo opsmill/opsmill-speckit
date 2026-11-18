@@ -3,7 +3,7 @@ schema_version: "1.0"
 preset:
   id: "taskstoissues-jira"
   name: "Tasks-to-Issues (Jira)"
-  version: "1.0.0"
+  version: "1.5.0"
   description: "Override speckit.taskstoissues to fan tasks.md out into Jira issues under a single Epic (one issue per phase) via the Atlassian MCP."
   author: "opsmill"
   repository: "https://github.com/opsmill/opsmill-speckit"

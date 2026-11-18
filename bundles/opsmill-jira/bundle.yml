@@ -4,7 +4,7 @@ schema_version: "1.1"
 bundle:
   id: "opsmill-jira"
   name: "OpsMill spec-driven development with Jira"
-  version: "0.1.0"
+  version: "1.0.0"
   role: "developer"
   description: "opsmill-sdd, with feature branches named after a Jira ticket and tasks turned into Jira issues."
   author: "opsmill"
@@ -17,7 +17,7 @@ requires:
 provides:
   bundles:
     - id: "opsmill-sdd"
-      version: "0.1.0"
+      version: "1.0.0"
       source: "opsmill"
   extensions:
     # Its before_specify hook runs speckit.git.feature, which jira-branch
@@ -27,12 +27,12 @@ provides:
       version: "1.0.1"
   presets:
     - id: "jira-branch"
-      version: "1.0.0"
+      version: "1.5.0"
       source: "opsmill"
       priority: 10
       strategy: "replace"
     - id: "taskstoissues-jira"
-      version: "1.0.0"
+      version: "1.5.0"
       source: "opsmill"
       priority: 10
       strategy: "replace"
