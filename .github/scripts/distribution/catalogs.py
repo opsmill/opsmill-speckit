@@ -12,6 +12,8 @@ from repo.components import Component
 REPOSITORY = "https://github.com/opsmill/opsmill-speckit"
 # Projects read the catalogs from main, so that they list each new release.
 CATALOGS = "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/"
+# The name of these catalogs in a project, which bundles set as `source`.
+SOURCE = "opsmill"
 
 
 @dataclass(frozen=True)

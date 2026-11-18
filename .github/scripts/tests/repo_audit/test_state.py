@@ -3,7 +3,7 @@ from packaging.version import Version
 from repo_audit.release import Release
 from repo_audit.state import RepoState
 
-RELEASE = Release("v1.3.2", Version("1.3.2"), Version("0.8.0"))
+RELEASE = Release("v1.3.2", Version("1.3.2"), Version("0.8.0"), Version("1.3.2"))
 
 
 def state(speckit: str, opsmill: str) -> RepoState:
@@ -12,6 +12,11 @@ def state(speckit: str, opsmill: str) -> RepoState:
 
 def test_a_repo_on_the_release_is_up_to_date():
     assert state("0.8.0", "1.3.2").behind(RELEASE) == []
+
+
+def test_a_repo_on_the_extension_of_a_release_that_did_not_change_it_is_up_to_date():
+    release = Release("v2.1.0", Version("2.1.0"), Version("1.2.4"), Version("2.0.0"))
+    assert state("1.2.4", "2.0.0").behind(release) == []
 
 
 def test_a_repo_on_an_older_spec_kit_is_behind():
