@@ -36,6 +36,7 @@ class Record:
     # Fields that a historical release keeps, since spec-kit does not inherit them.
     RELEASE_FIELDS: ClassVar[tuple[str, ...]] = (
         "download_url",
+        "url",
         "sha256",
         "requires",
         "provides",
@@ -57,12 +58,16 @@ class Record:
         record["repository"] = str(info.get("repository", REPOSITORY))
         if "license" in info:
             record["license"] = str(info["license"])
-        record["download_url"] = self.location.archives + self.archive.path.name
+        record[self.component.url_field] = (
+            self.location.archives + self.archive.path.name
+        )
         record["sha256"] = self.archive.sha256()
-        speckit = (manifest.get("requires") or {}).get("speckit_version")
-        if speckit:
-            record["requires"] = {"speckit_version": str(speckit)}
-        record["provides"] = self.component.counts()
+        requires = self.component.requirements()
+        if requires:
+            record["requires"] = requires
+        counts = self.component.counts()
+        if counts:
+            record["provides"] = counts
         if manifest.get("tags"):
             record["tags"] = [str(tag) for tag in manifest["tags"]]
         return record
@@ -75,6 +80,7 @@ class CatalogFile:
     NAMES: ClassVar[dict[str, str]] = {
         "extensions": "extension-catalog.json",
         "presets": "preset-catalog.json",
+        "workflows": "workflow-catalog.json",
         "bundles": "bundle-catalog.json",
     }
 
@@ -151,7 +157,8 @@ class Catalogs:
     def next(self, current: dict, record: dict, published: tuple[str, ...]) -> dict:
         """The entry that replaces `current`, by the rules of `publish`."""
         releases = dict(current.get("releases") or {})
-        if str(current.get("download_url", "")).startswith(published):
+        url = current.get("download_url") or current.get("url") or ""
+        if str(url).startswith(published):
             if current["version"] == record["version"]:
                 return current
             releases[current["version"]] = {

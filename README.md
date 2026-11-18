@@ -84,19 +84,19 @@ A bundle cannot add the catalogs that its components come from: Spec Kit
 looks them up in the catalogs that the project declares
 ([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#publish-a-bundle)).
 Run `specify init` first if the repo has no `.specify/` folder. Then copy the
-three files of [`catalog/specify/`](catalog/specify/) into `.specify/` and
+four files of [`catalog/specify/`](catalog/specify/) into `.specify/` and
 commit them:
 
 ```bash
-for kind in extension preset bundle; do
+for kind in extension preset workflow bundle; do
   curl -fsSL -o ".specify/$kind-catalogs.yml" \
     "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/specify/$kind-catalogs.yml"
 done
 ```
 
-- A project's extension or preset catalog file replaces Spec Kit's built-in
-  catalogs, so these files list Spec Kit's `default` and `community` catalogs
-  again after the opsmill one
+- A project's extension, preset or workflow catalog file replaces Spec Kit's
+  built-in catalogs, so these files list Spec Kit's `default` and `community`
+  catalogs again after the opsmill one
   ([Spec Kit catalogs reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/catalogs.md#inspect-and-manage-catalog-sources)).
   The bundle catalog file adds to the built-in bundle catalogs.
 - The command replaces these files if the repo already has them. When the repo
@@ -107,8 +107,9 @@ done
 - Do not use the `SPECKIT_*_CATALOG_URL` environment variables: they replace
   every catalog, including Spec Kit's own.
 
-`specify extension catalog list`, `specify preset catalog list` and
-`specify bundle catalog list` show the catalogs that the project uses.
+`specify extension catalog list`, `specify preset catalog list`,
+`specify workflow catalog list` and `specify bundle catalog list` show the
+catalogs that the project uses.
 
 ### 2. Install one bundle
 

@@ -7,9 +7,11 @@ install. A project reads them from `main`, through the files in
 - `extension-catalog.json`: the `opsmill` extension, and the third-party
   extensions that the bundles pin (`checkpoint`, `critique`, `reconcile`)
 - `preset-catalog.json`: the presets in [`presets/`](../presets/)
+- `workflow-catalog.json`: the Spec Kit workflows in [`workflows/`](../workflows/)
 - `bundle-catalog.json`: the bundles in [`bundles/`](../bundles/)
 
-Each entry gives the `download_url` and `sha256` of a zip. Older versions stay
+Each entry gives the URL and `sha256` of a zip: in `download_url`, or in `url`
+for a workflow. Older versions stay
 listed under `releases`, as described in the
 [Spec Kit catalog reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/catalogs.md)
 and [bundle reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#catalog-release-history).

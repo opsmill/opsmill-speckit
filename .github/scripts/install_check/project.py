@@ -51,7 +51,11 @@ class Project:
         return json.loads(integration.read_text())["integration"]
 
     def registry(self, kind: str) -> Registry:
-        return Registry(self.path / ".specify" / kind / ".registry", kind)
+        if kind == "workflows":
+            path = self.path / ".specify" / "workflows" / "workflow-registry.json"
+        else:
+            path = self.path / ".specify" / kind / ".registry"
+        return Registry(path, kind)
 
     def hooks(self) -> dict:
         extensions = YamlFile(self.path / ".specify" / "extensions.yml")

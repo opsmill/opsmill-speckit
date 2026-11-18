@@ -1,4 +1,4 @@
-"""The components that a repo ships: its extension, its presets and its bundles."""
+"""The components that a repo ships: its extension, presets, workflows and bundles."""
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
@@ -17,6 +17,8 @@ class Component(ABC):
     kind: ClassVar[str]
     # The manifest key that holds the component's id and version.
     key: ClassVar[str]
+    # The field of its catalog entry that holds the URL of its zip.
+    url_field: ClassVar[str] = "download_url"
 
     root: Path
     manifest: Path
@@ -51,6 +53,11 @@ class Component(ABC):
     def commands(self) -> list[dict]:
         """The commands it provides, each with a `name` and a `file` in its folder."""
         return []
+
+    def requirements(self) -> dict:
+        """What its catalog entry lists under `requires`."""
+        speckit = (self.content().get("requires") or {}).get("speckit_version")
+        return {"speckit_version": str(speckit)} if speckit else {}
 
     @abstractmethod
     def counts(self) -> dict[str, int]:
@@ -114,6 +121,25 @@ class Preset(Component):
         return {"commands": commands, "templates": len(self.templates()) - commands}
 
 
+class Workflow(Component):
+    """A Spec Kit workflow of the repo, in workflows/<id>/."""
+
+    kind = "workflows"
+    key = "workflow"
+    url_field = "url"
+
+    def steps(self) -> list[dict]:
+        return list(self.content().get("steps") or [])
+
+    def counts(self) -> dict[str, int]:
+        """A workflow catalog entry lists no counts."""
+        return {}
+
+    def requirements(self) -> dict:
+        """All of `requires`: Spec Kit refuses a workflow whose entry lists another."""
+        return dict(self.content().get("requires") or {})
+
+
 class Bundle(Component):
     """A bundle of the repo, in bundles/<id>/."""
 
@@ -128,11 +154,11 @@ class Bundle(Component):
         }
 
     def references(self) -> list[tuple[str, dict]]:
-        """The bundles, extensions and presets it pins, each with its kind."""
+        """The bundles, extensions, presets and workflows it pins, each with its kind."""
         provides = self.content().get("provides") or {}
         return [
             (kind, ref)
-            for kind in ("bundles", "extensions", "presets")
+            for kind in ("bundles", "extensions", "presets", "workflows")
             for ref in provides.get(kind) or []
         ]
 
@@ -146,6 +172,7 @@ class Components:
     def __iter__(self) -> Iterator[Component]:
         yield self.extension()
         yield from self.presets()
+        yield from self.workflows()
         yield from self.bundles()
 
     def extension(self) -> Extension:
@@ -154,6 +181,10 @@ class Components:
     def presets(self) -> list[Preset]:
         paths = sorted(self.root.glob("presets/*/preset.yml"))
         return [Preset(self.root, path) for path in paths]
+
+    def workflows(self) -> list[Workflow]:
+        paths = sorted(self.root.glob("workflows/*/workflow.yml"))
+        return [Workflow(self.root, path) for path in paths]
 
     def bundles(self) -> list[Bundle]:
         paths = sorted(self.root.glob("bundles/*/bundle.yml"))

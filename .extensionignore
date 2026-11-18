@@ -1,5 +1,6 @@
-# Presets and bundles have their own release zips; keep them out of the extension.
+# Presets, workflows and bundles have their own release zips; keep them out of the extension.
 presets/
+workflows/
 bundles/
 catalog/
 # Repo documentation and tooling, not part of the extension.
