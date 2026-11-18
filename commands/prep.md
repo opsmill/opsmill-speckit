@@ -81,6 +81,8 @@ python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
 
 It prints the status of the run, how many times each phase started, the verdict line of each critique and alignment check, and the reason of a run that stopped.
 
+It also prints one `coverage:` line for each quality gate that ran. A line that does not say `full` reports a critique or a review of reduced coverage, with the command that installs the full one: copy that line as it is, as the first line of your summary.
+
 - **`completed`**: the spec is ready to implement.
 - **`failed`, with a `BLOCKED:` line**: the workflow reached one of its limits. Quote that line.
 - **`failed`, without a `BLOCKED:` line**: a phase could not complete. Quote the error, and name the step.
@@ -91,7 +93,7 @@ Then give a brief summary, from the files of the feature directory recorded in `
 
 - Feature name and spec directory
 - Number of tasks in `tasks.md`
-- The critique mode (`extension`, `fallback` or `none`) and the findings that were addressed. State a `fallback` or `none` mode plainly, with the install hint `specify bundle install opsmill-sdd`
+- The `coverage: critique` line of the result, and the findings that were addressed
 - The alignment verdict, its source, and the number of remediation passes
 - The number of plan and critique passes
 

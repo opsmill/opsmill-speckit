@@ -84,6 +84,8 @@ python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
 
 It prints the status of the run, how many times each phase started, the last verdict of the critique (`prep.critique`), of the alignment check (`prep.alignment`) and of the implementation (`implement.report`), and the reason of a run that stopped.
 
+It also prints one `coverage:` line for each quality gate that ran. A line that does not say `full` reports a critique or a review of reduced coverage, with the command that installs the full one: copy that line as it is, as the first line of your summary.
+
 - **`completed`**: the spec was accepted, every task is done, every new or modified test passed locally, and a review took place.
 - **`failed`, with a `BLOCKED:` line**: the preparation reached one of its limits, or the implementation could not start. Nothing was implemented on a spec that is not ready.
 - **`failed`, with an `INCOMPLETE:` line**: the implementation ended with tasks left, a test without proof of a passing run, or no review. The reason is in `opsmill-implement-report.md`.
@@ -95,7 +97,7 @@ Then give a brief summary, from that result and from the files of the feature di
 - Whether the alignment check required remediation passes, and how many (`realign` in the phases started)
 - Number of tasks completed
 - The review findings that were fixed, and those that were deferred
-- **Coverage of the quality gates (REQUIRED).** State the critique mode (the `CRITIQUE` value of the last critique verdict, or of the critique report) and the review mode (the `REVIEW` value of the implementation status, or of the report). If the critique mode is not `extension`, or the review mode is not `plugin` or `command`, lead the summary with it, name what is missing, and give the install command (`specify bundle install opsmill-sdd` / `/plugin install pr-review-toolkit@claude-plugins-official`). A degraded run must never read as a fully-gated one.
+- **Coverage of the quality gates (REQUIRED).** The `coverage:` lines of the result, as they are. A line that does not say `full` leads the summary: a degraded run must never read as a fully-gated one.
 - The notable decisions that the phases made autonomously, as the reports record them
 
 Do **not** retry a run that stopped, open a pull request, push, run extraction, or start a new feature. The user takes it from there: extraction (`/speckit.opsmill.extract`) is a manual follow-up, so that the user can read the implementation report first.

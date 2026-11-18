@@ -158,7 +158,8 @@ level if available. In Claude Code:
 When the critique or review provider is missing, `prep`, `auto`, and
 `implement` fall back to a reduced built-in critique or review subagent. The
 fallback is always reported on the machine-readable status line (`CRITIQUE:` /
-`REVIEW:`) and in the run summary, so a degraded run is never silent.
+`REVIEW:`), in the `coverage:` lines of the result of a workflow run, and in
+the run summary, so a degraded run is never silent.
 
 ## Upgrading from 1.4.1 or earlier
 
@@ -243,6 +244,17 @@ In a Claude Code session, `/speckit.opsmill.prep`, `/speckit.opsmill.implement`
 and `/speckit.opsmill.auto` each start their workflow with
 `specify workflow run`, tell which phase starts, and report the result of the
 run.
+
+After a run started from a terminal, this command prints its result:
+
+```bash
+python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
+```
+
+It prints the phases that started, their verdicts, one `coverage:` line for
+the critique and for the review, and the reason of a run that stopped. A
+critique or a review of reduced coverage does not stop the run: only its
+`coverage:` line reports it.
 
 Spec Kit runs each step with `claude -p`, without an interactive session, so
 Claude Code can only use the tools it is allowed beforehand:

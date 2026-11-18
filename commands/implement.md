@@ -74,12 +74,14 @@ python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
 
 It prints the status of the run, how many chunks started, the `STATUS:` line of the report phase, and the reason of a run that stopped.
 
+It also prints one `coverage:` line for each quality gate that ran. A line that does not say `full` reports a critique or a review of reduced coverage, with the command that installs the full one: copy that line as it is, as the first line of your summary.
+
 - **`completed`**: every task is done, every new or modified test passed locally, and a review took place.
 - **`failed`, with an `INCOMPLETE:` line**: the report phase ended with `STATUS: INCOMPLETE`. Tasks are left, a test has no proof of a passing run, or no review took place.
 - **`failed`, with a `BLOCKED:` line**: the run stopped before the first chunk. The spec directory lacks `spec.md`, `plan.md` or `tasks.md`, or the working tree has uncommitted changes. Tell the user what to do, for example to commit or remove the changes, then to run this command again.
 - **`failed`, without one of these lines**: a phase could not complete. Quote the error, and name the step.
 
-Then print a summary of 4 to 6 lines from `<spec-dir>/opsmill-implement-report.md`: its header, the outcome counts, the review mode, and the first suggested next step. A run that stopped before the first chunk has no report.
+Then print a summary of 4 to 6 lines from `<spec-dir>/opsmill-implement-report.md`: its header, the outcome counts, the `coverage: review` line of the result, and the first suggested next step. A run that stopped before the first chunk has no report.
 
 **Machine-readable status line (REQUIRED).** The **final line** of your output MUST be exactly:
 

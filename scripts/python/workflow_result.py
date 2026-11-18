@@ -4,7 +4,8 @@
 Usage: workflow_result.py [RUN_ID]    (default: the most recent run of the project)
 
 It prints the status of the run, how many times each agent phase started, the
-verdict line that each phase ended with, and the reason of a run that stopped.
+verdict line that each phase ended with, the coverage of the critique and of
+the review, and the reason of a run that stopped.
 """
 
 import json
@@ -19,6 +20,27 @@ WORKFLOWS = Path(".specify/workflows")
 VERDICT = re.compile(r"^[A-Z][A-Z_]*: \S")
 # What a stop step of a workflow prints before it ends the run.
 STOP = re.compile(r"\b(?:BLOCKED|INCOMPLETE): [^'\"]*")
+# For each quality gate: the verdict line that holds its mode, the modes that
+# give a full check, and how to get a full check.
+GATES = {
+    "critique": (
+        re.compile(r"CRITIQUE_VERDICT: .*\bCRITIQUE: ([a-z/]+)"),
+        ("extension",),
+        "install the critique extension: specify bundle install opsmill-sdd",
+    ),
+    "review": (
+        re.compile(r"STATUS: .*\bREVIEW: ([a-z/]+)"),
+        ("plugin", "command"),
+        (
+            "install the review plugin in Claude Code: "
+            "/plugin install pr-review-toolkit@claude-plugins-official"
+        ),
+    ),
+}
+REDUCED = {
+    "fallback": "REDUCED (fallback): a built-in {gate} of reduced depth ran",
+    "none": "NONE: no {gate} ran",
+}
 
 
 def last_line(text: object) -> str:
@@ -70,6 +92,22 @@ def verdicts(state: dict) -> list[str]:
     return lines
 
 
+def coverage(lines: list[str]) -> list[str]:
+    """One line per quality gate that ran, from the last verdict that names its mode."""
+    report = []
+    for gate, (pattern, full, remedy) in GATES.items():
+        modes = [match.group(1) for match in map(pattern.search, lines) if match]
+        if not modes or modes[-1] == "n/a":
+            continue
+        mode = modes[-1]
+        if mode in full:
+            report.append(f"coverage: {gate} full ({mode})")
+        else:
+            reduced = REDUCED.get(mode, f"REDUCED ({mode})").format(gate=gate)
+            report.append(f"coverage: {gate} {reduced}; {remedy}")
+    return report
+
+
 def stop_reasons(state: dict) -> list[str]:
     """Why the run stopped: what the stop step printed, or what its workflow file says it prints."""
     recorded = [
@@ -105,7 +143,10 @@ def main() -> int:
             "phases started: "
             + ", ".join(f"{name} x{count}" for name, count in started.items())
         )
-    for line in verdicts(state):
+    lines = verdicts(state)
+    for line in lines:
+        print(line)
+    for line in coverage(lines):
         print(line)
     reasons = stop_reasons(state)
     for reason in reasons:
