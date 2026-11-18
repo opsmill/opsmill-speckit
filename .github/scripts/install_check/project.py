@@ -65,9 +65,6 @@ class Registry:
     path: Path
     kind: str
 
-    def has(self, component_id: str) -> bool:
-        return component_id in self.entries()
-
     def entry(self, component_id: str) -> dict:
         entries = self.entries()
         if component_id not in entries:

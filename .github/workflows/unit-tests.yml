@@ -29,6 +29,8 @@ jobs:
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/components
       - name: "Test the install check"
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/install_check
+      - name: "Test the release build"
+        run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/distribution
       - name: "Test the repo audit"
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/repo_audit
       - name: "Test the agent hooks"

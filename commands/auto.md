@@ -68,7 +68,7 @@ After both phases are complete, provide a brief summary:
 - Whether the alignment check inside auto-prep required retries (and how many)
 - Number of tasks completed (from the auto-implement report)
 - Any review findings that were fixed inline vs. deferred
-- **Coverage of the quality gates (REQUIRED).** State the `CRITIQUE` value from Phase A and the `REVIEW` value from Phase B explicitly. If `CRITIQUE` is not `extension`, or `REVIEW` is not `plugin` or `command`, lead the summary with it, name what is missing, and give the install command (`specify extension add critique` / `/plugin install pr-review-toolkit@claude-plugins-official`). An autonomous run that quietly skipped a quality gate is the one outcome the user must never have to discover by opening a report file
+- **Coverage of the quality gates (REQUIRED).** State the `CRITIQUE` value from Phase A and the `REVIEW` value from Phase B explicitly. If `CRITIQUE` is not `extension`, or `REVIEW` is not `plugin` or `command`, lead the summary with it, name what is missing, and give the install command (`specify bundle install opsmill-sdd` / `/plugin install pr-review-toolkit@claude-plugins-official`). An autonomous run that quietly skipped a quality gate is the one outcome the user must never have to discover by opening a report file
 - Any notable decisions you or the sub-skills made autonomously
 
 Do **not** open a PR, push, run extraction, or start a new feature. The user takes it from there — extraction (`/speckit.opsmill.extract`) is intentionally left as a manual follow-up so the user can review the implementation report first.

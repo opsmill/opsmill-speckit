@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-11-06T00:25:00Z",
+  "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/extension-catalog.json",
+  "extensions": {
+    "checkpoint": {
+      "id": "checkpoint",
+      "name": "Spec Checkpoint",
+      "version": "1.0.0",
+      "description": "An extension to commit the changes made during the middle of the implementation, so you don't end up with just one very large commit at the end.",
+      "author": "Aaron Sun",
+      "repository": "https://github.com/aaronrsun/spec-kit-checkpoint",
+      "license": "MIT",
+      "download_url": "https://github.com/aaronrsun/spec-kit-checkpoint/archive/refs/tags/v1.0.0.zip",
+      "sha256": "6695147941eb8e02d22fe82579ca59a5de1cfcb5b2928602e97e6bc536aae7f4",
+      "requires": {
+        "speckit_version": ">=0.1.0"
+      },
+      "provides": {
+        "commands": 1,
+        "hooks": 0
+      },
+      "tags": [
+        "checkpoint",
+        "commit"
+      ]
+    },
+    "critique": {
+      "id": "critique",
+      "name": "Spec Critique",
+      "version": "1.0.0",
+      "description": "Dual-lens critical review of spec and plan from product strategy and engineering risk perspectives",
+      "author": "arunt14",
+      "repository": "https://github.com/arunt14/spec-kit-critique",
+      "license": "MIT",
+      "download_url": "https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip",
+      "sha256": "42391025ae0cad501109cbdc828223cf64ff18ffcd68ccd64776d9e1ea3e0426",
+      "requires": {
+        "speckit_version": ">=0.1.0"
+      },
+      "provides": {
+        "commands": 1,
+        "hooks": 1
+      },
+      "tags": [
+        "docs",
+        "review",
+        "planning"
+      ]
+    },
+    "reconcile": {
+      "id": "reconcile",
+      "name": "Reconcile Extension",
+      "version": "1.3.1",
+      "description": "Reconcile implementation drift by surgically updating the feature's own spec, plan, and tasks.",
+      "author": "Stanislav Deviatov",
+      "repository": "https://github.com/stn1slv/spec-kit-reconcile",
+      "license": "MIT",
+      "download_url": "https://github.com/stn1slv/spec-kit-reconcile/archive/refs/tags/v1.3.1.zip",
+      "sha256": "651537ba453f519b33c61ceb0c63d30bea04bd7fd81b83a4f7bdde86eb39adb5",
+      "requires": {
+        "speckit_version": ">=0.16.2"
+      },
+      "provides": {
+        "commands": 1,
+        "hooks": 2
+      },
+      "tags": [
+        "reconcile",
+        "drift",
+        "tasks",
+        "remediation"
+      ]
+    }
+  }
+}

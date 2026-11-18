@@ -2,22 +2,11 @@ import subprocess
 
 from support import write
 
-from repo.components import Components
 from repo.files import Snapshot
 
 
-class TestComponents:
-    def test_finds_bundles_at_the_root_and_in_bundles(self, tmp_path):
-        write(tmp_path / "bundles" / "x" / "bundle.yml", "")
-        write(tmp_path / "bundle.yml", "")
-        assert [bundle.manifest for bundle in Components(tmp_path).bundles()] == [
-            tmp_path / "bundle.yml",
-            tmp_path / "bundles" / "x" / "bundle.yml",
-        ]
-
-
 class TestSnapshot:
-    def test_copies_tracked_and_unignored_files_only(self, tmp_path):
+    def test_lists_tracked_and_unignored_files_only(self, tmp_path):
         repo = tmp_path / "repo"
         subprocess.run(["git", "init", "-q", str(repo)], check=True)
         write(repo / ".gitignore", "ignored.txt\n")
@@ -26,11 +15,7 @@ class TestSnapshot:
         write(repo / "ignored.txt", "c")
         subprocess.run(["git", "-C", str(repo), "add", "tracked"], check=True)
 
-        dest = Snapshot(repo).copy_to(tmp_path / "copy")
-
-        assert sorted(
-            p.relative_to(dest).as_posix() for p in dest.rglob("*") if p.is_file()
-        ) == [
+        assert Snapshot(repo).files() == [
             ".gitignore",
             "tracked/a.md",
             "untracked.md",

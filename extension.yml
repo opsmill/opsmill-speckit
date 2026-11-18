@@ -11,7 +11,7 @@ extension:
   homepage: "https://github.com/opsmill/opsmill-speckit"
 
 requires:
-  speckit_version: ">=0.8.0"
+  speckit_version: ">=1.2.4"
   scripts:
     - "check-prerequisites.sh"
 
