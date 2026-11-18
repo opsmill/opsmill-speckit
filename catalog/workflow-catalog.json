@@ -1,6 +1,61 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-05T10:37:32Z",
+  "updated_at": "2026-11-23T14:44:07Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/workflow-catalog.json",
-  "workflows": {}
+  "workflows": {
+    "opsmill-auto": {
+      "id": "opsmill-auto",
+      "name": "OpsMill end to end",
+      "version": "1.0.0",
+      "description": "Runs the opsmill-prep workflow, then the opsmill-implement workflow when prep reports that the spec is ready.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-auto-1.0.0.zip",
+      "sha256": "e8a4951c0f20a123939693787b2f82152bc8fa4eceb79a03553299ffa3e6ba72",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    },
+    "opsmill-implement": {
+      "id": "opsmill-implement",
+      "name": "OpsMill implementation",
+      "version": "1.0.0",
+      "description": "Implements the tasks of a spec directory chunk by chunk, reviews the result, then writes a report. Each phase is one step, and the workflow sets when the chunk step is repeated and how often.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-implement-1.0.0.zip",
+      "sha256": "23f357ec3a7d258c6bd4ac98501f0881e056252a87ddd8edc2c58825ebf36427",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    },
+    "opsmill-prep": {
+      "id": "opsmill-prep",
+      "name": "OpsMill preparation",
+      "version": "1.0.0",
+      "description": "Prepares a feature for implementation: specify, plan and critique, tasks, then an alignment check against the request. Each phase is one step, and the workflow sets when a phase is repeated and how often.",
+      "author": "opsmill",
+      "repository": "https://github.com/opsmill/opsmill-speckit",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-prep-1.0.0.zip",
+      "sha256": "3fc6ad71cfa7d65d42cc53abbd3b209ecb2b29351a10c4509948cafdd038b7f3",
+      "requires": {
+        "speckit_version": ">=1.2.4",
+        "integrations": {
+          "any": [
+            "claude"
+          ]
+        }
+      }
+    }
+  }
 }
