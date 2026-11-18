@@ -28,6 +28,9 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 | `jira-branch` | preset | 1.5.0 | opsmill-speckit |
 | `reconcile-opsmill` | preset | 1.5.0 | opsmill-speckit |
 | `taskstoissues-jira` | preset | 1.5.0 | opsmill-speckit |
+| `opsmill-prep` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill-implement` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `opsmill-auto` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
 | `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
 | `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
 | `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
@@ -37,7 +40,8 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 
 #### Added
 - First version, for every repo: the `opsmill` extension, `checkpoint`,
-  `critique` with `critique-opsmill`, and `reconcile` with `reconcile-opsmill`.
+  `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill`,
+  and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto`.
 
 ### opsmill-jira 1.0.0
 
@@ -50,9 +54,70 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   the pinned 1.0.1, with a warning. A Spec Kit release that ships `git` 1.1 or
   later needs a new version of this bundle.
 
+### opsmill-prep 1.0.0
+
+#### Added
+- Spec Kit workflow that prepares a feature in one step per phase: specify,
+  plan, critique, tasks, then a check of the spec against the request. The
+  workflow commits after each phase.
+- The workflow repeats plan and critique while the critique verdict is
+  `RETHINK`, three passes at most. It repeats the whole pass while the check
+  finds significant drift, with two remediation passes at most. At a limit,
+  the run stops with an error. See [Workflows](README.md#workflows).
+- When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
+  `tasks.md`, for example because Claude Code refused it a tool, the run stops
+  at that phase with a `BLOCKED:` reason.
+
+### opsmill-implement 1.0.0
+
+#### Added
+- Spec Kit workflow that implements a spec directory in one step per phase:
+  one step per chunk of `tasks.md`, each in its own agent process, then one
+  review and one report.
+- The workflow stops before the first chunk when `spec.md`, `plan.md` or
+  `tasks.md` is missing, or when the working tree has uncommitted changes.
+- It repeats the chunk step while `tasks.md` has unticked tasks and the last
+  chunk ticked at least one, with twenty chunks at most. It ends with an error
+  unless the report ends with `STATUS: DONE`. See
+  [Workflows](README.md#workflows).
+
+### opsmill-auto 1.0.0
+
+#### Added
+- Spec Kit workflow that runs `opsmill-prep`, then `opsmill-implement` on the
+  new spec when `opsmill-prep` completed. See
+  [Workflows](README.md#workflows).
+
 ### opsmill 1.5.0
 
+#### Added
+- `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
+  `speckit.opsmill.prep-realign`: the phases of the `opsmill-prep` workflow
+  that Spec Kit has no command for. The workflow runs them.
+- `speckit.opsmill.implement-chunk`, `speckit.opsmill.implement-review` and
+  `speckit.opsmill.implement-report`: the phases of the `opsmill-implement`
+  workflow. The review phase runs `/code-review` at the `medium` effort level
+  when the `pr-review-toolkit` plugin is not installed.
+- `scripts/python/workflow_result.py`: prints the result of a workflow run,
+  with one `coverage:` line for the critique and for the review. A line that
+  does not say `full` reports a critique or a review of reduced coverage, with
+  the command that installs the full one. `prep`, `implement` and `auto` read
+  the result with it.
+
 #### Changed
+- `speckit.opsmill.prep` starts the `opsmill-prep` workflow, tells which phase
+  starts and reports the result of the run. It no longer runs the phases
+  itself: the workflow file states their order and their limits. Its final
+  `STATUS:` line keeps the same format.
+- `speckit.opsmill.implement` and `speckit.opsmill.auto` start the
+  `opsmill-implement` and `opsmill-auto` workflows in the same way. The final
+  `STATUS:` line of `implement` keeps the same format.
+- `implement` implements each chunk in its own agent process instead of a
+  subagent, and no longer pauses for the user: it ends with `STATUS: BLOCKED`
+  when the spec directory is not ready or the working tree has uncommitted
+  changes.
+- `implement` stops implementing when a chunk completes no task, instead of
+  moving on to the next chunk. The review and the report still run.
 - Requires Spec Kit 1.2.4 or later, instead of 0.8.0.
 - Installed through the bundles, from the zip `opsmill-1.5.0.zip` of the
   GitHub Release, instead of the archive of a tag.

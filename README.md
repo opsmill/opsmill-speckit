@@ -4,14 +4,16 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
 
 1. **Extension `opsmill`** — seven workflow commands under the `opsmill`
    namespace:
-   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
-     implement) autonomously, making all decisions without pausing. Stops
-     before extract.
-   - `/speckit.opsmill.prep` — run the preparation phases
-     (specify → plan → critique → tasks → spec/ask alignment check)
-     autonomously, stopping before implementation.
-   - `/speckit.opsmill.implement` — run the implementation + review tail from an
-     existing `tasks.md` in clean-context subagents, then emit a final report.
+   - `/speckit.opsmill.auto` — start the `opsmill-auto` workflow, which runs
+     the full pipeline end-to-end (prep + implement) autonomously, making all
+     decisions without pausing, then report its result. Stops before extract.
+   - `/speckit.opsmill.prep` — start the `opsmill-prep` workflow, which runs
+     the preparation phases (specify → plan → critique → tasks → spec/ask
+     alignment check) autonomously, then report its result. Stops before
+     implementation.
+   - `/speckit.opsmill.implement` — start the `opsmill-implement` workflow,
+     which implements an existing `tasks.md` chunk by chunk, reviews the
+     result and writes a final report, then report its result.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -24,6 +26,12 @@ OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
    - `/speckit.opsmill.qa` — produce a manual QA checklist (`qa-checklist.md`)
      next to `spec.md` / `plan.md` so a human tester can verify the
      just-implemented feature step-by-step.
+
+   The extension also holds the commands that the workflows run as phases:
+   `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
+   `speckit.opsmill.prep-realign` for `opsmill-prep`, and
+   `speckit.opsmill.implement-chunk`, `speckit.opsmill.implement-review` and
+   `speckit.opsmill.implement-report` for `opsmill-implement`.
 
 2. **Presets** — drop-in overrides for spec-kit commands (native or
    extension-provided). Four ship:
@@ -53,7 +61,7 @@ every component at an exact version:
 
 | Bundle | For | Installs |
 |---|---|---|
-| [`opsmill-sdd`](bundles/opsmill-sdd/README.md) | every repo | `opsmill`, `checkpoint`, `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill` |
+| [`opsmill-sdd`](bundles/opsmill-sdd/README.md) | every repo | `opsmill`, `checkpoint`, `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill`, and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto` |
 | [`opsmill-jira`](bundles/opsmill-jira/README.md) | repos that track their work in Jira | everything in `opsmill-sdd`, plus `jira-branch`, `taskstoissues-jira` and the `git` extension |
 
 `checkpoint`, `critique` and `reconcile` are third-party extensions, pinned in
@@ -140,8 +148,8 @@ specify preset add --dev /path/to/opsmill-speckit/presets/<preset-id>
 [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
 is a Claude Code plugin whose review agents `implement` runs: five in
 parallel, then `code-simplifier` alone, whose edits become findings and are
-discarded. Without it, `implement` uses `/code-review` if available. In Claude
-Code:
+discarded. Without it, `implement` uses `/code-review` at the `medium` effort
+level if available. In Claude Code:
 
 ```text
 /plugin install pr-review-toolkit@claude-plugins-official
@@ -150,7 +158,8 @@ Code:
 When the critique or review provider is missing, `prep`, `auto`, and
 `implement` fall back to a reduced built-in critique or review subagent. The
 fallback is always reported on the machine-readable status line (`CRITIQUE:` /
-`REVIEW:`) and in the run summary, so a degraded run is never silent.
+`REVIEW:`), in the `coverage:` lines of the result of a workflow run, and in
+the run summary, so a degraded run is never silent.
 
 ## Upgrading from 1.4.1 or earlier
 
@@ -201,6 +210,78 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
 
 To roll back, restore `.specify/` and `.claude/` from git and reinstall the
 previous Spec Kit CLI.
+
+## Workflows
+
+`opsmill-sdd` installs three Spec Kit workflows
+([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/workflows.md)):
+
+- `opsmill-prep` prepares a feature in one step per phase: specify, plan,
+  critique, tasks, then a check of the spec against the request. It commits
+  after each phase. The workflow file states when a phase is repeated, and how
+  often:
+  - Plan and critique are repeated while the critique verdict is `RETHINK`,
+    three passes at most.
+  - The whole pass is repeated while the check finds significant drift between
+    the spec and the request, with two remediation passes at most.
+  - At a limit, the run stops with an error.
+- `opsmill-implement` implements a spec directory in one step per phase: one
+  step per chunk of `tasks.md`, each in its own agent process, then one review
+  and one report.
+  - It stops before the first chunk when `spec.md`, `plan.md` or `tasks.md` is
+    missing, or when the working tree has uncommitted changes.
+  - The chunk step is repeated while `tasks.md` has unticked tasks and the
+    last chunk ticked at least one, with twenty chunks at most.
+  - The run ends with an error unless the report ends with `STATUS: DONE`.
+- `opsmill-auto` runs `opsmill-prep`, then `opsmill-implement` on the new spec
+  when `opsmill-prep` completed. Otherwise it stops with an error.
+
+```bash
+specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
+```
+
+In a Claude Code session, `/speckit.opsmill.prep`, `/speckit.opsmill.implement`
+and `/speckit.opsmill.auto` each start their workflow with
+`specify workflow run`, tell which phase starts, and report the result of the
+run.
+
+After a run started from a terminal, this command prints its result:
+
+```bash
+python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
+```
+
+It prints the phases that started, their verdicts, one `coverage:` line for
+the critique and for the review, and the reason of a run that stopped. A
+critique or a review of reduced coverage does not stop the run: only its
+`coverage:` line reports it.
+
+Spec Kit runs each step with `claude -p`, without an interactive session, so
+Claude Code can only use the tools it is allowed beforehand:
+
+- Claude Code ignores the `permissions.allow` list of `.claude/settings.json`
+  in a folder that it was never opened in. Open Claude Code once in the repo
+  and accept the trust dialog.
+- Instead, pass the tools for one run in
+  `SPECKIT_INTEGRATION_CLAUDE_EXTRA_ARGS`, for example
+  `--allowedTools Read Edit Write Glob Grep Skill Task TodoWrite 'Bash(git:*)'`.
+  The steps run `git` commands, and `implement` commits with `git add` and
+  `git commit`.
+- A hook that rewrites shell commands before Claude Code checks them changes
+  what to allow. With the rtk hook, `git status` runs as `rtk git status`, so
+  also allow `'Bash(rtk:*)'`.
+- A tool that is not allowed is refused, and the command reports what it could
+  not do. Allow the commands that the repo's tests need.
+- When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
+  `tasks.md`, often because a tool was refused, `opsmill-prep` stops at that
+  phase. `workflow_result.py` prints a `BLOCKED:` line that names the phase.
+
+Spec Kit keeps each run in `.specify/workflows/runs/<run-id>/`, including the
+verdicts of the critique and of the alignment check. `specify workflow status <run-id>` shows a run, and
+`specify workflow resume <run-id>` resumes a failed one.
+
+Add `.specify/workflows/runs/` to the repo's `.gitignore`, so that the commits
+that the workflows make leave the run state out.
 
 ## Commands
 
