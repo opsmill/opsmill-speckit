@@ -7,7 +7,8 @@ from pathlib import Path
 
 from packaging.version import InvalidVersion, Version
 
-from install_check.repo import Manifests, SpeckitFloor
+from install_check.speckit import SpeckitFloor
+from repo.components import Components
 
 
 @dataclass(frozen=True)
@@ -51,4 +52,4 @@ class ReleaseTags:
                 capture_output=True,
             )
             subprocess.run(["tar", "-x", "-C", tmp], input=archive.stdout, check=True)
-            return SpeckitFloor(Manifests(Path(tmp))).version()
+            return SpeckitFloor(Components(Path(tmp))).version()

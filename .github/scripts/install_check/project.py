@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from install_check.errors import CheckFailed
-from install_check.repo import YamlFile
+from repo.files import YamlFile
 
 
 @dataclass(frozen=True)

@@ -4,8 +4,9 @@ from pathlib import Path
 from support import write
 
 from install_check.checks import HooksRegistered
-from install_check.components import Extension, RemoteExtension
+from install_check.components import ExtensionInstall, RemoteExtension
 from install_check.project import Project
+from repo.components import Extension
 
 EXTENSION = """\
 extension:
@@ -14,14 +15,15 @@ extension:
 """
 
 
-class TestExtension:
+class TestExtensionInstall:
     def test_checks_hooks_when_the_manifest_declares_some(self, tmp_path, project):
         hooks = "hooks:\n  after_tasks:\n    command: speckit.opsmill.summary\n"
-        write(tmp_path / "src" / "extension.yml", EXTENSION + hooks)
+        manifest = write(tmp_path / "src" / "extension.yml", EXTENSION + hooks)
         hooks_check = HooksRegistered(
             project, "opsmill", {"after_tasks": {"command": "speckit.opsmill.summary"}}
         )
-        assert hooks_check in Extension(tmp_path / "src").install(project)
+        extension = Extension(tmp_path / "src", manifest)
+        assert hooks_check in ExtensionInstall(extension).checks(project)
 
 
 @dataclass
