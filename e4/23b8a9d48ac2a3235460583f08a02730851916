@@ -1,0 +1,21 @@
+commands/prep.md
+  s_492f9e6540eee7::t_e9bdfdbb03597e 2,15,17,19,21,24,27,29,31,33-39,41,43,45,47,49-56,58,60,62,64-66,68,70-81,83,85,88-91,97-100,104
+extension.yml
+  s_492f9e6540eee7::t_37c01d43d15c5d 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e423b8a9d48ac2a3235460583f08a02730851916",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

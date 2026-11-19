@@ -1,0 +1,30 @@
+workflows/opsmill-implement/workflow.yml
+  s_492f9e6540eee7::t_c534f476ea4f56 7,26-78,80-81,83-102
+  s_492f9e6540eee7::t_ff27b8721eebd0 103-105
+extension.yml
+  s_492f9e6540eee7::t_45e27639fd9cce 47-54
+  s_492f9e6540eee7::t_6fe40bbd77c184 55
+commands/implement-report.md
+  s_492f9e6540eee7::t_3ae53128c1f7cc 1-66
+commands/implement-chunk.md
+  s_492f9e6540eee7::t_48912cbedb97fc 1-63
+commands/implement-review.md
+  s_492f9e6540eee7::t_fcacc8b6c26407 44
+  s_492f9e6540eee7::t_c38d3d4726fa7f 1-43,45-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "725e62e6050151009b82e4f05bf2dcc882e8f0bf",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

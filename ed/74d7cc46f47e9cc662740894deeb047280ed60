@@ -1,0 +1,34 @@
+scripts/python/workflow_result.py
+  s_492f9e6540eee7::t_c74b1b3692b5f2 34-37
+  s_492f9e6540eee7::t_9e2bf938a63c37 7-8
+  s_492f9e6540eee7::t_d41c665d09e9a6 23-33,38-43
+  s_492f9e6540eee7::t_209789378c2317 95-110
+  s_492f9e6540eee7::t_9df07fd429652f 146-149
+CHANGELOG.md
+  s_492f9e6540eee7::t_734ce3266edaa2 98-102
+commands/auto.md
+  s_492f9e6540eee7::t_734ce3266edaa2 87-88,100
+README.md
+  s_492f9e6540eee7::t_734ce3266edaa2 161-162,248-257
+  s_492f9e6540eee7::t_0c219d8308f152 258
+commands/implement.md
+  s_492f9e6540eee7::t_734ce3266edaa2 77-78,84
+commands/prep.md
+  s_492f9e6540eee7::t_734ce3266edaa2 84-85,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ed74d7cc46f47e9cc662740894deeb047280ed60",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

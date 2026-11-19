@@ -1,0 +1,28 @@
+commands/prep.md
+  s_492f9e6540eee7::t_8450924b84d646 47,53-54,59
+workflows/opsmill-prep/workflow.yml
+  s_492f9e6540eee7::t_95e2a20575b1a0 47-48,53
+  s_492f9e6540eee7::t_ad6b9f7de7c991 29,50,54-56,65-81,87-89,97,99-101,109-111
+commands/prep-align.md
+  s_492f9e6540eee7::t_8450924b84d646 17-18
+commands/prep-critique.md
+  s_492f9e6540eee7::t_8450924b84d646 17-18
+commands/prep-realign.md
+  s_492f9e6540eee7::t_8450924b84d646 17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "adffc7d1730a10b2d02b866724698746cff0b790",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

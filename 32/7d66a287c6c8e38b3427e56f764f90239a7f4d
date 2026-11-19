@@ -1,0 +1,38 @@
+commands/prep-critique.md
+  s_492f9e6540eee7::t_c791ee5e1f6387 1-58
+commands/prep-align.md
+  s_492f9e6540eee7::t_c791ee5e1f6387 1-63
+bundles/opsmill-sdd/README.md
+  s_492f9e6540eee7::t_55e0bf3b75f631 11-12
+README.md
+  s_492f9e6540eee7::t_55e0bf3b75f631 28-31,211,214-222,225,240-241,249,253
+commands/prep-realign.md
+  s_492f9e6540eee7::t_c791ee5e1f6387 1-29
+workflows/opsmill-prep/workflow.yml
+  s_492f9e6540eee7::t_c791ee5e1f6387 7,26-133,136-137,139-141
+extension.yml
+  s_492f9e6540eee7::t_c791ee5e1f6387 6,38-46
+workflows/opsmill-auto/workflow.yml
+  s_492f9e6540eee7::t_c791ee5e1f6387 7,50
+CHANGELOG.md
+  s_492f9e6540eee7::t_55e0bf3b75f631 60-66,77,82-85
+  s_492f9e6540eee7::t_e6fd2cc091a467 86
+bundles/opsmill-sdd/bundle.yml
+  s_492f9e6540eee7::t_c791ee5e1f6387 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "327d66a287c6c8e38b3427e56f764f90239a7f4d",
+  "prompts": {},
+  "sessions": {
+    "s_492f9e6540eee7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cff1516-79dd-4281-b173-22cd3c308e2d",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
