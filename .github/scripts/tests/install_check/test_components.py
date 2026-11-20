@@ -1,11 +1,8 @@
-from dataclasses import dataclass, field
-from pathlib import Path
-
 from support import write
 
-from install_check.checks import HooksRegistered
-from install_check.components import Extension, RemoteExtension
-from install_check.project import Project
+from install_check.checks import HooksRegistered, Pinned
+from install_check.components import BundleInstall, ExtensionInstall
+from repo.components import Bundle, Extension
 
 EXTENSION = """\
 extension:
@@ -14,29 +11,33 @@ extension:
 """
 
 
-class TestExtension:
+class TestExtensionInstall:
     def test_checks_hooks_when_the_manifest_declares_some(self, tmp_path, project):
         hooks = "hooks:\n  after_tasks:\n    command: speckit.opsmill.summary\n"
-        write(tmp_path / "src" / "extension.yml", EXTENSION + hooks)
+        manifest = write(tmp_path / "src" / "extension.yml", EXTENSION + hooks)
         hooks_check = HooksRegistered(
             project, "opsmill", {"after_tasks": {"command": "speckit.opsmill.summary"}}
         )
-        assert hooks_check in Extension(tmp_path / "src").install(project)
+        extension = Extension(tmp_path / "src", manifest)
+        assert hooks_check in ExtensionInstall(extension).checks(project)
 
 
-@dataclass
-class RecordingSpecify:
-    """A specify that records its arguments."""
-
-    calls: list = field(default_factory=list)
-
-    def run(self, cwd: Path, *args: str, confirm: bool = False) -> str:
-        self.calls.append(args)
-        return ""
-
-
-class TestRemoteExtension:
-    def test_installs_a_bundled_extension_without_a_url(self, project):
-        specify = RecordingSpecify()
-        RemoteExtension("git", None).install(Project(project.path, specify))
-        assert specify.calls == [("extension", "add", "git")]
+class TestBundleInstall:
+    def test_checks_the_components_of_referenced_bundles(self, tmp_path, project):
+        write(tmp_path / "extension.yml", EXTENSION)
+        write(
+            tmp_path / "bundles" / "base" / "bundle.yml",
+            "bundle: {id: base}\n"
+            "provides: {extensions: [{id: critique, version: 1.0.0, source: opsmill}]}\n",
+        )
+        jira = write(
+            tmp_path / "bundles" / "jira" / "bundle.yml",
+            "bundle: {id: jira}\n"
+            "provides:\n"
+            "  bundles: [{id: base, version: 1.0.0}]\n"
+            "  extensions: [{id: git, version: 1.0.1}]\n",
+        )
+        assert BundleInstall(Bundle(tmp_path, jira)).checks(project) == [
+            Pinned(project, "extensions", "critique", "1.0.0", True),
+            Pinned(project, "extensions", "git", "1.0.1", False),
+        ]

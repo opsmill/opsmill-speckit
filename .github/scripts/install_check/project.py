@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from install_check.errors import CheckFailed
-from install_check.repo import YamlFile
+from repo.files import YamlFile
 
 
 @dataclass(frozen=True)
@@ -51,7 +51,11 @@ class Project:
         return json.loads(integration.read_text())["integration"]
 
     def registry(self, kind: str) -> Registry:
-        return Registry(self.path / ".specify" / kind / ".registry", kind)
+        if kind == "workflows":
+            path = self.path / ".specify" / "workflows" / "workflow-registry.json"
+        else:
+            path = self.path / ".specify" / kind / ".registry"
+        return Registry(path, kind)
 
     def hooks(self) -> dict:
         extensions = YamlFile(self.path / ".specify" / "extensions.yml")
@@ -64,9 +68,6 @@ class Registry:
 
     path: Path
     kind: str
-
-    def has(self, component_id: str) -> bool:
-        return component_id in self.entries()
 
     def entry(self, component_id: str) -> dict:
         entries = self.entries()

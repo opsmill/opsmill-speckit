@@ -1,5 +1,10 @@
-# Presets install separately (specify preset add); keep them out of the extension copy.
+# Presets, workflows and bundles have their own release zips; keep them out of the extension.
 presets/
-# Repo tooling, not part of the extension.
+workflows/
+bundles/
+catalog/
+# Repo documentation and tooling, not part of the extension.
+/README.md
+/CHANGELOG.md
 .github/
 .git

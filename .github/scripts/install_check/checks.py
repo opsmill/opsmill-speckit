@@ -58,6 +58,41 @@ class Registered:
 
 
 @dataclass(frozen=True)
+class Pinned:
+    """A component is installed at the version a bundle pins.
+
+    Without a source, spec-kit may install a newer patch release that it ships,
+    so any version counts.
+    """
+
+    project: Project
+    kind: str
+    component_id: str
+    version: str
+    exact: bool = True
+
+    def verify(self) -> str:
+        entry = self.project.registry(self.kind).entry(self.component_id)
+        if self.exact and str(entry.get("version")) != self.version:
+            raise CheckFailed(
+                f"{self.component_id}: registry has version {entry.get('version')}, a bundle pins {self.version}"
+            )
+        return f"{self.component_id} v{entry.get('version')} installed"
+
+
+@dataclass(frozen=True)
+class WorkflowLoads:
+    """Spec Kit loads an installed workflow and its steps."""
+
+    project: Project
+    workflow_id: str
+
+    def verify(self) -> str:
+        self.project.run("workflow", "info", self.workflow_id)
+        return f"{self.workflow_id}: spec-kit loads the workflow"
+
+
+@dataclass(frozen=True)
 class HooksRegistered:
     """Every hook an extension declares is registered."""
 
@@ -103,12 +138,12 @@ class OwnFiles:
             pattern = line.strip().rstrip("/")
             if not pattern or pattern.startswith(("#", "!")):
                 continue
-            # As in .gitignore, a pattern without "/" matches at any depth.
-            yield from (
-                self.installed.glob(pattern)
-                if "/" in pattern
-                else self.installed.rglob(pattern)
-            )
+            # As in .gitignore, a pattern with a "/" is anchored at the root,
+            # and a pattern without one matches at any depth.
+            if "/" in pattern:
+                yield from self.installed.glob(pattern.lstrip("/"))
+            else:
+                yield from self.installed.rglob(pattern)
 
     def patterns(self) -> list[str]:
         ignore = self.source / ".extensionignore"
