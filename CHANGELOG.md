@@ -65,8 +65,11 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   finds significant drift, with two remediation passes at most. At a limit,
   the run stops with an error. See [Workflows](README.md#workflows).
 - When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
-  `tasks.md`, for example because Claude Code refused it a tool, the run stops
-  at that phase with a `BLOCKED:` reason.
+  `tasks.md` during the run, for example because Claude Code refused it a
+  tool, the run stops at that phase with a `BLOCKED:` reason. The check
+  compares the file with the commit that the run started from, so the files of
+  an earlier feature, which `.specify/feature.json` can still point to, do not
+  pass it.
 - The commit steps leave out `.specify/workflows/runs/`, so the run state,
   which holds local absolute paths, does not end up in the feature branch.
 

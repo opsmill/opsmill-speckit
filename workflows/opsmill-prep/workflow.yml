@@ -23,6 +23,13 @@ inputs:
     prompt: "Integration to use ('auto' uses the project's integration)"
 
 steps:
+  # The commit that the run starts from. A phase passes its check only when
+  # it changed its file since then: a feature.json left by an earlier feature
+  # points to files that already exist.
+  - id: start
+    type: shell
+    run: "git rev-parse HEAD | tr -d '\\n'"
+
   # One preparation pass: spec, plan and critique, tasks, alignment check.
   # The pass is repeated while the alignment check finds that the spec drifted
   # from the request: the first pass, then two remediation passes at most.
@@ -58,7 +65,10 @@ steps:
       # it a tool, stops the run here instead of in the last step.
       - id: check-spec
         type: shell
-        run: "python3 -c \"import json, pathlib, sys; f = pathlib.Path('.specify/feature.json'); d = f.exists() and pathlib.Path(json.loads(f.read_text())['feature_directory']); sys.exit(0 if d and (d / 'spec.md').is_file() else 'BLOCKED: the specify phase wrote no spec.md. The output of that phase says why, often a tool that Claude Code refused')\""
+        run: >-
+          d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+          [ -n "$d" ] && [ -f "$d/spec.md" ] && ! git diff --quiet '{{ steps.start.output.stdout }}' HEAD -- "$d/spec.md"
+          || { echo 'BLOCKED: the specify phase wrote no spec.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
 
       # Plan, then critique. Repeated while the critique verdict is RETHINK,
       # three times at most.
@@ -86,7 +96,10 @@ steps:
             run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'plan: write the implementation plan')"
           - id: check-plan
             type: shell
-            run: "python3 -c \"import json, pathlib, sys; d = pathlib.Path(json.loads(pathlib.Path('.specify/feature.json').read_text())['feature_directory']); sys.exit(0 if (d / 'plan.md').is_file() else 'BLOCKED: the plan phase wrote no plan.md. The output of that phase says why, often a tool that Claude Code refused')\""
+            run: >-
+              d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+              [ -n "$d" ] && [ -f "$d/plan.md" ] && ! git diff --quiet '{{ steps.start.output.stdout }}' HEAD -- "$d/plan.md"
+              || { echo 'BLOCKED: the plan phase wrote no plan.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
           - id: critique
             command: speckit.opsmill.prep-critique
             integration: "{{ inputs.integration }}"
@@ -109,7 +122,10 @@ steps:
             run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'tasks: generate the tasks')"
           - id: check-tasks
             type: shell
-            run: "python3 -c \"import json, pathlib, sys; d = pathlib.Path(json.loads(pathlib.Path('.specify/feature.json').read_text())['feature_directory']); sys.exit(0 if (d / 'tasks.md').is_file() else 'BLOCKED: the tasks phase wrote no tasks.md. The output of that phase says why, often a tool that Claude Code refused')\""
+            run: >-
+              d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+              [ -n "$d" ] && [ -f "$d/tasks.md" ] && ! git diff --quiet '{{ steps.start.output.stdout }}' HEAD -- "$d/tasks.md"
+              || { echo 'BLOCKED: the tasks phase wrote no tasks.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
           - id: align
             command: speckit.opsmill.prep-align
             integration: "{{ inputs.integration }}"
