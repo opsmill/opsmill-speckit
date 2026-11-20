@@ -272,6 +272,10 @@ Claude Code can only use the tools it is allowed beforehand:
   also allow `'Bash(rtk:*)'`.
 - A tool that is not allowed is refused, and the command reports what it could
   not do. Allow the commands that the repo's tests need.
+- A rule that ends in `:*` matches its prefix only when a space or the end of
+  the command follows it. `'Bash(python3 .specify/:*)'` does not allow
+  `python3 .specify/extensions/opsmill/scripts/python/workflow_result.py`:
+  allow `'Bash(python3 .specify/*)'` instead.
 - When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
   `tasks.md`, often because a tool was refused, `opsmill-prep` stops at that
   phase. `workflow_result.py` prints a `BLOCKED:` line that names the phase.
