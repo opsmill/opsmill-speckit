@@ -107,7 +107,8 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   when the `pr-review-toolkit` plugin is not installed.
 - The chunk phase may push the branch and open a draft pull request when a
   task asks to record a result in the pull request description and none
-  exists. It may also build images and start Docker stacks for a task that
+  exists. It reads the description before it writes it again, and keeps
+  every section that it holds. It may also build images and start Docker stacks for a task that
   needs a running application, then removes them. Without this, a phase
   judged both actions to need an approval and left those tasks blocked.
 - `speckit.opsmill.auto` picks up a run that ended `INCOMPLETE`: when the
