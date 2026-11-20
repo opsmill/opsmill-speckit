@@ -67,6 +67,8 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 - When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
   `tasks.md`, for example because Claude Code refused it a tool, the run stops
   at that phase with a `BLOCKED:` reason.
+- The commit steps leave out `.specify/workflows/runs/`, so the run state,
+  which holds local absolute paths, does not end up in the feature branch.
 
 ### opsmill-implement 1.0.0
 
@@ -80,6 +82,8 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   chunk ticked at least one, with twenty chunks at most. It ends with an error
   unless the report ends with `STATUS: DONE`. See
   [Workflows](README.md#workflows).
+- The commit steps leave out `.specify/workflows/runs/`, like the check
+  before the first chunk.
 
 ### opsmill-auto 1.0.0
 
@@ -98,6 +102,15 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   `speckit.opsmill.implement-report`: the phases of the `opsmill-implement`
   workflow. The review phase runs `/code-review` at the `medium` effort level
   when the `pr-review-toolkit` plugin is not installed.
+- The chunk phase may push the branch and open a draft pull request when a
+  task asks to record a result in the pull request description and none
+  exists. It may also build images and start Docker stacks for a task that
+  needs a running application, then removes them. Without this, a phase
+  judged both actions to need an approval and left those tasks blocked.
+- `speckit.opsmill.auto` picks up a run that ended `INCOMPLETE`: when the
+  feature directory holds `spec.md`, `plan.md` and `tasks.md`, it starts
+  `opsmill-implement` on that directory instead of a new `opsmill-auto` run.
+  `specify workflow resume` restarts at the final check and runs no chunk.
 - `scripts/python/workflow_result.py`: prints the result of a workflow run,
   with one `coverage:` line for the critique and for the review. A line that
   does not say `full` reports a critique or a review of reduced coverage, with

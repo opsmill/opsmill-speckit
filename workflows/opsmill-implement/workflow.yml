@@ -58,7 +58,7 @@ steps:
           args: "{{ inputs.spec_dir }}"
       - id: commit-chunk
         type: shell
-        run: "git add -A && (git diff --cached --quiet || git commit -q -m 'implement: changes that the chunk left uncommitted')"
+        run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'implement: changes that the chunk left uncommitted')"
       - id: left
         type: shell
         run: "{ grep -c '^[[:space:]]*- \\[ \\]' '{{ inputs.spec_dir }}/tasks.md' || true; } | tr -d '\\n'"
@@ -72,7 +72,7 @@ steps:
       args: "{{ inputs.spec_dir }} {{ steps.base.output.stdout }}"
   - id: commit-review
     type: shell
-    run: "git add -A && (git diff --cached --quiet || git commit -q -m 'review: fixes of the high-severity findings')"
+    run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'review: fixes of the high-severity findings')"
 
   - id: report
     command: speckit.opsmill.implement-report
@@ -83,7 +83,7 @@ steps:
       args: "{{ inputs.spec_dir }} {{ steps.base.output.stdout }}"
   - id: commit-report
     type: shell
-    run: "git add -A && (git diff --cached --quiet || git commit -q -m 'report: implementation and review report')"
+    run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'report: implementation and review report')"
 
   # The run stops here, with an error, when tasks are left, when a test has no
   # proof of a passing run, or when no review took place.

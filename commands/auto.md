@@ -30,6 +30,14 @@ If it fails, stop and tell the user to install the bundle: `specify bundle insta
 
 The workflow takes the user input as its `spec` input, verbatim.
 
+**Pick up a run that the implementation left incomplete.** First run `python3 .specify/extensions/opsmill/scripts/python/workflow_result.py`. When it reports a run that ended `failed` with an `INCOMPLETE:` line, and `.specify/feature.json` points to a feature directory that holds `spec.md`, `plan.md` and `tasks.md`, the preparation of that feature is done. Do not start `opsmill-auto` again, and do not use `specify workflow resume`: it restarts at the step that failed, the final check, and runs no chunk. Start the implementation again on that directory instead, as a background shell command, then follow it and report it as described in steps 3 and 4:
+
+```bash
+specify workflow run opsmill-implement -i "spec_dir=<feature directory>"
+```
+
+Otherwise, start a new run:
+
 1. Write the user input, verbatim, to a file **outside the repository**: in your scratchpad directory when you have one, otherwise in the system temporary directory. The workflow commits after each phase, and a file inside the repository would end up in those commits.
 2. Start the workflow from the repository root, with the path of that file:
 
@@ -100,4 +108,4 @@ Then give a brief summary, from that result and from the files of the feature di
 - **Coverage of the quality gates (REQUIRED).** The `coverage:` lines of the result, as they are. A line that does not say `full` leads the summary: a degraded run must never read as a fully-gated one.
 - The notable decisions that the phases made autonomously, as the reports record them
 
-Do **not** retry a run that stopped, open a pull request, push, run extraction, or start a new feature. The user takes it from there: extraction (`/speckit.opsmill.extract`) is a manual follow-up, so that the user can read the implementation report first.
+Do **not** retry a run that stopped (the next call of this command picks it up, as step 2 describes), open a pull request, push, run extraction, or start a new feature. The user takes it from there: extraction (`/speckit.opsmill.extract`) is a manual follow-up, so that the user can read the implementation report first.
