@@ -45,17 +45,34 @@ def published(repo: Path) -> tuple[str, ...]:
     """Where the GitHub Releases of the repo's tags serve their zips.
 
     A release that has no tag yet is not published, so its catalog records can
-    still change.
+    still change. The tags of `origin` count too: a clone that lacks the tag of
+    a published release would otherwise drop that release from the catalog.
     """
-    tags = subprocess.run(
-        ["git", "-C", str(repo), "tag", "--list", "v*"],
-        check=True,
+    tags = set(
+        subprocess.run(
+            ["git", "-C", str(repo), "tag", "--list", "v*"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.split()
+    )
+    remote = subprocess.run(
+        ["git", "-C", str(repo), "ls-remote", "--tags", "--refs", "origin", "v*"],
+        check=False,
         capture_output=True,
         text=True,
-    ).stdout.split()
+    )
+    if remote.returncode != 0:
+        raise SystemExit(
+            f"cannot list the tags of origin, so the published releases are unknown:\n"
+            f"{remote.stderr}"
+        )
+    tags |= {ref.removeprefix("refs/tags/") for ref in remote.stdout.split()[1::2]}
     if not tags:
-        raise SystemExit("no vX.Y.Z tag found; fetch tags first (git fetch --tags)")
-    return tuple(Location.release(tag.removeprefix("v")).archives for tag in tags)
+        raise SystemExit("no vX.Y.Z tag found, neither in this clone nor on origin")
+    return tuple(
+        Location.release(tag.removeprefix("v")).archives for tag in sorted(tags)
+    )
 
 
 def main() -> int:
