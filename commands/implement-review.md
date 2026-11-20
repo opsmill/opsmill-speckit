@@ -14,7 +14,7 @@ You run **one phase** of the `opsmill-implement` workflow: **Review**. The workf
 
 Nobody can answer a question during this run. Wherever a choice comes up, use your best judgment and continue.
 
-The user input above holds the spec directory, then the base commit. Review the full diff from the base commit to `HEAD` (`<base>..HEAD`), against `spec.md` and `tasks.md` as the statement of intent.
+The user input above holds the spec directory, then the base commit. Review the full diff from the base commit to `HEAD` (`<base>..HEAD`), against `spec.md` and `tasks.md` as the statement of intent. When this run picks up a run that did not end `DONE`, the base commit is the one that run started from, so the diff also holds the work of that run: review all of it, even when an earlier `## Review` section of the ledger covered part of it.
 
 ### 1. Resolve the review provider
 

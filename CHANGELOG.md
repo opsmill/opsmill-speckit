@@ -111,6 +111,10 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   feature directory holds `spec.md`, `plan.md` and `tasks.md`, it starts
   `opsmill-implement` on that directory instead of a new `opsmill-auto` run.
   `specify workflow resume` restarts at the final check and runs no chunk.
+- `opsmill-implement` keeps its ledger until a run ends `DONE`, and records
+  in it the commit that the run started from. A run that picks up an
+  unfinished one starts from that commit, so its review covers the work of
+  both runs and its report lists the chunks of both.
 - `scripts/python/workflow_result.py`: prints the result of a workflow run,
   with one `coverage:` line for the critique and for the review. A line that
   does not say `full` reports a critique or a review of reduced coverage, with

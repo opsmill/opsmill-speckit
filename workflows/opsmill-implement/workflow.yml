@@ -23,10 +23,16 @@ inputs:
     prompt: "Integration to use ('auto' uses the project's integration)"
 
 steps:
-  # The commit that the review and the report compare the result with.
+  # The commit that the review and the report compare the result with. A run
+  # that picks up an unfinished one keeps the base commit that the ledger
+  # records, so that its review covers the work of both runs.
   - id: base
     type: shell
-    run: "git rev-parse HEAD | tr -d '\\n'"
+    run: >-
+      b=$(sed -n 's/^Base commit: \([0-9a-f]\{7,40\}\)$/\1/p'
+      '{{ inputs.spec_dir }}/opsmill-implement-ledger.md' 2>/dev/null | head -n 1);
+      if [ -n "$b" ] && git merge-base --is-ancestor "$b" HEAD 2>/dev/null;
+      then printf '%s' "$b"; else git rev-parse HEAD | tr -d '\n'; fi
 
   # The run stops here, with an error, when the spec directory is not ready or
   # when the working tree holds changes that would end up in the review.
@@ -39,6 +45,15 @@ steps:
       done;
       test -z "$(git status --porcelain -- . ':!.specify/workflows/runs')"
       || { echo 'BLOCKED: the working tree has uncommitted changes' >&2; exit 1; }
+
+  # The ledger outlives a run that does not end DONE: the report phase deletes
+  # it only then. It starts with the base commit, which the next run reads.
+  - id: ledger
+    type: shell
+    run: >-
+      l='{{ inputs.spec_dir }}/opsmill-implement-ledger.md';
+      grep -q '^Base commit: ' "$l" 2>/dev/null
+      || printf '# Implementation ledger\n\nBase commit: %s\n' '{{ steps.base.output.stdout }}' > "$l"
 
   # One chunk of tasks.md per pass, each in its own agent process. The pass is
   # repeated while tasks.md has unticked tasks and the last chunk ticked at

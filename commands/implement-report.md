@@ -16,7 +16,7 @@ Nobody can answer a question during this run. Wherever a choice comes up, use yo
 
 The user input above holds the spec directory, then the base commit. Your sources are:
 
-- `<spec-dir>/opsmill-implement-ledger.md`: one section per chunk, then the review section. Each earlier phase wrote its own section.
+- `<spec-dir>/opsmill-implement-ledger.md`: one section per chunk, then the review section. Each earlier phase wrote its own section. When this run picks up a run that did not end `DONE`, the ledger also holds the sections of that run, and the base commit is the one that run started from: report the chunks of both runs, and take the review mode and the findings from the **last** `## Review` section, the review of this run, which covered the whole diff from the base commit.
 - `tasks.md`: the tasks that are still unticked (`- [ ]`).
 - `git log <base>..HEAD`: the commits of the run.
 
@@ -47,7 +47,7 @@ Write `<spec-dir>/opsmill-implement-report.md` with:
 - Section 4 has a `MISSING` row. Section 7 then lists "produce local-pass evidence for the listed tests" as its first next step.
 - The review mode is `none`. Section 7 then lists "install the pr-review-toolkit plugin and re-run the review over this diff" as its first next step. The `fallback` mode does not block, because a review took place.
 
-Then delete `<spec-dir>/opsmill-implement-ledger.md`: the report holds its content. Invoke the `speckit-checkpoint-commit` skill to commit the report and the deletion. The workflow commits anything that you leave uncommitted.
+When the run is `DONE`, delete `<spec-dir>/opsmill-implement-ledger.md`: the report holds its content. When the run is `INCOMPLETE`, keep it: the run that picks this one up reads its base commit and its chunk sections. Invoke the `speckit-checkpoint-commit` skill to commit the report, and the deletion when there is one. The workflow commits anything that you leave uncommitted.
 
 ### 2. Report the status
 
