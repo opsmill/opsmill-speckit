@@ -94,17 +94,56 @@ def phases(run: Path) -> Counter:
     return started
 
 
+def output_verdicts(name: str, output: dict) -> list[str]:
+    lines = []
+    for key, value in output.items():
+        if key in ("stderr", "error") or not isinstance(value, str):
+            continue
+        line = last_line(value)
+        if VERDICT.match(line):
+            lines.append(f"{name}{'' if key == 'stdout' else '.' + key} -> {line}")
+    return lines
+
+
+def step_ids(source: str) -> list[str]:
+    """The IDs of the top-level steps of a list of steps, or of a workflow file."""
+    found = re.search(r"^steps:\s*$", source, re.MULTILINE)
+    steps = source[found.end() :] if found else source
+    return re.findall(r"^- id: (\S+)", steps, re.MULTILINE)
+
+
+def tree_verdicts(container: dict, ids: list[str], prefix: str) -> list[str]:
+    """The verdict line of each step of the execution tree, below the given container."""
+    lines = []
+    for index, node in enumerate(container.get("nodes", [])):
+        name = f"{prefix}.{ids[index]}" if index < len(ids) else f"{prefix}.?"
+        lines += output_verdicts(name, (node.get("result") or {}).get("output") or {})
+        binding = node.get("binding") or {}
+        child_ids = step_ids(str(binding.get("definition") or ""))
+        for child in node.get("children", []):
+            # The passes of a loop after the first one do not repeat its steps.
+            if isinstance(child.get("source"), str):
+                child_ids = step_ids(child["source"])
+            lines += tree_verdicts(child, child_ids, name)
+    return lines
+
+
 def verdicts(state: dict) -> list[str]:
-    """The verdict line of each step, and of each output of a nested workflow."""
+    """The verdict line of each step, nested workflows included.
+
+    A nested workflow that fails records the output of its steps only in the
+    execution tree, so the tree is read too.
+    """
     lines = []
     for name, result in state.get("step_results", {}).items():
-        output = result.get("output") or {}
-        for key, value in output.items():
-            if key in ("stderr", "error") or not isinstance(value, str):
-                continue
-            line = last_line(value)
-            if VERDICT.match(line):
-                lines.append(f"{name}{'' if key == 'stdout' else '.' + key} -> {line}")
+        lines += output_verdicts(name, result.get("output") or {})
+    sequence = (state.get("execution") or {}).get("sequence") or {}
+    if isinstance(sequence.get("source"), str):
+        nested = tree_verdicts(sequence, step_ids(sequence["source"]), "")
+        seen = {line.split(" -> ", 1)[1] for line in lines}
+        lines += [
+            line.lstrip(".") for line in nested if line.split(" -> ", 1)[1] not in seen
+        ]
     return lines
 
 

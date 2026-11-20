@@ -121,8 +121,10 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 - `scripts/python/workflow_result.py`: prints the result of a workflow run,
   with one `coverage:` line for the critique and for the review. A line that
   does not say `full` reports a critique or a review of reduced coverage, with
-  the command that installs the full one. `prep`, `implement` and `auto` read
-  the result with it.
+  the command that installs the full one. It also reads the verdicts of a
+  nested workflow that failed, such as the `STATUS:` line of `opsmill-implement`
+  in a failed `opsmill-auto` run. `prep`, `implement` and `auto` read the
+  result with it.
 
 #### Changed
 - `speckit.opsmill.prep` starts the `opsmill-prep` workflow, tells which phase
