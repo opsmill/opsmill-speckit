@@ -29,6 +29,8 @@ jobs:
         run: |
           uv run .github/scripts/build_release.py assets "${GITHUB_REF_NAME#v}" "$RUNNER_TEMP/zips" > "$RUNNER_TEMP/assets"
       - name: "Attach the zips to the release"
+        # A rerun after a partial upload replaces the zips already attached:
+        # the build gives the same bytes for the same commit.
         env:
           GH_TOKEN: "${{ github.token }}"
-        run: xargs gh release upload "$GITHUB_REF_NAME" < "$RUNNER_TEMP/assets"
+        run: xargs gh release upload --clobber "$GITHUB_REF_NAME" < "$RUNNER_TEMP/assets"
