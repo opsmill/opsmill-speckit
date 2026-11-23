@@ -75,14 +75,23 @@ def state_of(run_id: str | None) -> tuple[Path, dict]:
     return path.parent, json.loads(path.read_text())
 
 
-def phases(run: Path) -> Counter:
-    """How many times each agent phase started, nested workflows included."""
+def phases(run: Path) -> tuple[Counter, list[int]]:
+    """How many times each agent phase started, nested workflows included.
+
+    Also the numbers of the log lines that are not JSON, such as a line cut
+    short when the run was killed.
+    """
     started: Counter = Counter()
+    unread: list[int] = []
     log = run / "log.jsonl"
     if not log.exists():
-        return started
-    for line in log.read_text().splitlines():
-        event = json.loads(line)
+        return started, unread
+    for number, line in enumerate(log.read_text().splitlines(), start=1):
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            unread.append(number)
+            continue
         if event.get("event") == "step_started" and event.get("type") == "command":
             # A step of a repeated pass is named `design:critique:1`.
             names = [
@@ -91,7 +100,7 @@ def phases(run: Path) -> Counter:
                 if not part.isdigit()
             ]
             started[names[-1] if names else "?"] += 1
-    return started
+    return started, unread
 
 
 def output_verdicts(name: str, output: dict) -> list[str]:
@@ -194,11 +203,16 @@ def main() -> int:
     print(
         f"run {state.get('run_id')} | workflow {state.get('workflow_id')} | {state.get('status')}"
     )
-    started = phases(run)
+    started, unread = phases(run)
     if started:
         print(
             "phases started: "
             + ", ".join(f"{name} x{count}" for name, count in started.items())
+        )
+    if unread:
+        print(
+            f"error: {run / 'log.jsonl'} has {len(unread)} lines that are not JSON, "
+            f"left out of the phase counts: {', '.join(map(str, unread))}"
         )
     lines = verdicts(state)
     for line in lines:
