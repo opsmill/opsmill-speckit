@@ -39,20 +39,21 @@ class Snapshot:
 
     root: Path
 
-    def files(self, *options: str) -> list[str]:
-        """Tracked and unignored files, as paths from the root; options narrow the list."""
+    def files(self) -> list[str]:
+        """Tracked and unignored files, as paths from the root."""
+        return self._ls("--cached", "--others", "--exclude-standard")
+
+    def ignored(self, rules: str) -> list[str]:
+        """The files that the rules file ignores, as paths from the root.
+
+        Only those rules count: the git configuration of the machine, such as
+        its global excludes, must not change what a release archive holds.
+        """
+        return self._ls("--cached", "--others", "--ignored", f"--exclude-from={rules}")
+
+    def _ls(self, *options: str) -> list[str]:
         names = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(self.root),
-                "ls-files",
-                "-z",
-                "--cached",
-                "--others",
-                "--exclude-standard",
-                *options,
-            ],
+            ["git", "-C", str(self.root), "ls-files", "-z", *options],
             check=True,
             capture_output=True,
             text=True,

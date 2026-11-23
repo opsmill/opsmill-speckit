@@ -84,7 +84,7 @@ class Extension(Component):
     def files(self) -> dict[str, Path]:
         snapshot = Snapshot(self.root)
         ignored = (
-            set(snapshot.files(f"--exclude-from={self.IGNORE}", "--ignored"))
+            set(snapshot.ignored(self.IGNORE))
             if (self.root / self.IGNORE).is_file()
             else set()
         )

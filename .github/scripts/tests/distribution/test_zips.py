@@ -29,3 +29,15 @@ class TestArchives:
         repo = repo_with_extension(tmp_path / "repo")
         extension = Components(repo).extension()
         assert sorted(extension.files()) == ["commands/a.md", "extension.yml"]
+
+    def test_extension_zip_ignores_the_global_excludes(self, tmp_path, monkeypatch):
+        repo = repo_with_extension(tmp_path / "repo")
+        subprocess.run(["git", "-C", str(repo), "add", "-A"], check=True)
+        write(tmp_path / "excludes", "commands/\n")
+        write(
+            tmp_path / "gitconfig",
+            f"[core]\n\texcludesFile = {tmp_path / 'excludes'}\n",
+        )
+        monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "gitconfig"))
+        extension = Components(repo).extension()
+        assert sorted(extension.files()) == ["commands/a.md", "extension.yml"]
