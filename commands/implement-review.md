@@ -37,9 +37,10 @@ A missing reviewer does not stop this phase. It lowers assurance, and the report
 
 Once all five have returned, run `code-simplifier` alone, with the same briefing. It is built to edit code rather than report, so its edits are never kept:
 
-- Before it runs, check that the working tree is clean (`git status --porcelain` prints nothing). If it is not, skip `code-simplifier` and record that.
-- After it ends, turn every change it made into a `low` finding: read them with `git diff` and `git status --porcelain`, one finding per simplification, with the file and line.
-- Then discard its changes: `git restore .` for edited files, and delete the files it created (listed as `??`). The working tree must be clean again before you handle the findings.
+- Every `git status` below excludes the workflow's run folder: `git status --porcelain -- . ':!.specify/workflows/runs'`. That folder holds the state of the current run, changes while it runs, and is never deleted.
+- Before it runs, check that the working tree is clean (that `git status` prints nothing). If it is not, skip `code-simplifier` and record that.
+- After it ends, turn every change it made into a `low` finding: read them with `git diff` and that `git status`, one finding per simplification, with the file and line.
+- Then discard its changes: `git restore .` for edited files, and delete the files it created (listed as `??` by that `git status`). The working tree must be clean again before you handle the findings.
 
 **`REVIEW_MODE: command`.** Run the `code-review` skill at the `medium` effort level on the change set, given as a Git revision range: `/code-review medium <base>..HEAD`. Always name the level: without one, the skill reuses the level that was typed last on this machine, which can be its costliest one. The command reviews in the background: wait for its findings before you go on, and collect them in the same shape as above.
 
