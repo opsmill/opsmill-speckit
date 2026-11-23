@@ -67,9 +67,11 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
 - When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
   `tasks.md` during the run, for example because Claude Code refused it a
   tool, the run stops at that phase with a `BLOCKED:` reason. The check
-  compares the file with the commit that the run started from, so the files of
-  an earlier feature, which `.specify/feature.json` can still point to, do not
-  pass it.
+  compares the file with the commit just before the phase, so neither the files
+  of an earlier feature, which `.specify/feature.json` can still point to, nor
+  the files of an earlier pass of the same run pass it. In a remediation pass,
+  the plan phase updates `plan.md` for the corrected spec and names the spec
+  corrections it follows.
 - The commit steps leave out `.specify/workflows/runs/`, so the run state,
   which holds local absolute paths, does not end up in the feature branch.
 
