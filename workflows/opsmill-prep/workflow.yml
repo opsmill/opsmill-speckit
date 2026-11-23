@@ -62,11 +62,13 @@ steps:
         type: shell
         run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'specify: write the spec')"
       # A phase that writes nothing, for example because Claude Code refused
-      # it a tool, stops the run here instead of in the last step.
+      # it a tool, stops the run here instead of in the last step. The checks
+      # compare the real path of the file: git diff does not follow a symlink,
+      # such as a specs/ folder that links to dev/specs/.
       - id: check-spec
         type: shell
         run: >-
-          d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+          d=$(python3 -c "import json, os; print(os.path.relpath(os.path.realpath(json.load(open('.specify/feature.json'))['feature_directory'])), end='')" 2>/dev/null);
           [ -n "$d" ] && [ -f "$d/spec.md" ] && ! git diff --quiet '{{ steps.before_spec.output.stdout }}' HEAD -- "$d/spec.md"
           || { echo 'BLOCKED: the specify phase wrote no spec.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
 
@@ -112,7 +114,7 @@ steps:
           - id: check-plan
             type: shell
             run: >-
-              d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+              d=$(python3 -c "import json, os; print(os.path.relpath(os.path.realpath(json.load(open('.specify/feature.json'))['feature_directory'])), end='')" 2>/dev/null);
               [ -n "$d" ] && [ -f "$d/plan.md" ] && ! git diff --quiet '{{ steps.before_plan.output.stdout }}' HEAD -- "$d/plan.md"
               || { echo 'BLOCKED: the plan phase wrote no plan.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
           - id: critique
@@ -144,7 +146,7 @@ steps:
           - id: check-tasks
             type: shell
             run: >-
-              d=$(python3 -c "import json; print(json.load(open('.specify/feature.json'))['feature_directory'], end='')" 2>/dev/null);
+              d=$(python3 -c "import json, os; print(os.path.relpath(os.path.realpath(json.load(open('.specify/feature.json'))['feature_directory'])), end='')" 2>/dev/null);
               [ -n "$d" ] && [ -f "$d/tasks.md" ] && ! git diff --quiet '{{ steps.before_tasks.output.stdout }}' HEAD -- "$d/tasks.md"
               || { echo 'BLOCKED: the tasks phase wrote no tasks.md in this run. The output of that phase says why, often a tool that Claude Code refused' >&2; exit 1; }
           - id: align
