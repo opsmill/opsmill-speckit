@@ -1,0 +1,29 @@
+CHANGELOG.md
+  s_c084e8bac6e69f::t_25e1196ec0bf3c 105-113
+  s_c084e8bac6e69f::t_a0c818577c32f3 70-71
+  s_c084e8bac6e69f::t_95b8d0d96d0acf 85-86
+commands/auto.md
+  s_c084e8bac6e69f::t_611a7ee5ae20ce 33-40,111
+commands/implement-chunk.md
+  s_c084e8bac6e69f::t_2f280e0a0f0a04 34-36
+workflows/opsmill-implement/workflow.yml
+  s_c084e8bac6e69f::t_56168a01ce2039 61,75,86
+workflows/opsmill-prep/workflow.yml
+  s_c084e8bac6e69f::t_70c408e6867d29 56,86,97,109,122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7a466d663bfd4950ea98d0a5149b9a8849d08afd",
+  "prompts": {},
+  "sessions": {
+    "s_c084e8bac6e69f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a62b57c8-0237-436f-98fd-7089eb103a35",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

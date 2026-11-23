@@ -1,0 +1,19 @@
+README.md
+  s_98a5d00f7a6ab2::t_21e517da3beeb8 275-278
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c6c41ed5cfaac97a4b272f121385f3e0c29dd82b",
+  "prompts": {},
+  "sessions": {
+    "s_98a5d00f7a6ab2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe20a2a8-45c5-4221-889d-25576977fdad",
+        "model": "unknown"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

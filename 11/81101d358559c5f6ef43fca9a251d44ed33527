@@ -1,0 +1,33 @@
+catalog/bundle-catalog.json
+  s_90e4d4a45e3d38::t_617ea27c4c4b29 4,13,15,35,37
+catalog/extension-catalog.json
+  s_90e4d4a45e3d38::t_23d95d4afac06e 4,57,59
+catalog/preset-catalog.json
+  s_90e4d4a45e3d38::t_21160ef733afd2 4,12,14,36,38,60,62,85,87
+catalog/specify/bundle-catalogs.yml
+  s_90e4d4a45e3d38::t_2e35830e6cb02f 6
+catalog/specify/extension-catalogs.yml
+  s_90e4d4a45e3d38::t_1f422dd5f1a897 5
+catalog/specify/preset-catalogs.yml
+  s_90e4d4a45e3d38::t_d87b053b5ed5e3 5
+catalog/specify/workflow-catalogs.yml
+  s_90e4d4a45e3d38::t_471a27157e2be9 5
+catalog/workflow-catalog.json
+  s_90e4d4a45e3d38::t_c37a3e87171c27 4,12-13,30-31,48-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1181101d358559c5f6ef43fca9a251d44ed33527",
+  "prompts": {},
+  "sessions": {
+    "s_90e4d4a45e3d38": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c36fadc-867e-4529-bea2-22a1f6ce2e8a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
