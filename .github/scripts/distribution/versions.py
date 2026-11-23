@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
-from packaging.version import Version
+from packaging.version import InvalidVersion, Version
 
 from distribution.archives import build
 from distribution.catalogs import SOURCE, CatalogFile
@@ -56,13 +56,18 @@ class VersionRaised:
                 old = zips(base, Path(tmp) / "old")
             new = zips(self.repo, Path(tmp) / "new")
         changed = [key for key in new if key in old and old[key][1] != new[key][1]]
-        fail_on(
-            [
-                f"{key[1]} changed since {self.base}: raise its version above {old[key][0]}"
-                for key in changed
-                if Version(new[key][0]) <= Version(old[key][0])
-            ]
-        )
+        errors = []
+        for key in changed:
+            try:
+                raised = Version(new[key][0]) > Version(old[key][0])
+            except InvalidVersion as error:
+                errors.append(f"{key[1]}: {error}")
+                continue
+            if not raised:
+                errors.append(
+                    f"{key[1]} changed since {self.base}: raise its version above {old[key][0]}"
+                )
+        fail_on(errors)
         return f"{len(changed)} changed components and bundles have a higher version"
 
 

@@ -37,6 +37,13 @@ class TestVersionRaised:
         ):
             VersionRaised(repo, "HEAD").verify()
 
+    def test_fails_on_a_version_that_is_not_pep_440(self, repo):
+        write(
+            repo / "presets" / "p" / "preset.yml", "preset: {id: p, version: 1.6.x}\n"
+        )
+        with pytest.raises(CheckFailed, match="p: Invalid version: '1.6.x'"):
+            VersionRaised(repo, "HEAD").verify()
+
 
 class TestPinsMatch:
     def test_fails_on_a_pin_that_is_not_the_manifest_version(self, repo):
