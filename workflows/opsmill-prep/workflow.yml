@@ -132,9 +132,12 @@ steps:
           - id: before_tasks
             type: shell
             run: "git rev-parse HEAD | tr -d '\\n'"
+          # The implementation does not handle the pull request.
           - id: tasks
             command: speckit.tasks
             integration: "{{ inputs.integration }}"
+            input:
+              args: "Create no task that pushes the branch or opens, edits or comments on a pull request: the implementation does not handle the pull request."
           - id: commit-tasks
             type: shell
             run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'tasks: generate the tasks')"

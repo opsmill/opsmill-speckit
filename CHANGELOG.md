@@ -107,12 +107,12 @@ Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. REA
   `speckit.opsmill.implement-report`: the phases of the `opsmill-implement`
   workflow. The review phase runs `/code-review` at the `medium` effort level
   when the `pr-review-toolkit` plugin is not installed.
-- The chunk phase may push the branch and open a draft pull request when a
-  task asks to record a result in the pull request description and none
-  exists. It reads the description before it writes it again, and keeps
-  every section that it holds. It may also build images and start Docker stacks for a task that
+- The tasks phase of `opsmill-prep` creates no task that pushes the branch or
+  opens, edits or comments on a pull request, and the chunk phase never does
+  any of these.
+- The chunk phase may build images and start Docker stacks for a task that
   needs a running application, then removes them. Without this, a phase
-  judged both actions to need an approval and left those tasks blocked.
+  judged these actions to need an approval and left those tasks blocked.
 - `speckit.opsmill.auto` picks up a run that ended `INCOMPLETE`: when the
   feature directory holds `spec.md`, `plan.md` and `tasks.md`, it starts
   `opsmill-implement` on that directory instead of a new `opsmill-auto` run.
