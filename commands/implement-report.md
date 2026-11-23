@@ -61,6 +61,6 @@ Print a summary of 4 to 6 lines: the report header and the outcome counts.
 - `STATUS: INCOMPLETE` — at least one blocking rule applies. `REASON` names it.
 - `REVIEW` is the review mode of the ledger.
 
-The workflow reads this line: it ends with an error unless the status is `DONE`.
+The workflow reads this line: it ends with an error unless the status is `DONE`. Write the two words `STATUS: DONE` nowhere else in your output.
 
 Do not open a pull request, push, or start a new feature.
