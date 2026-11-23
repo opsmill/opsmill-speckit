@@ -1,8 +1,10 @@
 import subprocess
 
+import pytest
 from support import write
 
 from distribution.archives import build
+from install_check.errors import CheckFailed
 from repo.components import Components
 
 
@@ -41,3 +43,15 @@ class TestArchives:
         monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "gitconfig"))
         extension = Components(repo).extension()
         assert sorted(extension.files()) == ["commands/a.md", "extension.yml"]
+
+    def test_refuses_two_components_with_the_same_zip_name(self, tmp_path):
+        repo = repo_with_extension(tmp_path / "repo")
+        write(
+            repo / "workflows" / "p" / "workflow.yml",
+            "workflow: {id: p, version: 1.0.0}\n",
+        )
+        with pytest.raises(
+            CheckFailed,
+            match="p-1.0.0.zip would be the zip of several components: presets, workflows",
+        ):
+            build(Components(repo), tmp_path / "zips")
