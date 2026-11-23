@@ -35,3 +35,5 @@ jobs:
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/repo_audit
       - name: "Test the agent hooks"
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/hooks
+      - name: "Test the workflow result script"
+        run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/workflow_result

@@ -19,7 +19,7 @@ WORKFLOWS = Path(".specify/workflows")
 # A line such as `ALIGNMENT: ALIGNED` or `STATUS: DONE | SPEC_DIR: ...`.
 VERDICT = re.compile(r"^[A-Z][A-Z_]*: \S")
 # What a stop step of a workflow prints before it ends the run.
-STOP = re.compile(r"\b(?:BLOCKED|INCOMPLETE): [^'\"]*")
+STOP = re.compile(r"\b(?:BLOCKED|INCOMPLETE): [^'\"\n]*")
 # For each quality gate: the verdict line that holds its mode, the modes that
 # give a full check, and how to get a full check.
 GATES = {
