@@ -192,6 +192,19 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
    copied from opsmill/infrahub, which `jira-branch` replaces:
    `specify preset remove infrahub`.
 
+   Some repos also copied an `infrahub` extension, the folder
+   `.specify/extensions/infrahub/`. Its `before_specify` hook runs
+   `speckit.infrahub.feature`, a command of the `infrahub` preset, and it is
+   not optional: once the preset is removed, every specify phase calls a
+   command that does not exist. `specify extension remove infrahub` reports
+   that it is not installed, because the extension was copied rather than
+   installed. Remove it by hand:
+
+   - delete the folder `.specify/extensions/infrahub/`;
+   - in `.specify/extensions.yml`, delete the `infrahub` entry under
+     `installed` and the hook whose `extension` is `infrahub` under
+     `before_specify`.
+
    A repo that will install `opsmill-jira` also removes the `git` extension
    if older Spec Kit releases installed it with `specify init`:
    `specify extension remove git`. Otherwise the bundle stops with "pins
