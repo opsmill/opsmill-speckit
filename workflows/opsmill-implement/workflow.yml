@@ -7,7 +7,7 @@ workflow:
   description: "Implements the tasks of a spec directory chunk by chunk, reviews the result, then writes a report. Each phase is one step, and the workflow sets when the chunk step is repeated and how often."
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
   integrations:
     any:
       - "claude"

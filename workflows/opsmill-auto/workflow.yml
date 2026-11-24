@@ -7,7 +7,7 @@ workflow:
   description: "Runs the opsmill-prep workflow, then the opsmill-implement workflow when prep reports that the spec is ready."
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
   integrations:
     any:
       - "claude"

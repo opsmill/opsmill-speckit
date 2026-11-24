@@ -11,7 +11,7 @@ bundle:
   license: "Apache-2.0"
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
 
 # Every component comes from the opsmill catalogs (catalog/), which a project
 # declares in .specify/*-catalogs.yml.

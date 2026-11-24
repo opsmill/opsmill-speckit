@@ -70,14 +70,15 @@ lists the version of every bundle and component in each release.
 
 ## Requires
 
-- Spec Kit 1.2.4 or later. CI installs both bundles on that version for each
+- Spec Kit 1.4.4 or later. CI installs both bundles on that version for each
   pull request, and on the latest Spec Kit every week.
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
 - PyYAML for the Python that spec-kit's scripts run: `python3`, or the one set
   in `SPECKIT_PYTHON_EXECUTABLE`. spec-kit needs it to read the presets'
-  manifests; without it, `/speckit.plan` cannot prepare `plan.md`. In a repo
+  manifests; without it, `/speckit.specify` cannot start `spec.md` and
+  `/speckit.plan` cannot prepare `plan.md`. In a repo
   whose Python environment provides PyYAML, the extension's
   [agent hooks](#agent-hooks-for-pyyaml) point spec-kit at that environment.
 
@@ -90,7 +91,7 @@ Recommended: the `pr-review-toolkit` Claude Code plugin, which gives
 
 A bundle cannot add the catalogs that its components come from: Spec Kit
 looks them up in the catalogs that the project declares
-([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#publish-a-bundle)).
+([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.4.4/docs/bundles/developing.md#select-components-and-their-sources)).
 Run `specify init` first if the repo has no `.specify/` folder. Then copy the
 four files of [`catalog/specify/`](catalog/specify/) into `.specify/` and
 commit them:
@@ -105,7 +106,7 @@ done
 - A project's extension, preset or workflow catalog file replaces Spec Kit's
   built-in catalogs, so these files list Spec Kit's `default` and `community`
   catalogs again after the opsmill one
-  ([Spec Kit catalogs reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/catalogs.md#inspect-and-manage-catalog-sources)).
+  ([Spec Kit catalogs reference](https://github.com/github/spec-kit/blob/v1.4.4/docs/overview/catalogs.md#inspect-and-manage-catalog-sources)).
   The bundle catalog file adds to the built-in bundle catalogs.
 - The command replaces these files if the repo already has them. When the repo
   declares other catalogs, copy the `opsmill` entry of each file into the
@@ -175,14 +176,14 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
 
 1. Remove the `review` extension if the repo has it. It does not install on
    Spec Kit 1.x: `specify extension remove review`.
-2. Upgrade the CLI to Spec Kit 1.2.4 or later, for example with
+2. Upgrade the CLI to Spec Kit 1.4.4 or later, for example with
    `uv tool install specify-cli --force`, then run
    `specify integration upgrade claude`.
 3. Remove the components of 1.4.1 or earlier that the repo has (`specify extension list` and
    `specify preset list` show them). A component installed on its own at
    another version does not satisfy a bundle's pin, and a bundle never takes
    over a component installed on its own
-   ([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#install-a-bundle)):
+   ([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.4.4/docs/bundles/cli.md#reinstallation-and-refresh)):
 
    ```bash
    specify preset remove critique-opsmill
@@ -216,7 +217,7 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
    A repo that will install `opsmill-jira` also removes the `git` extension
    if older Spec Kit releases installed it with `specify init`:
    `specify extension remove git`. Otherwise the bundle stops with "pins
-   extension 'git' to 1.0.1, but 1.0.0 is installed". The bundle installs `git`
+   extension 'git' to 1.0.9, but 1.0.0 is installed". The bundle installs `git`
    again at the version it pins.
 
    Removing `opsmill` also removes the hooks that the repo added for it in
@@ -236,7 +237,7 @@ previous Spec Kit CLI.
 ## Workflows
 
 `opsmill-sdd` installs three Spec Kit workflows
-([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/workflows.md)):
+([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.4.4/docs/workflows/overview.md)):
 
 - `opsmill-prep` prepares a feature in one step per phase: specify, plan,
   critique, tasks, then a check of the spec against the request. It commits
@@ -408,7 +409,7 @@ hooks:
 
 ## Agent hooks for PyYAML
 
-spec-kit 1.2 reads the presets' manifests with PyYAML in `setup-plan.sh`,
+Spec Kit reads the presets' manifests with PyYAML in `setup-plan.sh`,
 `setup-tasks.sh`, `resolve-template.sh` and its own `create-new-feature.sh`. These scripts run `python3` from
 the PATH, which often lacks PyYAML, unless `SPECKIT_PYTHON_EXECUTABLE` names
 another interpreter. Until spec-kit stops needing PyYAML in these scripts

@@ -12,7 +12,7 @@ bundle:
   license: "Apache-2.0"
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
 
 provides:
   bundles:
@@ -24,7 +24,7 @@ provides:
     # replaces. It ships with Spec Kit, which installs its own newer patch
     # release in place of this pin.
     - id: "git"
-      version: "1.0.1"
+      version: "1.0.9"
   presets:
     - id: "jira-branch"
       version: "1.5.0"
