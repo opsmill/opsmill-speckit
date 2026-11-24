@@ -1,0 +1,21 @@
+catalog/extension-catalog.json
+  s_2fd518945edf89::t_bc21203e924111 3,60
+catalog/workflow-catalog.json
+  s_2fd518945edf89::t_fe3cd5ef7a8bed 3,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "19d46f61aeca5a54e41b52e28a0749b63a671e91",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

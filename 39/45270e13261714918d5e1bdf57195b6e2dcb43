@@ -1,0 +1,19 @@
+workflows/opsmill-prep/workflow.yml
+  s_2fd518945edf89::t_b4402cb1289baf 65-67,71,105,137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3945270e13261714918d5e1bdf57195b6e2dcb43",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

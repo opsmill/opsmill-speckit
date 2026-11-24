@@ -1,0 +1,25 @@
+.github/scripts/tests/workflow_result/test_workflow_result.py
+  s_2fd518945edf89::t_a1e983435dce73 1-35
+  s_2fd518945edf89::t_e8faf690f49b6d 36-38
+  s_2fd518945edf89::t_6e00dbf771c9e1 39-40
+.github/workflows/unit-tests.yml
+  s_2fd518945edf89::t_e50fc5c7198369 38-39
+scripts/python/workflow_result.py
+  s_2fd518945edf89::t_96f2ff99c0d3ca 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dcef85b57e4196645da015cd9362da08193a8b09",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

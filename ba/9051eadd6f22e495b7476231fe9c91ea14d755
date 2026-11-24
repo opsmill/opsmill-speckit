@@ -1,0 +1,20 @@
+.github/workflows/release.yml
+  s_2fd518945edf89::t_23ba6021d4e611 32-33
+  s_2fd518945edf89::t_4d712c580a7ba6 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ba9051eadd6f22e495b7476231fe9c91ea14d755",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}

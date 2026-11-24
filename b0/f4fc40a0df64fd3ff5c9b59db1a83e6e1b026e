@@ -1,0 +1,21 @@
+.github/scripts/distribution/archives.py
+  s_2fd518945edf89::t_8de6b9b5922701 9,18-33,43-46,50
+.github/scripts/tests/distribution/test_zips.py
+  s_2fd518945edf89::t_e12d154e77ae99 3,7,46-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b0f4fc40a0df64fd3ff5c9b59db1a83e6e1b026e",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
