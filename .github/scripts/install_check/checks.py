@@ -273,6 +273,50 @@ class PlanSetup:
 
 
 @dataclass(frozen=True)
+class SpecTemplate:
+    """spec-kit's template resolver composes the spec template with the installed presets.
+
+    Since Spec Kit 1.2.6, /speckit.specify starts spec.md from what
+    resolve-template.sh returns, and the script reads every preset manifest
+    with the Python in SPECKIT_PYTHON_EXECUTABLE, else python3 from PATH. Both
+    point to the given Python, as in PlanSetup.
+    """
+
+    project: Project
+    python: Path
+
+    def verify(self) -> str:
+        result = subprocess.run(
+            [
+                "bash",
+                ".specify/scripts/bash/resolve-template.sh",
+                "spec-template",
+                "--json",
+            ],
+            cwd=self.project.path,
+            env={
+                **os.environ,
+                "PATH": f"{self.python.parent}{os.pathsep}{os.environ.get('PATH', '')}",
+                "SPECKIT_PYTHON_EXECUTABLE": str(self.python),
+            },
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        try:
+            content = json.loads(result.stdout).get("TEMPLATE_CONTENT")
+        except ValueError:
+            content = None
+        if result.returncode != 0 or not content:
+            raise CheckFailed(
+                f"resolve-template.sh spec-template failed with the installed presets (exit {result.returncode}):\n{result.stdout}{result.stderr}"
+            )
+        return (
+            "resolve-template.sh composes the spec template with the installed presets"
+        )
+
+
+@dataclass(frozen=True)
 class PythonHooks:
     """The agent hooks shipped by the opsmill extension point spec-kit at the project's Python.
 

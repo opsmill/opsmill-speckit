@@ -10,6 +10,7 @@ from install_check.checks import (
     PlanSetup,
     Registered,
     ScriptsExist,
+    SpecTemplate,
 )
 from install_check.errors import CheckFailed
 
@@ -200,3 +201,31 @@ echo "# Plan" > "specs/$SPECIFY_FEATURE/plan.md"
         python.chmod(0o755)
         with pytest.raises(CheckFailed, match="exit 2\\):\\nPyYAML is required"):
             PlanSetup(project, python).verify()
+
+
+class TestSpecTemplate:
+    # A stand-in for spec-kit's resolve-template.sh that, like Spec Kit 1.2.6
+    # and later, needs a Python with PyYAML to read the preset manifests.
+    SCRIPT = """\
+"$SPECKIT_PYTHON_EXECUTABLE" -c "import yaml" 2>/dev/null || { echo "PyYAML is required" >&2; exit 1; }
+printf '{"TEMPLATE_NAME":"%s","TEMPLATE_CONTENT":"# Spec"}' "$1"
+"""
+
+    def script(self, project) -> None:
+        write(
+            project.path / ".specify" / "scripts" / "bash" / "resolve-template.sh",
+            self.SCRIPT,
+        )
+
+    def test_passes_with_a_python_that_has_the_packages(self, project, tmp_path):
+        self.script(project)
+        python = write(tmp_path / "python", "#!/bin/sh\nexit 0\n")
+        python.chmod(0o755)
+        assert "composes the spec template" in SpecTemplate(project, python).verify()
+
+    def test_fails_with_the_script_output(self, project, tmp_path):
+        self.script(project)
+        python = write(tmp_path / "python", "#!/bin/sh\nexit 1\n")
+        python.chmod(0o755)
+        with pytest.raises(CheckFailed, match="exit 1\\):\\nPyYAML is required"):
+            SpecTemplate(project, python).verify()
