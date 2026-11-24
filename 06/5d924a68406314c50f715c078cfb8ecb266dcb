@@ -1,0 +1,47 @@
+workflows/opsmill-prep/workflow.yml
+  s_90e4d4a45e3d38::t_b1025c466a69c0 5
+presets/taskstoissues-jira/preset.yml
+  s_90e4d4a45e3d38::t_67dcdb94b2230c 6
+presets/critique-opsmill/preset.yml
+  s_90e4d4a45e3d38::t_048780c993f53c 6
+bundles/opsmill-sdd/bundle.yml
+  s_90e4d4a45e3d38::t_25efa70142a824 6,21,36,42,50,53,56
+presets/jira-branch/preset.yml
+  s_90e4d4a45e3d38::t_f14a5a5e969469 6
+workflows/opsmill-implement/workflow.yml
+  s_90e4d4a45e3d38::t_02708050cea214 5
+presets/reconcile-opsmill/preset.yml
+  s_90e4d4a45e3d38::t_d14521b2c36ba8 6
+extension.yml
+  s_90e4d4a45e3d38::t_cad8f175c9492c 6
+workflows/opsmill-auto/workflow.yml
+  s_90e4d4a45e3d38::t_dba1bdaab0530c 5
+bundles/opsmill-jira/bundle.yml
+  s_90e4d4a45e3d38::t_b04d26b57c7d22 7,20,30,35
+CHANGELOG.md
+  s_90e4d4a45e3d38::t_b2b93c9bf031d1 16-79
+catalog/bundle-catalog.json
+  s_90e4d4a45e3d38::t_a76c1125e0ff98 3,9,15-16,18,31,37-38,40
+catalog/extension-catalog.json
+  s_90e4d4a45e3d38::t_0afde725916d60 3,54,59-60,62
+catalog/preset-catalog.json
+  s_90e4d4a45e3d38::t_f7d009277e6190 3,9,14-15,17,33,38-39,41,57,62-63,65,82,87-88,90
+catalog/workflow-catalog.json
+  s_90e4d4a45e3d38::t_ce79d122e0feb0 3,9,13-14,16,27,31-32,34,45,49-50,52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "065d924a68406314c50f715c078cfb8ecb266dcb",
+  "prompts": {},
+  "sessions": {
+    "s_90e4d4a45e3d38": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c36fadc-867e-4529-bea2-22a1f6ce2e8a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
