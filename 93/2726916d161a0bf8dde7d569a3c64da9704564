@@ -1,0 +1,142 @@
+README.md
+  s_90e4d4a45e3d38::t_15353227ffb39a 292-294
+  s_90e4d4a45e3d38::t_e28f58c5ecafca 285-287
+  s_90e4d4a45e3d38::t_4f2aacbd89c1ae 295-297
+  s_90e4d4a45e3d38::t_e1b80910e6d103 7-16,30-35,64,151-152,161-162,227-284,298-302
+  s_98a5d00f7a6ab2::t_21e517da3beeb8 288-291
+scripts/python/workflow_result.py
+  s_90e4d4a45e3d38::t_6b90b5cd578f58 44-77,84,86-87,95-102,138-140,146-147,156-172,205
+  s_90e4d4a45e3d38::t_07786f53d94d3d 1-21,23-43,173-204,207-211,217-231
+  s_98a5d00f7a6ab2::t_9cf233fca483a6 106-139,141-145,148-155
+commands/implement.md
+  s_90e4d4a45e3d38::t_6b90b5cd578f58 55
+  s_90e4d4a45e3d38::t_5069a203ca1a6e 2,11,15,17,19,21,23-25,27,29,31,33,35-37,39,41,43,45,47,49-51,53,57,59-63,65,67,69,71-73,75,77,79-82,84,90-91,93,95
+commands/prep.md
+  s_90e4d4a45e3d38::t_6b90b5cd578f58 56
+  s_90e4d4a45e3d38::t_436dc088938071 2,15,17,19,21,24,27,29,31,33-34,36-38,40,42,44,46,48,50-52,54,58,60-68,70,72,74,76,78-80,82,84,86-88,90,92,95-98,104-107,111
+workflows/opsmill-prep/workflow.yml
+  s_90e4d4a45e3d38::t_6b90b5cd578f58 62,64,68-69,74-81,85-95,111-112,114-115,120-126,128-133,138-140,143-144,146-147,160,169,177
+  s_90e4d4a45e3d38::t_ddbcbc9fd44074 1-34,42-61,152-159,162-168,170-176,178-197
+  s_c084e8bac6e69f::t_70c408e6867d29 63,113,127,145,161
+  s_98a5d00f7a6ab2::t_63999dd9364618 70,73,116,119,148,151
+CHANGELOG.md
+  s_90e4d4a45e3d38::t_03898e29209ff7 67
+  s_90e4d4a45e3d38::t_979256da30cead 64-66
+  s_90e4d4a45e3d38::t_63a1768a11d619 77-79
+  s_90e4d4a45e3d38::t_c1247986cadf5e 31-33,43-44,57-63,80-89,92-99,102-109,124-126,131,133-145
+  s_c084e8bac6e69f::t_25e1196ec0bf3c 114,116-119
+  s_c084e8bac6e69f::t_a0c818577c32f3 75-76
+  s_c084e8bac6e69f::t_95b8d0d96d0acf 90-91
+  s_98a5d00f7a6ab2::t_73634db3551d2c 120-123
+  s_98a5d00f7a6ab2::t_40f42cd9af6d27 68-69
+  s_98a5d00f7a6ab2::t_f3424f78a52f41 127-130
+commands/auto.md
+  s_90e4d4a45e3d38::t_6b90b5cd578f58 64
+  s_90e4d4a45e3d38::t_1ea3da2733ca37 2,11,15,17,19,21,23-32,41-46,48,50,52,54,56,58-62,66,68-79,81,83,85-91,93,95,97-100,102,105-109
+  s_c084e8bac6e69f::t_611a7ee5ae20ce 33-40,111
+bundles/opsmill-sdd/README.md
+  s_90e4d4a45e3d38::t_a18b9d5156c3c7 7,10-12
+bundles/opsmill-sdd/bundle.yml
+  s_90e4d4a45e3d38::t_fa20d3a94b8de3 8,21,23,46-57
+  s_2fd518945edf89::t_dc23ef993f5b39 6,36,42
+commands/implement-chunk.md
+  s_90e4d4a45e3d38::t_d4a2d48f12a2e4 1-33,37-65
+  s_c084e8bac6e69f::t_2f280e0a0f0a04 35-36
+commands/implement-report.md
+  s_90e4d4a45e3d38::t_0ad1f5ee366820 1-18,20-49,51-63,65-66
+  s_98a5d00f7a6ab2::t_2439591391799d 19,50
+commands/implement-review.md
+  s_90e4d4a45e3d38::t_734b32b6cc7430 1-16,18-39,44-79
+  s_98a5d00f7a6ab2::t_ccbba9771f63e7 17
+commands/prep-align.md
+  s_90e4d4a45e3d38::t_5bb6d7bbbc0caa 1-63
+commands/prep-critique.md
+  s_90e4d4a45e3d38::t_018a7f278b8bb9 1-58
+commands/prep-realign.md
+  s_90e4d4a45e3d38::t_35acaa22d3244b 1-29
+extension.yml
+  s_90e4d4a45e3d38::t_8ea1e3847befd1 6,34,37-55,58
+workflows/opsmill-auto/workflow.yml
+  s_90e4d4a45e3d38::t_93d38107d42cd2 1-50
+workflows/opsmill-implement/workflow.yml
+  s_90e4d4a45e3d38::t_cf118252fd369e 1-25,29-30,36-48,58-75,77-89,91-100,102-120
+  s_c084e8bac6e69f::t_56168a01ce2039 76,90,101
+  s_98a5d00f7a6ab2::t_921898f0539309 26-28,31-35,49-57
+.github/scripts/build_release.py
+  s_98a5d00f7a6ab2::t_dc934ecbd3b3e4 48-49,51-61,64-70,72-75
+.github/scripts/tests/distribution/test_published.py
+  s_98a5d00f7a6ab2::t_6f651560ca773c 1-40
+bundles/opsmill-jira/bundle.yml
+  s_2fd518945edf89::t_6004c23b3d87e4 7,20,30,35
+catalog/bundle-catalog.json
+  s_d39781b4d6a4c3::t_d634e1eb7e1f3b 3,5-50
+catalog/extension-catalog.json
+  s_d39781b4d6a4c3::t_e09463cfcc1ac6 3,51-80
+catalog/preset-catalog.json
+  s_d39781b4d6a4c3::t_4a988dfbc2bbcd 3,5-104
+catalog/workflow-catalog.json
+  s_d39781b4d6a4c3::t_d885f478dcc6c6 3,5-60
+presets/critique-opsmill/preset.yml
+  s_2fd518945edf89::t_5d47e9161cb5b3 6
+presets/jira-branch/preset.yml
+  s_2fd518945edf89::t_00d8843d85c33d 6
+presets/reconcile-opsmill/preset.yml
+  s_2fd518945edf89::t_621f8957d21c65 6
+presets/taskstoissues-jira/preset.yml
+  s_2fd518945edf89::t_8ed386460e96e6 6
+.github/scripts/tests/install_check/test_catalogs.py
+  s_90e4d4a45e3d38::t_1f7d49c9307c92 4-27
+  s_90e4d4a45e3d38::t_0144172434539e 1-3
+  s_90e4d4a45e3d38::t_19e097b7131f13 28-30
+  s_90e4d4a45e3d38::t_f63b4c3fe37917 31-44
+.github/scripts/install_check/catalogs.py
+  s_90e4d4a45e3d38::t_878bb08d0f982d 4,6-7,29-34,41-42,45-47,49-50,52,62-65,70-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "932726916d161a0bf8dde7d569a3c64da9704564",
+  "prompts": {},
+  "sessions": {
+    "s_2fd518945edf89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5523e0fa-1973-4822-9aa3-3b31dd18a54b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_90e4d4a45e3d38": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c36fadc-867e-4529-bea2-22a1f6ce2e8a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_98a5d00f7a6ab2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe20a2a8-45c5-4221-889d-25576977fdad",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_c084e8bac6e69f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a62b57c8-0237-436f-98fd-7089eb103a35",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    },
+    "s_d39781b4d6a4c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "87386907-69dd-4d37-9a17-8c0b6c8a25aa",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
