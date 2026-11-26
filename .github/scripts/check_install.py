@@ -20,7 +20,8 @@ from pathlib import Path
 from install_check.errors import CheckFailed
 from install_check.installation import Installation
 from install_check.project import Specify
-from install_check.repo import Manifests, SpeckitFloor
+from install_check.speckit import SpeckitFloor
+from repo.components import Components
 
 
 def main() -> int:
@@ -28,7 +29,7 @@ def main() -> int:
     command = sys.argv[1] if len(sys.argv) > 1 else "check"
     try:
         if command == "min-version":
-            print(SpeckitFloor(Manifests(repo)).tag())
+            print(SpeckitFloor(Components(repo)).tag())
         elif command == "check":
             argv = tuple(shlex.split(os.environ.get("SPECIFY", "specify")))
             print(f"OK: {Installation(repo, Specify(argv)).verify()}")

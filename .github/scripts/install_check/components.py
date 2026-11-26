@@ -1,7 +1,6 @@
-"""Components that install themselves and return the checks to run."""
+"""Components of an installed bundle and the checks to run on them."""
 
 from dataclasses import dataclass
-from pathlib import Path
 
 from install_check.checks import (
     Check,
@@ -9,117 +8,140 @@ from install_check.checks import (
     HooksRegistered,
     Override,
     OwnFiles,
+    Pinned,
     Registered,
     ScriptsExist,
+    WorkflowLoads,
 )
+from install_check.errors import CheckFailed
 from install_check.project import Project
-from install_check.repo import FrontMatter, YamlFile
+from repo.components import Bundle, Components, Extension, Preset, Workflow
 
 
 @dataclass(frozen=True)
-class Extension:
-    """An extension installed from a local directory."""
+class ExtensionInstall:
+    """The repo's extension in an installed project."""
 
-    source: Path
+    extension: Extension
 
-    def install(self, project: Project) -> list[Check]:
-        manifest = YamlFile(self.source / "extension.yml").content()
-        ext_id = manifest["extension"]["id"]
-        project.run("extension", "add", "--dev", str(self.source))
-        provided = manifest.get("provides", {}).get("commands", [])
-        commands = tuple(c["name"] for c in provided)
-        scripted = tuple(
-            c["name"]
-            for c in provided
-            if FrontMatter(self.source / c["file"]).content().get("scripts")
-        )
+    def checks(self, project: Project) -> list[Check]:
+        extension = self.extension
+        commands = tuple(c["name"] for c in extension.commands())
         checks: list[Check] = [
             Registered(
-                project,
-                "extensions",
-                ext_id,
-                str(manifest["extension"]["version"]),
-                commands,
+                project, "extensions", extension.id, extension.version, commands
             ),
-            ScriptsExist(project, ext_id, commands, scripted),
+            ScriptsExist(project, extension.id, commands, extension.scripted()),
         ]
-        if manifest.get("hooks"):
-            checks.append(HooksRegistered(project, ext_id, manifest["hooks"]))
-        installed = project.path / ".specify" / "extensions" / ext_id
-        checks.append(OwnFiles(ext_id, self.source, installed))
+        if extension.hooks():
+            checks.append(HooksRegistered(project, extension.id, extension.hooks()))
+        installed = project.path / ".specify" / "extensions" / extension.id
+        checks.append(OwnFiles(extension.id, extension.folder, installed))
         return checks
 
 
 @dataclass(frozen=True)
-class RemoteExtension:
-    """An extension the repo does not ship: from a URL, or bundled with spec-kit."""
+class PresetInstall:
+    """A preset of the repo in an installed project."""
 
-    ext_id: str
-    url: str | None
+    preset: Preset
 
-    def install(self, project: Project) -> list[Check]:
-        # Some spec-kit releases install the bundled git extension on init.
-        if project.registry("extensions").has(self.ext_id):
-            return [Done(f"{self.ext_id} already installed")]
-        if self.url:
-            project.run(
-                "extension", "add", self.ext_id, "--from", self.url, confirm=True
-            )
-        else:
-            project.run("extension", "add", self.ext_id)
-        return []
-
-
-@dataclass(frozen=True)
-class Preset:
-    """A preset installed from a local directory."""
-
-    manifest: Path
-
-    def install(self, project: Project) -> list[Check]:
-        project.run("preset", "add", "--dev", str(self.manifest.parent))
-        preset = YamlFile(self.manifest).content()["preset"]
-        names = tuple(t["name"] for t in self.commands())
-        return [
-            Registered(project, "presets", preset["id"], str(preset["version"]), names)
-        ]
+    def checks(self, project: Project) -> list[Check]:
+        preset = self.preset
+        names = tuple(t["name"] for t in preset.commands())
+        return [Registered(project, "presets", preset.id, preset.version, names)]
 
     def overrides(self, project: Project) -> list[Check]:
-        preset_id = YamlFile(self.manifest).content()["preset"]["id"]
-        commands = self.commands()
+        """The preset's commands replace the ones they override."""
+        preset = self.preset
+        commands = preset.commands()
         return [
             *(
-                Override(
-                    project, preset_id, t["name"], self.manifest.parent / t["file"]
-                )
+                Override(project, preset.id, t["name"], preset.folder / t["file"])
                 for t in commands
             ),
             ScriptsExist(
                 project,
-                preset_id,
+                preset.id,
                 tuple(t["name"] for t in commands),
-                tuple(
-                    t["name"]
-                    for t in commands
-                    if FrontMatter(self.manifest.parent / t["file"])
-                    .content()
-                    .get("scripts")
-                ),
+                preset.scripted(),
             ),
         ]
 
-    def commands(self) -> list[dict]:
-        provides = YamlFile(self.manifest).content().get("provides", {})
-        return [t for t in provides.get("templates", []) if t.get("type") == "command"]
+
+@dataclass(frozen=True)
+class WorkflowInstall:
+    """A workflow of the repo in an installed project."""
+
+    workflow: Workflow
+
+    def checks(self, project: Project) -> list[Check]:
+        workflow = self.workflow
+        return [
+            Pinned(project, "workflows", workflow.id, workflow.version),
+            WorkflowLoads(project, workflow.id),
+        ]
 
 
 @dataclass(frozen=True)
-class Bundle:
-    """A bundle installed from its manifest."""
+class BundleInstall:
+    """A bundle of the repo, installed by ID through the catalogs."""
 
-    manifest: Path
-    root: Path
+    bundle: Bundle
 
     def install(self, project: Project) -> list[Check]:
-        project.run("bundle", "install", str(self.manifest))
-        return [Done(f"bundle {self.manifest.relative_to(self.root)} installed")]
+        project.run("bundle", "install", self.bundle.id)
+        return [Done(f"bundle {self.bundle.id} installed")]
+
+    def checks(self, project: Project) -> list[Check]:
+        """What the bundle installs, with the repo's preset overrides checked last."""
+        repo = Components(self.bundle.root)
+        extension = repo.extension()
+        presets = {preset.id: PresetInstall(preset) for preset in repo.presets()}
+        workflows = {w.id: WorkflowInstall(w) for w in repo.workflows()}
+        references = self.references()
+        checks: list[Check] = []
+        for kind, ref in references:
+            if kind == "extensions" and ref["id"] == extension.id:
+                checks.extend(ExtensionInstall(extension).checks(project))
+            elif kind == "presets" and ref["id"] in presets:
+                checks.extend(presets[ref["id"]].checks(project))
+            elif kind == "workflows" and ref["id"] in workflows:
+                checks.extend(workflows[ref["id"]].checks(project))
+            else:
+                checks.append(
+                    Pinned(
+                        project,
+                        kind,
+                        ref["id"],
+                        str(ref["version"]),
+                        bool(ref.get("source")),
+                    )
+                )
+        for kind, ref in references:
+            if kind == "presets" and ref["id"] in presets:
+                checks.extend(presets[ref["id"]].overrides(project))
+        return checks
+
+    def references(self, seen: tuple[str, ...] = ()) -> list[tuple[str, dict]]:
+        """The extensions and presets it installs, those of referenced bundles first."""
+        if self.bundle.id in seen:
+            raise CheckFailed(
+                f"bundle {self.bundle.id} references itself: {' -> '.join(seen)}"
+            )
+        refs: list[tuple[str, dict]] = []
+        for kind, ref in self.bundle.references():
+            if kind == "bundles":
+                referenced = BundleInstall(self.find(ref["id"]))
+                refs.extend(referenced.references((*seen, self.bundle.id)))
+            else:
+                refs.append((kind, ref))
+        return refs
+
+    def find(self, bundle_id: str) -> Bundle:
+        for bundle in Components(self.bundle.root).bundles():
+            if bundle.id == bundle_id:
+                return bundle
+        raise CheckFailed(
+            f"bundle {self.bundle.id} references {bundle_id}, which the repo does not ship"
+        )

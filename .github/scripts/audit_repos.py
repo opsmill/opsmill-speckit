@@ -14,7 +14,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from install_check.repo import YamlFile
+from repo.files import YamlFile
 from repo_audit.github import GraphQL, Organization
 from repo_audit.release import ReleaseTags
 from repo_audit.report import Report

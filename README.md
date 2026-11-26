@@ -1,18 +1,19 @@
 # opsmill-speckit
 
-OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. Ships two
-independently installable artifacts:
+OpsMill house [spec-kit](https://github.com/github/spec-kit) repo. It holds:
 
 1. **Extension `opsmill`** — seven workflow commands under the `opsmill`
    namespace:
-   - `/speckit.opsmill.auto` — run the full pipeline end-to-end (prep +
-     implement) autonomously, making all decisions without pausing. Stops
-     before extract.
-   - `/speckit.opsmill.prep` — run the preparation phases
-     (specify → plan → critique → tasks → spec/ask alignment check)
-     autonomously, stopping before implementation.
-   - `/speckit.opsmill.implement` — run the implementation + review tail from an
-     existing `tasks.md` in clean-context subagents, then emit a final report.
+   - `/speckit.opsmill.auto` — start the `opsmill-auto` workflow, which runs
+     the full pipeline end-to-end (prep + implement) autonomously, making all
+     decisions without pausing, then report its result. Stops before extract.
+   - `/speckit.opsmill.prep` — start the `opsmill-prep` workflow, which runs
+     the preparation phases (specify → plan → critique → tasks → spec/ask
+     alignment check) autonomously, then report its result. Stops before
+     implementation.
+   - `/speckit.opsmill.implement` — start the `opsmill-implement` workflow,
+     which implements an existing `tasks.md` chunk by chunk, reviews the
+     result and writes a final report, then report its result.
    - `/speckit.opsmill.extract` — extract durable knowledge, guidelines, and
      ADRs from completed spec directories into `dev/knowledge/`,
      `dev/guidelines/`, `dev/adr/`.
@@ -26,9 +27,14 @@ independently installable artifacts:
      next to `spec.md` / `plan.md` so a human tester can verify the
      just-implemented feature step-by-step.
 
+   The extension also holds the commands that the workflows run as phases:
+   `speckit.opsmill.prep-critique`, `speckit.opsmill.prep-align` and
+   `speckit.opsmill.prep-realign` for `opsmill-prep`, and
+   `speckit.opsmill.implement-chunk`, `speckit.opsmill.implement-review` and
+   `speckit.opsmill.implement-report` for `opsmill-implement`.
+
 2. **Presets** — drop-in overrides for spec-kit commands (native or
-   extension-provided). Each preset is installed independently of the
-   extension. Currently four ship:
+   extension-provided). Four ship:
    - [`taskstoissues-jira`](presets/taskstoissues-jira/README.md) — overrides
      `/speckit.taskstoissues` with a Jira-flavored implementation that fans
      `tasks.md` out into Jira issues under a single Epic (one issue per
@@ -40,8 +46,7 @@ independently installable artifacts:
      stay inside `## Phase <N>:` blocks, `[P]` keeps its core
      "parallelizable" meaning, the compliance gate reads
      `dev/guidelines/` + `dev/adr/`, and the report is
-     Jira-aware. Requires the `reconcile` extension to be
-     installed in the consumer repo.
+     Jira-aware.
    - [`critique-opsmill`](presets/critique-opsmill/README.md) — overrides
      `/speckit.critique.run`, whose upstream version looks for its script in
      the wrong folder. Requires the `critique` extension.
@@ -49,10 +54,24 @@ independently installable artifacts:
      `/speckit.git.feature` so that a feature branch needs a JPD or Jira
      reference. Requires the git extension.
 
+## Bundles
+
+Repos install opsmill-speckit only through one of its two bundles, which pin
+every component at an exact version:
+
+| Bundle | For | Installs |
+|---|---|---|
+| [`opsmill-sdd`](bundles/opsmill-sdd/README.md) | every repo | `opsmill`, `checkpoint`, `critique` with `critique-opsmill`, `reconcile` with `reconcile-opsmill`, and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto` |
+| [`opsmill-jira`](bundles/opsmill-jira/README.md) | repos that track their work in Jira | everything in `opsmill-sdd`, plus `jira-branch`, `taskstoissues-jira` and the `git` extension |
+
+`checkpoint`, `critique` and `reconcile` are third-party extensions, pinned in
+the [opsmill catalogs](catalog/README.md). [`CHANGELOG.md`](CHANGELOG.md)
+lists the version of every bundle and component in each release.
+
 ## Requires
 
-- spec-kit `>=0.8.0` (`requires.speckit_version` in `extension.yml`). CI
-  installs every component on that version for each pull request.
+- Spec Kit 1.2.4 or later. CI installs both bundles on that version for each
+  pull request, and on the latest Spec Kit every week.
 - `check-prerequisites.sh` (shipped by spec-kit core; present at
   `.specify/scripts/bash/check-prerequisites.sh` in any spec-kit-initialized
   repo). Used by the `summary` command via the `{SCRIPT}` placeholder.
@@ -62,52 +81,75 @@ independently installable artifacts:
   whose Python environment provides PyYAML, the extension's
   [agent hooks](#agent-hooks-for-pyyaml) point spec-kit at that environment.
 
-Recommended: the [companions](#companion-extensions) `checkpoint`, `critique`
-and the `pr-review-toolkit` Claude Code plugin, which give `prep`, `auto`, and
-`implement` their commits and their full critique and review passes.
+Recommended: the `pr-review-toolkit` Claude Code plugin, which gives
+`implement` its full review pass (see [Review plugin](#review-plugin)).
 
 ## Install
 
-Install a tagged release, never `main`. Releases are listed in
-[`CHANGELOG.md`](CHANGELOG.md):
+### 1. Declare the opsmill catalogs, once per repo
+
+A bundle cannot add the catalogs that its components come from: Spec Kit
+looks them up in the catalogs that the project declares
+([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#publish-a-bundle)).
+Run `specify init` first if the repo has no `.specify/` folder. Then copy the
+four files of [`catalog/specify/`](catalog/specify/) into `.specify/` and
+commit them:
 
 ```bash
-specify extension add opsmill \
-  --from https://github.com/opsmill/opsmill-speckit/archive/refs/tags/v1.4.0.zip
+for kind in extension preset workflow bundle; do
+  curl -fsSL -o ".specify/$kind-catalogs.yml" \
+    "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/specify/$kind-catalogs.yml"
+done
 ```
 
-The URL is not in a spec-kit catalog, so `specify` asks you to confirm the
-source before installing.
+- A project's extension, preset or workflow catalog file replaces Spec Kit's
+  built-in catalogs, so these files list Spec Kit's `default` and `community`
+  catalogs again after the opsmill one
+  ([Spec Kit catalogs reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/catalogs.md#inspect-and-manage-catalog-sources)).
+  The bundle catalog file adds to the built-in bundle catalogs.
+- The command replaces these files if the repo already has them. When the repo
+  declares other catalogs, copy the `opsmill` entry of each file into the
+  repo's file instead.
+- A developer can instead copy the same files into `~/.specify/`, once per
+  machine.
+- Do not use the `SPECKIT_*_CATALOG_URL` environment variables: they replace
+  every catalog, including Spec Kit's own.
 
-Local development install (from a working tree):
+`specify extension catalog list`, `specify preset catalog list`,
+`specify workflow catalog list` and `specify bundle catalog list` show the
+catalogs that the project uses.
+
+### 2. Install one bundle
+
+```bash
+specify bundle install opsmill-sdd    # every repo
+specify bundle install opsmill-jira   # repos that use Jira, instead of opsmill-sdd
+```
+
+`opsmill-jira` includes `opsmill-sdd`, so a repo installs only one of them.
+`specify bundle list`, `specify extension list` and `specify preset list`
+show what is installed.
+
+To move to the versions of a later release, run
+`specify bundle update <bundle-id>`. A bundle does not remove components that
+it never installed.
+
+### Local development
+
+From a working tree, install a component without the catalogs:
 
 ```bash
 specify extension add --dev /path/to/opsmill-speckit
+specify preset add --dev /path/to/opsmill-speckit/presets/<preset-id>
 ```
 
-### Companion extensions
+### Review plugin
 
-The `prep`, `auto`, and `implement` commands rely on these companions:
-
-- [`checkpoint`](https://github.com/aaronrsun/spec-kit-checkpoint) — provides
-  the `speckit-checkpoint-commit` skill that commits each phase and each chunk.
-- [`critique`](https://github.com/arunt14/spec-kit-critique) — provides the
-  `speckit-critique-run` skill used by `prep` and `auto`. Install the
-  [`critique-opsmill`](presets/critique-opsmill/README.md) preset with it.
-- [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
-  — a Claude Code plugin whose review agents `implement` runs: five in
-  parallel, then `code-simplifier` alone, whose edits become findings and are
-  discarded.
-  Without it, `implement` uses `/code-review` if available.
-
-```bash
-specify extension add checkpoint \
-  --from https://github.com/aaronrsun/spec-kit-checkpoint/archive/refs/tags/v1.0.0.zip
-specify extension add critique \
-  --from https://github.com/arunt14/spec-kit-critique/archive/refs/tags/v1.0.0.zip
-```
-
-In Claude Code:
+[`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)
+is a Claude Code plugin whose review agents `implement` runs: five in
+parallel, then `code-simplifier` alone, whose edits become findings and are
+discarded. Without it, `implement` uses `/code-review` at the `medium` effort
+level if available. In Claude Code:
 
 ```text
 /plugin install pr-review-toolkit@claude-plugins-official
@@ -116,32 +158,147 @@ In Claude Code:
 When the critique or review provider is missing, `prep`, `auto`, and
 `implement` fall back to a reduced built-in critique or review subagent. The
 fallback is always reported on the machine-readable status line (`CRITIQUE:` /
-`REVIEW:`) and in the run summary, so a degraded run is never silent.
+`REVIEW:`), in the `coverage:` lines of the result of a workflow run, and in
+the run summary, so a degraded run is never silent.
 
-## Upgrading spec-kit to 1.2 or later
+## Upgrading from 1.4.1 or earlier
 
-From `v1.4.0`, the workflow runs on spec-kit 1.2 and later. In a repo that
-uses an older spec-kit:
+In a repo that installed opsmill-speckit 1.4.1 or earlier component by component:
 
-1. Remove the `review` extension, which does not install on spec-kit 1.x:
-   `specify extension remove review`.
-2. Upgrade the CLI:
-   `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v1.2.3`,
-   then `specify integration upgrade claude`.
-3. Reinstall `opsmill` from the `v1.4.0` tag (see [Install](#install)):
-   `specify extension remove opsmill`, then `specify extension add opsmill --from …`.
-4. Install the [companions](#companion-extensions) that the repo does not have
-   yet (`specify extension list` shows them): `checkpoint`, `critique`, and the
-   `pr-review-toolkit` plugin. Then add the `critique-opsmill` preset, also
-   when `critique` was already installed.
-5. If the repo has the
+1. Remove the `review` extension if the repo has it. It does not install on
+   Spec Kit 1.x: `specify extension remove review`.
+2. Upgrade the CLI to Spec Kit 1.2.4 or later, for example with
+   `uv tool install specify-cli --force`, then run
+   `specify integration upgrade claude`.
+3. Remove the components of 1.4.1 or earlier that the repo has (`specify extension list` and
+   `specify preset list` show them). A component installed on its own at
+   another version does not satisfy a bundle's pin, and a bundle never takes
+   over a component installed on its own
+   ([Spec Kit bundles reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/bundles.md#install-a-bundle)):
+
+   ```bash
+   specify preset remove critique-opsmill
+   specify preset remove reconcile-opsmill
+   specify preset remove jira-branch
+   specify preset remove taskstoissues-jira
+   specify extension remove opsmill
+   specify extension remove critique
+   specify extension remove checkpoint
+   specify extension remove reconcile
+   ```
+
+   Also remove the
    [`infrahub` preset](https://github.com/opsmill/infrahub/tree/4d9fd0f0a469217aada697cb5ef306f7ef485f78/dev/spec-kit/presets/infrahub)
-   copied from opsmill/infrahub, which checks branch names against Jira,
-   replace it with [`jira-branch`](presets/jira-branch/README.md).
-6. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
+   copied from opsmill/infrahub, which `jira-branch` replaces:
+   `specify preset remove infrahub`.
+
+   Some repos also copied an `infrahub` extension, the folder
+   `.specify/extensions/infrahub/`. Its `before_specify` hook runs
+   `speckit.infrahub.feature`, a command of the `infrahub` preset, and it is
+   not optional: once the preset is removed, every specify phase calls a
+   command that does not exist. `specify extension remove infrahub` reports
+   that it is not installed, because the extension was copied rather than
+   installed. Remove it by hand:
+
+   - delete the folder `.specify/extensions/infrahub/`;
+   - in `.specify/extensions.yml`, delete the `infrahub` entry under
+     `installed` and the hook whose `extension` is `infrahub` under
+     `before_specify`.
+
+   A repo that will install `opsmill-jira` also removes the `git` extension
+   if older Spec Kit releases installed it with `specify init`:
+   `specify extension remove git`. Otherwise the bundle stops with "pins
+   extension 'git' to 1.0.1, but 1.0.0 is installed". The bundle installs `git`
+   again at the version it pins.
+
+   Removing `opsmill` also removes the hooks that the repo added for it in
+   `.specify/extensions.yml` (see [Hooks](#hooks-auto-fire-during-sdd)): copy
+   them before, and add them back after step 4.
+4. [Declare the opsmill catalogs](#1-declare-the-opsmill-catalogs-once-per-repo)
+   and [install one bundle](#2-install-one-bundle).
+5. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
    scripts at the project's Python environment. In a repo without a Python
    environment that provides PyYAML, each developer makes PyYAML available to
    the Python that spec-kit's scripts run instead (see [Requires](#requires)).
+
+To roll back, restore `.specify/` and `.claude/` from git and reinstall the
+previous Spec Kit CLI.
+
+## Workflows
+
+`opsmill-sdd` installs three Spec Kit workflows
+([Spec Kit workflows reference](https://github.com/github/spec-kit/blob/v1.2.4/docs/reference/workflows.md)):
+
+- `opsmill-prep` prepares a feature in one step per phase: specify, plan,
+  critique, tasks, then a check of the spec against the request. It commits
+  after each phase. The workflow file states when a phase is repeated, and how
+  often:
+  - Plan and critique are repeated while the critique verdict is `RETHINK`,
+    three passes at most.
+  - The whole pass is repeated while the check finds significant drift between
+    the spec and the request, with two remediation passes at most.
+  - At a limit, the run stops with an error.
+- `opsmill-implement` implements a spec directory in one step per phase: one
+  step per chunk of `tasks.md`, each in its own agent process, then one review
+  and one report.
+  - It stops before the first chunk when `spec.md`, `plan.md` or `tasks.md` is
+    missing, or when the working tree has uncommitted changes.
+  - The chunk step is repeated while `tasks.md` has unticked tasks and the
+    last chunk ticked at least one, with twenty chunks at most.
+  - The run ends with an error unless the report ends with `STATUS: DONE`.
+- `opsmill-auto` runs `opsmill-prep`, then `opsmill-implement` on the new spec
+  when `opsmill-prep` completed. Otherwise it stops with an error.
+
+```bash
+specify workflow run opsmill-auto -i spec="<feature description, or ticket URL>"
+```
+
+In a Claude Code session, `/speckit.opsmill.prep`, `/speckit.opsmill.implement`
+and `/speckit.opsmill.auto` each start their workflow with
+`specify workflow run`, tell which phase starts, and report the result of the
+run.
+
+After a run started from a terminal, this command prints its result:
+
+```bash
+python3 .specify/extensions/opsmill/scripts/python/workflow_result.py
+```
+
+It prints the phases that started, their verdicts, one `coverage:` line for
+the critique and for the review, and the reason of a run that stopped. A
+critique or a review of reduced coverage does not stop the run: only its
+`coverage:` line reports it.
+
+Spec Kit runs each step with `claude -p`, without an interactive session, so
+Claude Code can only use the tools it is allowed beforehand:
+
+- Claude Code ignores the `permissions.allow` list of `.claude/settings.json`
+  in a folder that it was never opened in. Open Claude Code once in the repo
+  and accept the trust dialog.
+- Instead, pass the tools for one run in
+  `SPECKIT_INTEGRATION_CLAUDE_EXTRA_ARGS`, for example
+  `--allowedTools Read Edit Write Glob Grep Skill Task TodoWrite 'Bash(git:*)'`.
+  The steps run `git` commands, and `implement` commits with `git add` and
+  `git commit`.
+- A hook that rewrites shell commands before Claude Code checks them changes
+  what to allow. With the rtk hook, `git status` runs as `rtk git status`, so
+  also allow `'Bash(rtk:*)'`.
+- A tool that is not allowed is refused, and the command reports what it could
+  not do. Allow the commands that the repo's tests need.
+- A rule that ends in `:*` matches its prefix only when a space or the end of
+  the command follows it. `'Bash(python3 .specify/:*)'` does not allow
+  `python3 .specify/extensions/opsmill/scripts/python/workflow_result.py`:
+  allow `'Bash(python3 .specify/*)'` instead.
+- When the specify, plan or tasks phase writes no `spec.md`, `plan.md` or
+  `tasks.md`, often because a tool was refused, `opsmill-prep` stops at that
+  phase. `workflow_result.py` prints a `BLOCKED:` line that names the phase.
+
+Spec Kit keeps each run in `.specify/workflows/runs/<run-id>/`, including the
+verdicts of the critique and of the alignment check. `specify workflow status <run-id>` shows a run, and
+`specify workflow resume <run-id>` resumes a failed one.
+
+Add `.specify/workflows/runs/` to the repo's `.gitignore`, so that the commits
+that the workflows make leave the run state out.
 
 ## Commands
 
@@ -188,14 +345,7 @@ free-form text as scope guidance (e.g. `focus on the CLI surface`).
 ### `/speckit.taskstoissues` (preset override)
 
 Provided by the [`taskstoissues-jira`](presets/taskstoissues-jira/README.md)
-preset, not the extension. Install separately:
-
-```bash
-git clone -b v1.4.0 https://github.com/opsmill/opsmill-speckit
-specify preset add --dev opsmill-speckit/presets/taskstoissues-jira
-```
-
-See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
+preset, not the extension. See [`presets/taskstoissues-jira/README.md`](presets/taskstoissues-jira/README.md)
 for config (`dev/jira.yml`) and failure-mode details.
 
 ### `/speckit.reconcile.run` (preset override)
@@ -203,25 +353,13 @@ for config (`dev/jira.yml`) and failure-mode details.
 The `/speckit.reconcile.run` command comes from the
 [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile)
 extension; the [`reconcile-opsmill`](presets/reconcile-opsmill/README.md)
-preset overrides its body. Install the extension first (it must be
-present in the consumer repo), then the preset:
-
-```bash
-specify extension add reconcile \
-  --from https://github.com/stn1slv/spec-kit-reconcile/archive/886f1dd.zip
-
-git clone -b v1.4.0 https://github.com/opsmill/opsmill-speckit
-specify preset add --dev opsmill-speckit/presets/reconcile-opsmill
-```
-
-See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
+preset overrides its body. See [`presets/reconcile-opsmill/README.md`](presets/reconcile-opsmill/README.md)
 for provenance and behavior.
 
 ### `/speckit.critique.run` and `/speckit.git.feature` (preset overrides)
 
 See [`critique-opsmill`](presets/critique-opsmill/README.md) and
-[`jira-branch`](presets/jira-branch/README.md) for what they change and how to
-install them.
+[`jira-branch`](presets/jira-branch/README.md) for what they change.
 
 ## Hooks (auto-fire during SDD)
 
@@ -339,8 +477,8 @@ its Codex integration.
 
 No critique or review provider was available **and** the harness offered no
 subagent dispatch, so no fallback was possible. `REVIEW: none` marks the run
-`INCOMPLETE` by design. Install the missing companion and re-run the gate over
-the same diff.
+`INCOMPLETE` by design. Install the missing bundle or the
+[review plugin](#review-plugin), and re-run the gate over the same diff.
 
 ## Provenance
 
