@@ -13,7 +13,7 @@ Before 1.5.0 there were no bundles: each tag released the extension at the
 tag's version, and the presets shared one collection version, 1.0.0 in
 `v1.1.0`, 1.1.0 in `v1.2.0` and 1.2.0 in `v1.4.0`.
 
-## [1.5.0] - Unreleased
+## [1.5.0] - 2026-11-26
 
 Repos install opsmill-speckit through two bundles, from the opsmill catalogs.
 Every opsmill-speckit bundle and component requires Spec Kit 1.2.4 or later. README:
