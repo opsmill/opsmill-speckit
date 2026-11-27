@@ -23,6 +23,14 @@ inputs:
     prompt: "Integration to use ('auto' uses the project's integration)"
 
 steps:
+  # The commit steps add every change with `git add -A`. They rely on the
+  # repo's .gitignore to leave out the run state, which holds absolute paths
+  # of this machine: the run stops here when .specify/workflows/runs/ is not
+  # ignored.
+  - id: runs-ignored
+    type: shell
+    run: "git check-ignore -q .specify/workflows/runs/ || { echo 'BLOCKED: add .specify/workflows/runs/ to the .gitignore of the repo (see the opsmill-speckit README), so that the commits of the run leave out the run state' >&2; exit 1; }"
+
   # The commit that the review and the report compare the result with. A run
   # that picks up an unfinished one keeps the base commit that the ledger
   # records, so that its review covers the work of both runs.
@@ -43,7 +51,7 @@ steps:
       for f in spec.md plan.md tasks.md; do
       test -f "$d/$f" || { echo "BLOCKED: $d/$f is missing" >&2; exit 1; };
       done;
-      test -z "$(git status --porcelain -- . ':!.specify/workflows/runs')"
+      test -z "$(git status --porcelain)"
       || { echo 'BLOCKED: the working tree has uncommitted changes' >&2; exit 1; }
 
   # The ledger outlives a run that does not end DONE: the report phase deletes
@@ -73,7 +81,7 @@ steps:
           args: "{{ inputs.spec_dir }}"
       - id: commit-chunk
         type: shell
-        run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'implement: changes that the chunk left uncommitted')"
+        run: "git add -A && (git diff --cached --quiet || git commit -q -m 'implement: changes that the chunk left uncommitted')"
       - id: left
         type: shell
         run: "{ grep -c '^[[:space:]]*- \\[ \\]' '{{ inputs.spec_dir }}/tasks.md' || true; } | tr -d '\\n'"
@@ -87,7 +95,7 @@ steps:
       args: "{{ inputs.spec_dir }} {{ steps.base.output.stdout }}"
   - id: commit-review
     type: shell
-    run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'review: fixes of the high-severity findings')"
+    run: "git add -A && (git diff --cached --quiet || git commit -q -m 'review: fixes of the high-severity findings')"
 
   - id: report
     command: speckit.opsmill.implement-report
@@ -98,7 +106,7 @@ steps:
       args: "{{ inputs.spec_dir }} {{ steps.base.output.stdout }}"
   - id: commit-report
     type: shell
-    run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'report: implementation and review report')"
+    run: "git add -A && (git diff --cached --quiet || git commit -q -m 'report: implementation and review report')"
 
   # The run stops here, with an error, when tasks are left, when a test has no
   # proof of a passing run, or when no review took place.

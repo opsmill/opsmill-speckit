@@ -37,3 +37,5 @@ jobs:
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/hooks
       - name: "Test the workflow result script"
         run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/workflow_result
+      - name: "Test the commit steps of the workflows"
+        run: uvx --with "packaging>=24" --with "pyyaml>=6" pytest .github/scripts/tests/workflows
