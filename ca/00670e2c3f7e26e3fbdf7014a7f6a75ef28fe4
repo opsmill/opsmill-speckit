@@ -1,0 +1,29 @@
+.github/scripts/tests/workflows/test_commit_steps.py
+  s_90e4d4a45e3d38::t_b86cb8b719b1af 1-111
+.github/workflows/unit-tests.yml
+  s_90e4d4a45e3d38::t_d392991bc15bbc 40-41
+README.md
+  s_90e4d4a45e3d38::t_46703f18b4aff1 137-144,225-227,309-310
+commands/implement-review.md
+  s_90e4d4a45e3d38::t_34242da6182180 40
+workflows/opsmill-implement/workflow.yml
+  s_90e4d4a45e3d38::t_e5482b9a29a7f1 26-33,54,84,98,109
+workflows/opsmill-prep/workflow.yml
+  s_90e4d4a45e3d38::t_1ec5a56850e089 26-33,71,121,135,153,169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ca00670e2c3f7e26e3fbdf7014a7f6a75ef28fe4",
+  "prompts": {},
+  "sessions": {
+    "s_90e4d4a45e3d38": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c36fadc-867e-4529-bea2-22a1f6ce2e8a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Pol Michel <polmichel29@gmail.com>"
+    }
+  }
+}
