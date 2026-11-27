@@ -50,14 +50,21 @@ notes.
 The [Release workflow](../.github/workflows/release.yml) then runs on the
 tagged commit:
 
-1. It builds the zips with
+1. It builds the zip of every component with
    `uv run .github/scripts/build_release.py assets X.Y.Z DIR`.
-2. It checks that each zip whose URL in `catalog/` points to `vX.Y.Z` has the
-   recorded `sha256`.
-3. It attaches those zips to the release.
+2. It checks that each zip has the `sha256` that `catalog/` records for its
+   version, and that the current version of at least one component points to
+   `vX.Y.Z`.
+3. It attaches all the zips to the release.
 
-If a zip is missing or has another `sha256`, the workflow fails and attaches
-nothing, since Spec Kit would refuse to install that zip. This happens when a
-pull request merged after the release pull request changed a component.
-`build_release.py` also refuses a working tree with changes or untracked files,
-whose zips no commit can rebuild.
+Each release holds the zip of every component, so that its page lists all the
+versions it installs. `catalog/` still points each version to the first release
+that published it: a component that did not change keeps its URL, and the
+release of a later version attaches a copy with the same bytes.
+
+If a zip has another `sha256`, the workflow fails and attaches nothing, since
+Spec Kit would refuse to install that zip. This happens when a pull request
+merged after the release pull request changed a component, or changed a
+component without raising its version. `build_release.py` also refuses a
+working tree with changes or untracked files, whose zips no commit can
+rebuild.
