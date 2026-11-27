@@ -1,37 +1,51 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-27T08:32:43Z",
+  "updated_at": "2026-11-27T08:50:40Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/workflow-catalog.json",
   "workflows": {
     "opsmill-auto": {
       "id": "opsmill-auto",
       "name": "OpsMill end to end",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Runs the opsmill-prep workflow, then the opsmill-implement workflow when prep reports that the spec is ready.",
       "author": "opsmill",
       "repository": "https://github.com/opsmill/opsmill-speckit",
-      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-auto-1.0.0.zip",
-      "sha256": "e8a4951c0f20a123939693787b2f82152bc8fa4eceb79a03553299ffa3e6ba72",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.6.0/opsmill-auto-1.1.0.zip",
+      "sha256": "523827c2fa73582d21d1044d834d757849fbb80d9a912418026f9a6565391340",
       "requires": {
-        "speckit_version": ">=1.2.4",
+        "speckit_version": ">=1.4.4",
         "integrations": {
           "any": [
             "claude"
           ]
+        }
+      },
+      "releases": {
+        "1.0.0": {
+          "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-auto-1.0.0.zip",
+          "sha256": "e8a4951c0f20a123939693787b2f82152bc8fa4eceb79a03553299ffa3e6ba72",
+          "requires": {
+            "speckit_version": ">=1.2.4",
+            "integrations": {
+              "any": [
+                "claude"
+              ]
+            }
+          }
         }
       }
     },
     "opsmill-implement": {
       "id": "opsmill-implement",
       "name": "OpsMill implementation",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "description": "Implements the tasks of a spec directory chunk by chunk, reviews the result, then writes a report. Each phase is one step, and the workflow sets when the chunk step is repeated and how often.",
       "author": "opsmill",
       "repository": "https://github.com/opsmill/opsmill-speckit",
-      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-implement-1.0.1.zip",
-      "sha256": "ef9a71bd36ae9f92422650767fac065e052b2e2ab551b52dc1764cf4aa9f6804",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.6.0/opsmill-implement-1.1.0.zip",
+      "sha256": "f50406769e02e8056a97fae5606ec9a629ba90b7a03dafcc5537879f71cff4f4",
       "requires": {
-        "speckit_version": ">=1.2.4",
+        "speckit_version": ">=1.4.4",
         "integrations": {
           "any": [
             "claude"
@@ -50,20 +64,32 @@
               ]
             }
           }
+        },
+        "1.0.1": {
+          "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-implement-1.0.1.zip",
+          "sha256": "ef9a71bd36ae9f92422650767fac065e052b2e2ab551b52dc1764cf4aa9f6804",
+          "requires": {
+            "speckit_version": ">=1.2.4",
+            "integrations": {
+              "any": [
+                "claude"
+              ]
+            }
+          }
         }
       }
     },
     "opsmill-prep": {
       "id": "opsmill-prep",
       "name": "OpsMill preparation",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "description": "Prepares a feature for implementation: specify, plan and critique, tasks, then an alignment check against the request. Each phase is one step, and the workflow sets when a phase is repeated and how often.",
       "author": "opsmill",
       "repository": "https://github.com/opsmill/opsmill-speckit",
-      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-prep-1.0.1.zip",
-      "sha256": "892ccac64cd3251cffb95a9ba38c605793648cd0a19cb2b37214bf3659b745f2",
+      "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.6.0/opsmill-prep-1.1.0.zip",
+      "sha256": "2132caec8157c5d586869a89e85bb74a126e6bfb82347eb289702566ec0be947",
       "requires": {
-        "speckit_version": ">=1.2.4",
+        "speckit_version": ">=1.4.4",
         "integrations": {
           "any": [
             "claude"
@@ -74,6 +100,18 @@
         "1.0.0": {
           "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-prep-1.0.0.zip",
           "sha256": "3fc6ad71cfa7d65d42cc53abbd3b209ecb2b29351a10c4509948cafdd038b7f3",
+          "requires": {
+            "speckit_version": ">=1.2.4",
+            "integrations": {
+              "any": [
+                "claude"
+              ]
+            }
+          }
+        },
+        "1.0.1": {
+          "url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-prep-1.0.1.zip",
+          "sha256": "892ccac64cd3251cffb95a9ba38c605793648cd0a19cb2b37214bf3659b745f2",
           "requires": {
             "speckit_version": ">=1.2.4",
             "integrations": {

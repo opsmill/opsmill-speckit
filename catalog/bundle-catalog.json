@@ -1,21 +1,21 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-27T08:32:43Z",
+  "updated_at": "2026-11-27T08:50:40Z",
   "catalog_url": "https://raw.githubusercontent.com/opsmill/opsmill-speckit/main/catalog/bundle-catalog.json",
   "bundles": {
     "opsmill-jira": {
       "id": "opsmill-jira",
       "name": "OpsMill spec-driven development with Jira",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "role": "developer",
       "description": "opsmill-sdd, with feature branches named after a Jira ticket and tasks turned into Jira issues.",
       "author": "opsmill",
       "repository": "https://github.com/opsmill/opsmill-speckit",
       "license": "Apache-2.0",
-      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-jira-1.0.1.zip",
-      "sha256": "c4cb00da77802d755f0df0484061abcaaf26ba3f78e73f93df20e86242a106b7",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.6.0/opsmill-jira-1.1.0.zip",
+      "sha256": "8a70079e4015d91ba36dd2d41bd15913aa13175b789059eaea60516674c94375",
       "requires": {
-        "speckit_version": ">=1.2.4"
+        "speckit_version": ">=1.4.4"
       },
       "provides": {
         "bundles": 1,
@@ -38,22 +38,36 @@
             "steps": 0,
             "workflows": 0
           }
+        },
+        "1.0.1": {
+          "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-jira-1.0.1.zip",
+          "sha256": "c4cb00da77802d755f0df0484061abcaaf26ba3f78e73f93df20e86242a106b7",
+          "requires": {
+            "speckit_version": ">=1.2.4"
+          },
+          "provides": {
+            "bundles": 1,
+            "extensions": 1,
+            "presets": 2,
+            "steps": 0,
+            "workflows": 0
+          }
         }
       }
     },
     "opsmill-sdd": {
       "id": "opsmill-sdd",
       "name": "OpsMill spec-driven development",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "role": "developer",
       "description": "The OpsMill workflow commands and Spec Kit workflows, with the critique, checkpoint and reconcile extensions they use.",
       "author": "opsmill",
       "repository": "https://github.com/opsmill/opsmill-speckit",
       "license": "Apache-2.0",
-      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-sdd-1.0.1.zip",
-      "sha256": "cc0d0704883e04f1e526cbf2fd2f2d174f57b9a9099e8f9935a53fe508ba081e",
+      "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.6.0/opsmill-sdd-1.1.0.zip",
+      "sha256": "0ee86bad2f2cf1cd080fb38c53af07900ed64c1dd104a5defbbeb1b53e099562",
       "requires": {
-        "speckit_version": ">=1.2.4"
+        "speckit_version": ">=1.4.4"
       },
       "provides": {
         "bundles": 0,
@@ -66,6 +80,20 @@
         "1.0.0": {
           "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.0/opsmill-sdd-1.0.0.zip",
           "sha256": "5acf56a26d5a371da841b2bcb9b3fee7ef134b5fc19a2750d8f702eca7f43bc5",
+          "requires": {
+            "speckit_version": ">=1.2.4"
+          },
+          "provides": {
+            "bundles": 0,
+            "extensions": 4,
+            "presets": 2,
+            "steps": 0,
+            "workflows": 3
+          }
+        },
+        "1.0.1": {
+          "download_url": "https://github.com/opsmill/opsmill-speckit/releases/download/v1.5.1/opsmill-sdd-1.0.1.zip",
+          "sha256": "cc0d0704883e04f1e526cbf2fd2f2d174f57b9a9099e8f9935a53fe508ba081e",
           "requires": {
             "speckit_version": ">=1.2.4"
           },

@@ -13,6 +13,74 @@ Before 1.5.0 there were no bundles: each tag released the extension at the
 tag's version, and the presets shared one collection version, 1.0.0 in
 `v1.1.0`, 1.1.0 in `v1.2.0` and 1.2.0 in `v1.4.0`.
 
+## [1.6.0] - Unreleased
+
+Every opsmill-speckit bundle and component requires Spec Kit 1.4.4 or later,
+instead of 1.2.4. CI installs both bundles on Spec Kit 1.4.4 for each pull
+request. README: [Requires](README.md#requires).
+
+From this release, each GitHub Release holds the zip of every component, also
+the ones that did not change. `catalog/` keeps pointing each version to the
+first release that published it ([catalog/README.md](catalog/README.md#publish-a-release)).
+
+| Bundle or component | Kind | Version | Source |
+|---|---|---|---|
+| `opsmill-sdd` | bundle | 1.1.0 | opsmill-speckit |
+| `opsmill-jira` | bundle, includes `opsmill-sdd` | 1.1.0 | opsmill-speckit |
+| `opsmill` | extension | 1.6.0 | opsmill-speckit |
+| `critique-opsmill` | preset | 1.6.0 | opsmill-speckit |
+| `jira-branch` | preset | 1.6.0 | opsmill-speckit |
+| `reconcile-opsmill` | preset | 1.6.0 | opsmill-speckit |
+| `taskstoissues-jira` | preset | 1.6.0 | opsmill-speckit |
+| `opsmill-prep` | workflow, in `opsmill-sdd` | 1.1.0 | opsmill-speckit |
+| `opsmill-implement` | workflow, in `opsmill-sdd` | 1.1.0 | opsmill-speckit |
+| `opsmill-auto` | workflow, in `opsmill-sdd` | 1.1.0 | opsmill-speckit |
+| `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
+| `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
+| `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
+| `git` | extension, in `opsmill-jira` | 1.0.9 | ships with Spec Kit |
+
+### opsmill-sdd 1.1.0
+
+#### Changed
+- Requires Spec Kit 1.4.4 or later, instead of 1.2.4.
+- Pins `opsmill` 1.6.0, `critique-opsmill` 1.6.0, `reconcile-opsmill` 1.6.0,
+  and the workflows `opsmill-prep`, `opsmill-implement` and `opsmill-auto` at
+  1.1.0.
+- Since Spec Kit 1.2.6, the specify phase starts `spec.md` from the template
+  that `resolve-template.sh` composes with the installed presets, which needs
+  PyYAML ([github/spec-kit#5187](https://github.com/github/spec-kit/pull/5187)).
+  A repo whose scripts run a Python without PyYAML now stops at the specify
+  phase, and no longer at the plan phase. See [Requires](README.md#requires).
+
+### opsmill-jira 1.1.0
+
+#### Changed
+- Requires Spec Kit 1.4.4 or later, instead of 1.2.4.
+- Pins `git` 1.0.9, the version that Spec Kit 1.4.4 ships, instead of 1.0.1.
+  Spec Kit 1.4.4 installed its 1.0.9 in place of the 1.0.1 pin, with a
+  warning.
+- Pins `opsmill-sdd` 1.1.0, `jira-branch` 1.6.0 and `taskstoissues-jira` 1.6.0.
+
+### opsmill-prep 1.1.0, opsmill-implement 1.1.0, opsmill-auto 1.1.0
+
+#### Changed
+- Require Spec Kit 1.4.4 or later, instead of 1.2.4. On Spec Kit 1.4.4, the
+  conditions of the three workflows give the same results as on 1.2.4.
+
+### opsmill 1.6.0
+
+#### Changed
+- Requires Spec Kit 1.4.4 or later, instead of 1.2.4.
+
+### critique-opsmill 1.6.0, jira-branch 1.6.0, reconcile-opsmill 1.6.0, taskstoissues-jira 1.6.0
+
+#### Changed
+- Require Spec Kit 1.4.4 or later, instead of 1.2.4.
+- Spec Kit 1.3.0 removed `speckit.taskstoissues` from its core commands
+  ([github/spec-kit#5053](https://github.com/github/spec-kit/pull/5053)).
+  `taskstoissues-jira` still provides the command, so Jira repos keep it.
+
 ## [1.5.1] - 2026-11-27
 
 The workflows commit in a repo that ignores `.specify/workflows/runs/`, and
