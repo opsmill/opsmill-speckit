@@ -2,12 +2,12 @@ schema_version: "1.0"
 workflow:
   id: "opsmill-prep"
   name: "OpsMill preparation"
-  version: "1.0.1"
+  version: "1.1.0"
   author: "opsmill"
   description: "Prepares a feature for implementation: specify, plan and critique, tasks, then an alignment check against the request. Each phase is one step, and the workflow sets when a phase is repeated and how often."
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
   integrations:
     any:
       - "claude"

@@ -1,8 +1,9 @@
 ---
 # yamllint disable rule:truthy
 # When a GitHub Release vX.Y.Z is published, build the zips of the tagged
-# commit and attach the ones that catalog/ points to vX.Y.Z. Projects install
-# them from there through the opsmill catalogs.
+# commit, check each against the sha256 that catalog/ records for its version,
+# and attach all of them. Projects install each version from the release that
+# catalog/ points to: the first release that published it.
 name: "Release"
 on:
   release:

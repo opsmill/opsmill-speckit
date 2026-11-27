@@ -7,7 +7,7 @@
 Usage:
     uv run .github/scripts/build_release.py zips DIR              # one zip per component and bundle
     uv run .github/scripts/build_release.py catalog VERSION       # list them in catalog/ for release VERSION
-    uv run .github/scripts/build_release.py assets VERSION DIR    # the zips that release VERSION holds
+    uv run .github/scripts/build_release.py assets VERSION DIR    # every zip, checked, for release VERSION
 
 The zips are the same bytes for the same files, so the catalog records the
 sha256 of the zips that the release of the same commit publishes.

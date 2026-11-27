@@ -170,28 +170,42 @@ class Catalogs:
     def assets(
         self, archives: dict[Component, Archive], location: Location
     ) -> list[Archive]:
-        """The zips that the catalogs list under a location, each with its recorded sha256.
+        """Every zip of this commit, once checked against its record in the catalogs.
 
-        These are the zips that the GitHub Release at that location must hold.
+        A GitHub Release holds the zip of every component, so that it lists all
+        the versions it installs. Each zip must have the sha256 that the
+        catalogs record for its version, whichever release published it first:
+        the catalogs keep pointing to that first release. The current version
+        of at least one component must point to this release, which shows that
+        the catalogs were generated for it and not for a later release.
         """
-        built = {archive.path.name: archive for archive in archives.values()}
-        assets, errors = [], []
+        records: dict[tuple[str, str, str], dict] = {}
+        under_location = 0
         for kind in CatalogFile.NAMES:
-            for entry in CatalogFile(self.folder, kind).entries().values():
-                for record in (entry, *(entry.get("releases") or {}).values()):
-                    url = str(record.get("download_url") or record.get("url") or "")
-                    if not url.startswith(location.archives):
-                        continue
-                    name = url.removeprefix(location.archives)
-                    archive = built.get(name)
-                    if archive is None:
-                        errors.append(f"{name}: no zip of this commit has that name")
-                    elif archive.sha256() != record.get("sha256"):
-                        errors.append(f"{name}: its sha256 is not the one in catalog/")
-                    else:
-                        assets.append(archive)
+            for entry_id, entry in CatalogFile(self.folder, kind).entries().items():
+                versions = {
+                    entry.get("version"): entry,
+                    **(entry.get("releases") or {}),
+                }
+                for version, record in versions.items():
+                    records[(kind, entry_id, str(version))] = record
+                url = str(entry.get("download_url") or entry.get("url") or "")
+                under_location += url.startswith(location.archives)
+        errors = []
+        for component, archive in archives.items():
+            record = records.get((component.kind, component.id, component.version))
+            if record is None:
+                errors.append(
+                    f"{archive.path.name}: catalog/ has no record of this version"
+                )
+            elif archive.sha256() != record.get("sha256"):
+                errors.append(
+                    f"{archive.path.name}: its sha256 is not the one in catalog/"
+                )
         if errors:
             raise CheckFailed("\n".join(errors))
-        if not assets:
-            raise CheckFailed(f"catalog/ lists no zip under {location.archives}")
-        return assets
+        if not under_location:
+            raise CheckFailed(
+                f"no current version in catalog/ points to {location.archives}"
+            )
+        return list(archives.values())

@@ -7,7 +7,7 @@ from pathlib import Path
 
 from distribution.catalogs import Location
 from install_check.catalogs import Declaration, LocalRelease
-from install_check.checks import Check, PlanSetup, PythonHooks
+from install_check.checks import Check, PlanSetup, PythonHooks, SpecTemplate
 from install_check.components import BundleInstall
 from install_check.errors import CheckFailed
 from install_check.project import Project, Specify
@@ -43,7 +43,11 @@ class Installation:
                     self.report(install.install(project))
                     self.report(install.checks(project))
                     self.report(
-                        [PlanSetup(project, python), PythonHooks(project, python)]
+                        [
+                            PlanSetup(project, python),
+                            SpecTemplate(project, python),
+                            PythonHooks(project, python),
+                        ]
                     )
         return f"bundles installed and checked: {', '.join(b.id for b in bundles)}"
 

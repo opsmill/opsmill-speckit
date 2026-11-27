@@ -2,12 +2,12 @@ schema_version: "1.0"
 workflow:
   id: "opsmill-auto"
   name: "OpsMill end to end"
-  version: "1.0.0"
+  version: "1.1.0"
   author: "opsmill"
   description: "Runs the opsmill-prep workflow, then the opsmill-implement workflow when prep reports that the spec is ready."
 
 requires:
-  speckit_version: ">=1.2.4"
+  speckit_version: ">=1.4.4"
   integrations:
     any:
       - "claude"

@@ -2,5 +2,5 @@
 # in the README. The check runs those scripts with a fresh Python that has only
 # these packages, so a requirement missing from this list fails the check.
 python_packages:
-  # spec-kit 1.2 reads preset manifests with PyYAML when it composes templates.
+  # Spec Kit reads preset manifests with PyYAML when it composes templates.
   - pyyaml
