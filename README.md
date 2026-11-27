@@ -134,6 +134,14 @@ To move to the versions of a later release, run
 `specify bundle update <bundle-id>`. A bundle does not remove components that
 it never installed.
 
+### 3. Ignore the run state of the workflows
+
+Add `.specify/workflows/runs/` to the repo's `.gitignore` and commit it.
+Spec Kit keeps the state of each workflow run there, with absolute paths of the
+machine. The commit steps of the workflows add every change with `git add -A`
+and rely on that line to leave the run state out: a workflow stops before its
+first phase, with a `BLOCKED:` reason, when the folder is not ignored.
+
 ### Local development
 
 From a working tree, install a component without the catalogs:
@@ -214,8 +222,9 @@ In a repo that installed opsmill-speckit 1.4.1 or earlier component by component
    Removing `opsmill` also removes the hooks that the repo added for it in
    `.specify/extensions.yml` (see [Hooks](#hooks-auto-fire-during-sdd)): copy
    them before, and add them back after step 4.
-4. [Declare the opsmill catalogs](#1-declare-the-opsmill-catalogs-once-per-repo)
-   and [install one bundle](#2-install-one-bundle).
+4. [Declare the opsmill catalogs](#1-declare-the-opsmill-catalogs-once-per-repo),
+   [install one bundle](#2-install-one-bundle) and
+   [ignore the run state of the workflows](#3-ignore-the-run-state-of-the-workflows).
 5. Add the [agent hooks](#agent-hooks-for-pyyaml) that point spec-kit's
    scripts at the project's Python environment. In a repo without a Python
    environment that provides PyYAML, each developer makes PyYAML available to
@@ -297,8 +306,8 @@ Spec Kit keeps each run in `.specify/workflows/runs/<run-id>/`, including the
 verdicts of the critique and of the alignment check. `specify workflow status <run-id>` shows a run, and
 `specify workflow resume <run-id>` resumes a failed one.
 
-Add `.specify/workflows/runs/` to the repo's `.gitignore`, so that the commits
-that the workflows make leave the run state out.
+The repo's `.gitignore` must ignore that folder (see
+[Install](#3-ignore-the-run-state-of-the-workflows)).
 
 ## Commands
 

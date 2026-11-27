@@ -2,7 +2,7 @@ schema_version: "1.0"
 workflow:
   id: "opsmill-prep"
   name: "OpsMill preparation"
-  version: "1.0.0"
+  version: "1.0.1"
   author: "opsmill"
   description: "Prepares a feature for implementation: specify, plan and critique, tasks, then an alignment check against the request. Each phase is one step, and the workflow sets when a phase is repeated and how often."
 
@@ -23,6 +23,14 @@ inputs:
     prompt: "Integration to use ('auto' uses the project's integration)"
 
 steps:
+  # The commit steps add every change with `git add -A`. They rely on the
+  # repo's .gitignore to leave out the run state, which holds absolute paths
+  # of this machine: the run stops here when .specify/workflows/runs/ is not
+  # ignored.
+  - id: runs-ignored
+    type: shell
+    run: "git check-ignore -q .specify/workflows/runs/ || { echo 'BLOCKED: add .specify/workflows/runs/ to the .gitignore of the repo (see the opsmill-speckit README), so that the commits of the run leave out the run state' >&2; exit 1; }"
+
   # One preparation pass: spec, plan and critique, tasks, alignment check.
   # The pass is repeated while the alignment check finds that the spec drifted
   # from the request: the first pass, then two remediation passes at most.
@@ -60,7 +68,7 @@ steps:
               args: "{{ inputs.spec }}\n\nNobody can answer a question during this run. Decide every open point yourself, record each decision in the Assumptions section, and leave no clarification marker in the spec."
       - id: commit-spec
         type: shell
-        run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'specify: write the spec')"
+        run: "git add -A && (git diff --cached --quiet || git commit -q -m 'specify: write the spec')"
       # A phase that writes nothing, for example because Claude Code refused
       # it a tool, stops the run here instead of in the last step. The checks
       # compare the real path of the file: git diff does not follow a symlink,
@@ -110,7 +118,7 @@ steps:
                     integration: "{{ inputs.integration }}"
           - id: commit-plan
             type: shell
-            run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'plan: write the implementation plan')"
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'plan: write the implementation plan')"
           - id: check-plan
             type: shell
             run: >-
@@ -124,7 +132,7 @@ steps:
             timeout: 1800
           - id: commit-critique
             type: shell
-            run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'critique: review the spec and the plan')"
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'critique: review the spec and the plan')"
 
       # Tasks and the alignment check need a design that the critique accepts.
       - id: accepted
@@ -142,7 +150,7 @@ steps:
               args: "Create no task that pushes the branch or opens, edits or comments on a pull request: the implementation does not handle the pull request."
           - id: commit-tasks
             type: shell
-            run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'tasks: generate the tasks')"
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'tasks: generate the tasks')"
           - id: check-tasks
             type: shell
             run: >-
@@ -158,7 +166,7 @@ steps:
               args: "{{ inputs.spec }}"
           - id: commit-align
             type: shell
-            run: "git add -A -- . ':!.specify/workflows/runs' && (git diff --cached --quiet || git commit -q -m 'alignment: check the spec against the request')"
+            run: "git add -A && (git diff --cached --quiet || git commit -q -m 'alignment: check the spec against the request')"
 
   # The run stops here, with an error, when the spec is not safe to implement.
   - id: design-rejected

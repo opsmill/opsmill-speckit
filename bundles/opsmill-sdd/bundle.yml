@@ -3,7 +3,7 @@ schema_version: "1.0"
 bundle:
   id: "opsmill-sdd"
   name: "OpsMill spec-driven development"
-  version: "1.0.0"
+  version: "1.0.1"
   role: "developer"
   description: "The OpsMill workflow commands and Spec Kit workflows, with the critique, checkpoint and reconcile extensions they use."
   author: "opsmill"
@@ -18,7 +18,7 @@ requires:
 provides:
   extensions:
     - id: "opsmill"
-      version: "1.5.0"
+      version: "1.5.1"
       source: "opsmill"
     # implement commits with speckit-checkpoint-commit from this extension.
     - id: "checkpoint"
@@ -47,10 +47,10 @@ provides:
   # opsmill commands above.
   workflows:
     - id: "opsmill-prep"
-      version: "1.0.0"
+      version: "1.0.1"
       source: "opsmill"
     - id: "opsmill-implement"
-      version: "1.0.0"
+      version: "1.0.1"
       source: "opsmill"
     - id: "opsmill-auto"
       version: "1.0.0"

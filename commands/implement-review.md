@@ -37,7 +37,7 @@ A missing reviewer does not stop this phase. It lowers assurance, and the report
 
 Once all five have returned, run `code-simplifier` alone, with the same briefing. It is built to edit code rather than report, so its edits are never kept:
 
-- Every `git status` below excludes the workflow's run folder: `git status --porcelain -- . ':!.specify/workflows/runs'`. That folder holds the state of the current run, changes while it runs, and is never deleted.
+- `git status` does not list the workflow's run folder, `.specify/workflows/runs/`: the workflow stops before the first phase when the repo's `.gitignore` does not ignore it. Never delete that folder: it holds the state of the current run.
 - Before it runs, check that the working tree is clean (that `git status` prints nothing). If it is not, skip `code-simplifier` and record that.
 - After it ends, turn every change it made into a `low` finding: read them with `git diff` and that `git status`, one finding per simplification, with the file and line.
 - Then discard its changes: `git restore .` for edited files, and delete the files it created (listed as `??` by that `git status`). The working tree must be clean again before you handle the findings.

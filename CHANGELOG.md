@@ -13,6 +13,56 @@ Before 1.5.0 there were no bundles: each tag released the extension at the
 tag's version, and the presets shared one collection version, 1.0.0 in
 `v1.1.0`, 1.1.0 in `v1.2.0` and 1.2.0 in `v1.4.0`.
 
+## [1.5.1] - 2026-11-27
+
+The workflows commit in a repo that ignores `.specify/workflows/runs/`, and
+rely on that `.gitignore` line alone to leave the run state out. README:
+[Ignore the run state of the workflows](README.md#3-ignore-the-run-state-of-the-workflows).
+
+| Bundle or component | Kind | Version | Source |
+|---|---|---|---|
+| `opsmill-sdd` | bundle | 1.0.1 | opsmill-speckit |
+| `opsmill-jira` | bundle, includes `opsmill-sdd` | 1.0.1 | opsmill-speckit |
+| `opsmill` | extension | 1.5.1 | opsmill-speckit |
+| `critique-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `jira-branch` | preset | 1.5.0 | opsmill-speckit |
+| `reconcile-opsmill` | preset | 1.5.0 | opsmill-speckit |
+| `taskstoissues-jira` | preset | 1.5.0 | opsmill-speckit |
+| `opsmill-prep` | workflow, in `opsmill-sdd` | 1.0.1 | opsmill-speckit |
+| `opsmill-implement` | workflow, in `opsmill-sdd` | 1.0.1 | opsmill-speckit |
+| `opsmill-auto` | workflow, in `opsmill-sdd` | 1.0.0 | opsmill-speckit |
+| `checkpoint` | extension | 1.0.0 | [aaronrsun/spec-kit-checkpoint](https://github.com/aaronrsun/spec-kit-checkpoint/releases/tag/v1.0.0) |
+| `critique` | extension | 1.0.0 | [arunt14/spec-kit-critique](https://github.com/arunt14/spec-kit-critique/releases/tag/v1.0.0) |
+| `reconcile` | extension | 1.3.1 | [stn1slv/spec-kit-reconcile](https://github.com/stn1slv/spec-kit-reconcile/releases/tag/v1.3.1) |
+| `git` | extension, in `opsmill-jira` | 1.0.1 | ships with Spec Kit |
+
+### opsmill-prep 1.0.1, opsmill-implement 1.0.1
+
+#### Fixed
+- In a repo that ignores `.specify/workflows/runs/`, as the README asks,
+  every commit step exited with an error: `git add` refuses a pathspec that
+  names an ignored folder, and the steps excluded that folder by name. The
+  first commit step stopped the run after the specify phase. The steps now
+  run `git add -A`.
+
+#### Changed
+- Each workflow starts with a step that stops the run with a `BLOCKED:`
+  reason when the repo's `.gitignore` does not ignore
+  `.specify/workflows/runs/`. Without that line, `git add -A` would commit the
+  run state, which holds absolute paths of the machine.
+
+### opsmill 1.5.1
+
+#### Changed
+- The review phase of `opsmill-implement` runs `git status` without excluding
+  the run folder, which the `.gitignore` of the repo now leaves out.
+
+### opsmill-sdd 1.0.1, opsmill-jira 1.0.1
+
+#### Changed
+- `opsmill-sdd` pins `opsmill` 1.5.1, `opsmill-prep` 1.0.1 and
+  `opsmill-implement` 1.0.1. `opsmill-jira` pins `opsmill-sdd` 1.0.1.
+
 ## [1.5.0] - 2026-11-26
 
 Repos install opsmill-speckit through two bundles, from the opsmill catalogs.
